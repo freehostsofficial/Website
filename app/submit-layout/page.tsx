@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     description: "Build hosting layouts with our easy-to-use layout builder tool.",
     images: [
       {
-        url: "https://freehosts.space/Src/Images/social-preview.png",
+        url: "https://freehosts.space/Src/Images/banner.png",
         width: 1280,
         height: 720,
       },
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Layout Builder - FreeHosts",
     description: "Build hosting layouts with our easy-to-use layout builder tool.",
-    images: ["https://freehosts.space/Src/Images/social-preview.png"],
+    images: ["https://freehosts.space/Src/Images/banner.png"],
   },
 };
 

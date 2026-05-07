@@ -29,7 +29,7 @@ export const metadata: Metadata = {
       "Our official server rules ensure a positive experience for everyone in the FreeHosts community. Review them here.",
     images: [
       {
-        url: "https://freehosts.space/Src/Images/social-preview.png",
+        url: "https://freehosts.space/Src/Images/banner.png",
         width: 1280,
         height: 720,
         alt: "FreeHosts - Server Rules",
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     title: "Discord Server Rules & Community Guidelines - FreeHosts",
     description:
       "All members must follow our community guidelines to remain part of the FreeHosts network.",
-    images: ["https://freehosts.space/Src/Images/social-preview.png"],
+    images: ["https://freehosts.space/Src/Images/banner.png"],
     site: "@freehosts_",
     creator: "@freehosts_",
   },

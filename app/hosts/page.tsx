@@ -34,7 +34,7 @@ export const metadata = {
     description: 'Browse 100+ free hosting providers for websites, Discord bots, and apps. Filter by CPU, RAM, storage, language, and target.',
     images: [
       {
-        url: 'https://freehosts.space/Src/Images/social-preview.png',
+        url: 'https://freehosts.space/Src/Images/banner.png',
         width: 1280,
         height: 720,
         alt: 'FreeHosts — Free Hosting Directory',
@@ -47,7 +47,7 @@ export const metadata = {
     description: 'Browse 100+ free hosting providers for websites, Discord bots, and apps. Filter by CPU, RAM, storage, language, and target.',
     images: [
       {
-        url: 'https://freehosts.space/Src/Images/social-preview.png',
+        url: 'https://freehosts.space/Src/Images/banner.png',
         alt: 'FreeHosts — Free Hosting Directory',
       },
     ],

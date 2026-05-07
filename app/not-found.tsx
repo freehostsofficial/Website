@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "404 - Page Not Found | FreeHosts",
     description: "The page you were looking for could not be found.",
-    images: [{ url: "https://freehosts.space/Src/Images/social-preview.png", width: 1280, height: 720, alt: "FreeHosts - Discover Free Hosting" }],
+    images: [{ url: "https://freehosts.space/Src/Images/banner.png", width: 1280, height: 720, alt: "FreeHosts - Discover Free Hosting" }],
   },
 };
 

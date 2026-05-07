@@ -30,7 +30,7 @@ export const metadata: Metadata = {
       "Meet the volunteers behind FreeHosts — owners, developers, moderators, and host publishers who keep this free hosting directory running.",
     images: [
       {
-        url: "https://freehosts.space/Src/Images/social-preview.png",
+        url: "https://freehosts.space/Src/Images/banner.png",
         width: 1280,
         height: 720,
         alt: "FreeHosts - Meet the Team",
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
       "Meet the volunteers behind FreeHosts — owners, developers, moderators, and host publishers who keep this free hosting directory running.",
     images: [
       {
-        url: "https://freehosts.space/Src/Images/social-preview.png",
+        url: "https://freehosts.space/Src/Images/banner.png",
         alt: "FreeHosts - Meet the Team",
       },
     ],

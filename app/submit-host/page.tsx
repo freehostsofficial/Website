@@ -30,7 +30,7 @@ export const metadata: Metadata = {
       "Join the community-curated directory of free hosting. Learn the submission process and get your host listed today.",
     images: [
       {
-        url: "https://freehosts.space/Src/Images/social-preview.png",
+        url: "https://freehosts.space/Src/Images/banner.png",
         width: 1280,
         height: 720,
         alt: "FreeHosts - Submit a Host",
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     title: "Submit a Free Host - Get Listed on FreeHosts",
     description:
       "Want to get your hosting service listed? Follow our guide and use our layout builder for a seamless submission experience.",
-    images: ["https://freehosts.space/Src/Images/social-preview.png"],
+    images: ["https://freehosts.space/Src/Images/banner.png"],
     site: "@freehosts_",
     creator: "@freehosts_",
   },

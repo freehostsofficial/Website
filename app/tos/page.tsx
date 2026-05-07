@@ -24,7 +24,7 @@ export const metadata: Metadata = {
       "Read the FreeHosts Terms of Service. Understand your rights and responsibilities when using our free hosting directory.",
     images: [
       {
-        url: "https://freehosts.space/Src/Images/social-preview.png",
+        url: "https://freehosts.space/Src/Images/banner.png",
         width: 1280,
         height: 720,
         alt: "FreeHosts - Terms of Service",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     title: "Terms of Service - FreeHosts",
     description:
       "Read the FreeHosts Terms of Service. Understand your rights and responsibilities when using our free hosting directory.",
-    images: ["https://freehosts.space/Src/Images/social-preview.png"],
+    images: ["https://freehosts.space/Src/Images/banner.png"],
     site: "@freehosts_",
     creator: "@freehosts_",
   },

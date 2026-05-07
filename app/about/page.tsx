@@ -42,7 +42,7 @@ export const metadata: Metadata = {
       "A community-driven directory to discover, compare and review free hosting services for websites, bots, and apps.",
     images: [
       {
-        url: "https://freehosts.space/Src/Images/social-preview.png",
+        url: "https://freehosts.space/Src/Images/banner.png",
         width: 1280,
         height: 720,
         alt: "FreeHosts - Discover Free Hosting",
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
       "A community-driven directory to discover, compare and review free hosting services for websites, bots, and apps.",
     images: [
       {
-        url: "https://freehosts.space/Src/Images/social-preview.png",
+        url: "https://freehosts.space/Src/Images/banner.png",
         alt: "FreeHosts - Discover Free Hosting",
       },
     ],

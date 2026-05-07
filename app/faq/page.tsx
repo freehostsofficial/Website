@@ -31,7 +31,7 @@ export const metadata: Metadata = {
       "Get answers to the most common questions about FreeHosts and free hosting services.",
     images: [
       {
-        url: "https://freehosts.space/Src/Images/social-preview.png",
+        url: "https://freehosts.space/Src/Images/banner.png",
         width: 1280,
         height: 720,
         alt: "FreeHosts FAQ - Common Questions About FreeHosts",
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
       "Get answers to the most common questions about FreeHosts and free hosting services.",
     images: [
       {
-        url: "https://freehosts.space/Src/Images/social-preview.png",
+        url: "https://freehosts.space/Src/Images/banner.png",
         alt: "FreeHosts FAQ - Common Questions About FreeHosts",
       },
     ],

@@ -29,7 +29,7 @@ export const metadata: Metadata = {
       "Read the official submission rules before listing your hosting service on FreeHosts.",
     images: [
       {
-        url: "https://freehosts.space/Src/Images/social-preview.png",
+        url: "https://freehosts.space/Src/Images/banner.png",
         width: 1280,
         height: 720,
         alt: "FreeHosts - Submission Rules",
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     title: "Host Submission Rules & Guidelines - FreeHosts",
     description:
       "Read the official submission rules before listing your hosting service on FreeHosts.",
-    images: ["https://freehosts.space/Src/Images/social-preview.png"],
+    images: ["https://freehosts.space/Src/Images/banner.png"],
     site: "@freehosts_",
     creator: "@freehosts_",
   },

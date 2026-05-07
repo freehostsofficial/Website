@@ -24,7 +24,7 @@ export const metadata: Metadata = {
       "Read the FreeHosts Privacy Policy. Learn how we collect, use, and protect your data.",
     images: [
       {
-        url: "https://freehosts.space/Src/Images/social-preview.png",
+        url: "https://freehosts.space/Src/Images/banner.png",
         width: 1280,
         height: 720,
         alt: "FreeHosts - Privacy Policy",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     title: "Privacy Policy - FreeHosts",
     description:
       "Read the FreeHosts Privacy Policy. Learn how we collect, use, and protect your data.",
-    images: ["https://freehosts.space/Src/Images/social-preview.png"],
+    images: ["https://freehosts.space/Src/Images/banner.png"],
     site: "@freehosts_",
     creator: "@freehosts_",
   },

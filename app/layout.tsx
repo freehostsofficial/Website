@@ -97,7 +97,7 @@ export const metadata: Metadata = {
       "Find reliable free hosting for websites, bots, apps, and Discord communities. Join our community directory to discover no-cost hosting solutions.",
     images: [
       {
-        url: "/Src/Images/social-preview.png",
+        url: "/Src/Images/banner.png",
         width: 1280,
         height: 720,
         alt: "FreeHosts - Discover Free Hosting",
@@ -109,7 +109,7 @@ export const metadata: Metadata = {
     title: "FreeHosts - Free Hosting for Websites, Bots & Apps",
     description:
       "Find reliable free hosting for websites, bots, apps, and Discord communities. Join our community directory to discover no-cost hosting solutions.",
-    images: ["/Src/Images/social-preview.png"],
+    images: ["/Src/Images/banner.png"],
     site: "@freehosts_",
     creator: "@freehosts_",
   },
