@@ -725,36 +725,85 @@ function HostCard({ host, isNew, formatSize }: HostCardProps) {
         </div>
       </div>
 
-      {/* Spec cards: CPU / RAM / Storage */}
-      <div className="host-specs">
-        <div className="host-spec-card">
-          <div className="host-spec-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M15 2v2M9 2v2M2 15h2M2 9h2M15 20v2M9 20v2M20 15h2M20 9h2"/></svg>
-          </div>
-          <div className="spec-copy">
-            <div className="spec-box-value">{host.cpu || 'Unknown'}</div>
-            <div className="spec-box-label">CPU</div>
-          </div>
-        </div>
-        <div className="host-spec-card">
-          <div className="host-spec-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M6 19v-3"/><path d="M10 19v-3"/><path d="M14 19v-3"/><path d="M18 19v-3"/><path d="M8 11V9"/><path d="M16 11V9"/><path d="M12 11V9"/><path d="M2 15h20"/><path d="M2 7a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v1.1a2 2 0 0 0 0 3.837V17a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-5.1a2 2 0 0 0 0-3.837Z"/></svg>
-          </div>
-          <div className="spec-copy">
-            <div className="spec-box-value">{ramDisplay}</div>
-            <div className="spec-box-label">Memory</div>
-          </div>
-        </div>
-        <div className="host-spec-card">
-          <div className="host-spec-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><line x1="22" x2="2" y1="12" y2="12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/><line x1="6" x2="6.01" y1="16" y2="16"/><line x1="10" x2="10.01" y1="16" y2="16"/></svg>
-          </div>
-          <div className="spec-copy">
-            <div className="spec-box-value">{storageDisplay}</div>
-            <div className="spec-box-label">Storage</div>
-          </div>
-        </div>
-      </div>
+      {(() => {
+        const isDomainHost = host.targets?.some(t => t.toLowerCase().includes('domain'));
+        const combinedText = `${host.info || ''}\n${host.description || ''}\n${host.free_plan || ''}`;
+        const allExtractedDomains = isDomainHost ? Array.from(new Set(combinedText.split('\n')
+          .map(l => l.trim())
+          .filter(l => l.includes('.') && !l.includes(':') && !l.toLowerCase().includes('available domains') && !l.toLowerCase().includes('available extensions'))
+        )) : [];
+        const extractedDomains = allExtractedDomains.slice(0, 10);
+        const hasMoreDomains = allExtractedDomains.length > 10;
+
+         if (isDomainHost && extractedDomains.length > 0) {
+           return (
+             <div className="host-specs" style={{ display: 'flex', flexDirection: 'column', gap: '4px', padding: '8px 12px', minHeight: '80px', justifyContent: 'center' }}>
+               <div style={{ fontSize: '11px', color: 'var(--accent-2)', fontWeight: '700', marginBottom: '2px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                 Extensions:
+               </div>
+               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '2px' }}>
+                 {extractedDomains.map(domain => {
+                   const cleanDomain = domain.replace(/^[-\s•*]+/, '');
+                   return (
+                     <span key={domain} style={{ 
+                       fontSize: '11px', 
+                       opacity: 0.9,
+                       backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                       padding: '2px 8px',
+                       borderRadius: '6px',
+                       border: '1px solid rgba(99, 102, 241, 0.2)',
+                       color: '#818cf8',
+                       fontWeight: 600
+                     }}>
+                       {cleanDomain}
+                     </span>
+                   );
+                 })}
+               </div>
+               {hasMoreDomains && (
+                 <div style={{ fontSize: '10px', opacity: 0.6, fontStyle: 'italic' }}>
+                   + {allExtractedDomains.length - 10} more available
+                 </div>
+               )}
+             </div>
+           );
+         } else if (host.targets?.some(t => t.toLowerCase().includes('subdomain'))) {
+           return null;
+         }
+
+         return (
+           <div className="host-specs">
+             <div className="host-spec-card">
+               <div className="host-spec-icon">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M15 2v2M9 2v2M2 15h2M2 9h2M15 20v2M9 20v2M20 15h2M20 9h2"/></svg>
+               </div>
+               <div className="spec-copy">
+                 <div className="spec-box-value">{host.cpu || 'Unknown'}</div>
+                 <div className="spec-box-label">CPU</div>
+               </div>
+             </div>
+             <div className="host-spec-card">
+               <div className="host-spec-icon">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M6 19v-3"/><path d="M10 19v-3"/><path d="M14 19v-3"/><path d="M18 19v-3"/><path d="M8 11V9"/><path d="M16 11V9"/><path d="M12 11V9"/><path d="M2 15h20"/><path d="M2 7a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v1.1a2 2 0 0 0 0 3.837V17a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-5.1a2 2 0 0 0 0-3.837Z"/></svg>
+               </div>
+               <div className="spec-copy">
+                 <div className="spec-box-value">{ramDisplay}</div>
+                 <div className="spec-box-label">Memory</div>
+               </div>
+             </div>
+             <div className="host-spec-card">
+               <div className="host-spec-icon">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><line x1="22" x2="2" y1="12" y2="12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/><line x1="6" x2="6.01" y1="16" y2="16"/><line x1="10" x2="10.01" y1="16" y2="16"/></svg>
+               </div>
+               <div className="spec-copy">
+                 <div className="spec-box-value">{storageDisplay}</div>
+                 <div className="spec-box-label">Storage</div>
+               </div>
+             </div>
+           </div>
+         );
+      })()}
 
       {/* Footer: rating + view details */}
       <div className="host-card-footer">

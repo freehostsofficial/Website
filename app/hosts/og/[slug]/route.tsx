@@ -87,39 +87,64 @@ export async function GET(req: NextRequest, { params }: Props) {
 
           {/* Specs / Content Section */}
           <div style={{ display: 'flex', flex: 1, alignItems: 'flex-end', justifyContent: 'space-between', width: '100%' }}>
-            {host.targets?.some(t => t.toLowerCase().includes('domain')) ? (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                <div style={{ display: 'flex', fontSize: '20px', fontWeight: 700, color: '#06b6d4', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                  <span>Available Extensions</span>
-                </div>
-                <div style={{ display: 'flex', gap: '16px' }}>
-                  {(host.info || '').split('\n')
-                    .map(l => l.trim())
-                    .filter(l => l.includes('.') && !l.includes(':') && !l.toLowerCase().includes('available domains'))
-                    .slice(0, 5)
-                    .map(domain => (
-                      <div key={domain} style={{ display: 'flex', padding: '16px 24px', background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%)', border: '1px solid rgba(99, 102, 241, 0.2)', borderRadius: '16px', color: '#818cf8', fontSize: '32px', fontWeight: 800 }}>
-                        {domain}
-                      </div>
-                    ))}
-                </div>
-              </div>
-            ) : (
-              <div style={{ display: 'flex', gap: '30px' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', width: '200px', padding: '24px', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.08)' }}>
-                  <span style={{ fontSize: '16px', color: '#64748b', fontWeight: 700, marginBottom: '8px', textTransform: 'uppercase' }}>CPU</span>
-                  <span style={{ fontSize: '32px', color: 'white', fontWeight: 800 }}>{cpu}</span>
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', width: '200px', padding: '24px', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.08)' }}>
-                  <span style={{ fontSize: '16px', color: '#64748b', fontWeight: 700, marginBottom: '8px', textTransform: 'uppercase' }}>RAM</span>
-                  <span style={{ fontSize: '32px', color: 'white', fontWeight: 800 }}>{ram}</span>
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', width: '200px', padding: '24px', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.08)' }}>
-                  <span style={{ fontSize: '16px', color: '#64748b', fontWeight: 700, marginBottom: '8px', textTransform: 'uppercase' }}>Disk</span>
-                  <span style={{ fontSize: '32px', color: 'white', fontWeight: 800 }}>{disk}</span>
-                </div>
-              </div>
-            )}
+            {(() => {
+              const combinedText = `${host.info || ''}\n${host.description || ''}\n${host.free_plan || ''}`;
+              const allExtractedDomains = combinedText.split('\n')
+                .map(l => l.trim())
+                .filter(l => l.includes('.') && !l.includes(':') && !l.toLowerCase().includes('available domains') && !l.toLowerCase().includes('available extensions'))
+              const extractedDomains = allExtractedDomains.slice(0, 8)
+              const hasMoreDomains = allExtractedDomains.length > 8
+              
+              if (host.targets?.some(t => t.toLowerCase().includes('domain')) && extractedDomains.length > 0) {
+                return (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    <div style={{ display: 'flex', fontSize: '20px', fontWeight: 700, color: '#06b6d4', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                      <span>Available Extensions</span>
+                    </div>
+                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap', maxWidth: '800px' }}>
+                      {extractedDomains.map(domain => {
+                        const cleanDomain = domain.replace(/^[-\s•*]+/, '');
+                        return (
+                          <div key={domain} style={{ display: 'flex', padding: '12px 20px', background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%)', border: '1px solid rgba(99, 102, 241, 0.2)', borderRadius: '16px', color: '#818cf8', fontSize: '24px', fontWeight: 800, marginBottom: '8px' }}>
+                            {cleanDomain}
+                          </div>
+                        );
+                      })}
+                      {hasMoreDomains && (
+                        <div style={{ display: 'flex', color: '#64748b', fontSize: '20px', fontWeight: 600, marginLeft: '10px', fontStyle: 'italic' }}>
+                          + more available
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              } else if (host.targets?.some(t => t.toLowerCase().includes('subdomain'))) {
+                return (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    <div style={{ display: 'flex', fontSize: '20px', fontWeight: 700, color: '#6366f1', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                      <span>Free Subdomain Hosting</span>
+                    </div>
+                  </div>
+                );
+              } else {
+                return (
+                  <div style={{ display: 'flex', gap: '30px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', width: '200px', padding: '24px', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.08)' }}>
+                      <span style={{ fontSize: '16px', color: '#64748b', fontWeight: 700, marginBottom: '8px', textTransform: 'uppercase' }}>CPU</span>
+                      <span style={{ fontSize: '32px', color: 'white', fontWeight: 800 }}>{cpu}</span>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', width: '200px', padding: '24px', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.08)' }}>
+                      <span style={{ fontSize: '16px', color: '#64748b', fontWeight: 700, marginBottom: '8px', textTransform: 'uppercase' }}>RAM</span>
+                      <span style={{ fontSize: '32px', color: 'white', fontWeight: 800 }}>{ram}</span>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', width: '200px', padding: '24px', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.08)' }}>
+                      <span style={{ fontSize: '16px', color: '#64748b', fontWeight: 700, marginBottom: '8px', textTransform: 'uppercase' }}>Disk</span>
+                      <span style={{ fontSize: '32px', color: 'white', fontWeight: 800 }}>{disk}</span>
+                    </div>
+                  </div>
+                );
+              }
+            })()}
 
             {/* Rating Badge */}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
