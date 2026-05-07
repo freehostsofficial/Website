@@ -91,7 +91,8 @@ export async function GET(req: NextRequest, { params }: Props) {
               const combinedText = `${host.info || ''}\n${host.description || ''}\n${host.free_plan || ''}`;
               const allExtractedDomains = combinedText.split('\n')
                 .map(l => l.trim())
-                .filter(l => l.includes('.') && !l.includes(':') && !l.toLowerCase().includes('available domains') && !l.toLowerCase().includes('available extensions'))
+              .filter(l => /^\s*[-–•*\s]*[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+[\r\n]*$/.test(l))
+                .map(l => l.replace(/^[-–•*\s]+/, '').trim().split(/\s/)[0])
               const extractedDomains = allExtractedDomains.slice(0, 8)
               const hasMoreDomains = allExtractedDomains.length > 8
 
