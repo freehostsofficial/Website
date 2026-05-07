@@ -20,9 +20,9 @@ type HostLink = { href: string; lucideIcon?: LucideIcon; faIcon?: IconDefinition
 
 const externalHosts: { initials?: string; image?: string; name: string; description: string; links: HostLink[] }[] = [
   {
-    initials: "FMH",
+    image: "/Src/Images/free-minecraft-hostings.png",
     name: "Free Minecraft Hostings",
-    description: "Curated collection of free hosting providers specifically for Minecraft servers featuring detailed reviews, comparisons, and community ratings with various configurations and performance options.",
+    description: "The best collection of free minecraft server hosting providers. Includings a tons of free minecraft hostings. Allow you to write your own experiences while using free hostings. Founded by the best handsome human in the entire world.",
     links: [
       { href: "https://freeminecrafthostings.com/", lucideIcon: ExternalLink, label: "Website" },
       { href: "https://discord.gg/sc2kauFE3D", faIcon: faDiscord, label: "Discord" },
@@ -38,7 +38,7 @@ const externalHosts: { initials?: string; image?: string; name: string; descript
     ],
   },
   {
-    initials: "FLMH",
+    image: "/Src/Images/flhl.png",
     name: "Free Low Minecraft Hostings",
     description: "Specialized directory for low-resource Minecraft hosting solutions that are optimized for budget-conscious users.",
     links: [
