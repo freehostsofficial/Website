@@ -1,6 +1,6 @@
 import { redirect, notFound } from 'next/navigation'
 import { headers } from 'next/headers'
-import { fetchHostById, fetchHostBySlug, type Host } from '../../../lib/cache'
+import { fetchHostById, fetchHostBySlug, fetchHosts, type Host } from '../../../lib/cache'
 import { slugify } from '../../../lib/slugify'
 import HostDetailClient from '../../../components/HostDetailClient'
 export const runtime = 'edge';
@@ -89,11 +89,23 @@ export default async function HostDetailPage({ params }: Props) {
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD", "availability": host.status?.toLowerCase() === "online" ? "https://schema.org/InStock" : "https://schema.org/OutOfStock", "url": hostUrl, "description": `Free ${host.targets?.join(', ') || 'hosting'} — ${host.cpu || 'Unknown'} CPU, ${host.ram || 'Unknown'} RAM, ${host.disk || 'Unknown'} storage` },
     ...(ratingValue ? { "aggregateRating": { "@type": "AggregateRating", "ratingValue": ratingValue, "bestRating": "5", "worstRating": "1", "ratingCount": totalReviews, "reviewCount": totalReviews } } : {}),
   }
-  return (
-    <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceLd) }} />
-      <HostDetailClient host={host} />
-    </>
-  )
+      const allHosts = await fetchHosts()
+      const related = allHosts
+        .filter(h => h.id !== host.id && h.targets?.some(t => host.targets?.includes(t)))
+        // Use a seed-based sort for stable variety between different hosts
+        .sort((a, b) => {
+          const seed = host.id;
+          const valA = (a.id * seed) % 100;
+          const valB = (b.id * seed) % 100;
+          return valA - valB;
+        })
+        .slice(0, 4)
+    
+      return (
+        <>
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceLd) }} />
+          <HostDetailClient host={host} related={related} />
+        </>
+      )
 }

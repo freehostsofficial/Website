@@ -40,7 +40,7 @@ const externalHosts: { initials?: string; image?: string; name: string; descript
   {
     image: "/Src/Images/flhl.png",
     name: "Free Low Minecraft Hostings",
-    description: "Specialized directory for low-resource Minecraft hosting solutions that are optimized for budget-conscious users.",
+    description: "A specialized free hostings catalog which is intended for new and non-recommended hosting providers, with a brief description of reputation to warn against fraud.",
     links: [
       { href: "https://flhl.whiteik.xyz/", lucideIcon: ExternalLink, label: "Website" },
     ],

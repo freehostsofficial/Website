@@ -93,40 +93,66 @@ export async function GET(req: NextRequest, { params }: Props) {
               <span>{targets}</span>
             </div>
 
-            {/* Specs Row */}
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                gap: '40px',
-                marginBottom: '48px',
-              }}
-            >
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <div style={{ display: 'flex', fontSize: '18px', color: '#64748b', marginBottom: '4px', textTransform: 'uppercase' }}>
-                  <span>CPU</span>
+            {/* Specs or Domains Row */}
+            {host.targets?.some(t => t.toLowerCase().includes('domain')) ? (
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '12px',
+                  marginBottom: '48px',
+                }}
+              >
+                <div style={{ display: 'flex', fontSize: '18px', color: '#64748b', marginBottom: '8px', textTransform: 'uppercase' }}>
+                  <span>Available Domains</span>
                 </div>
-                <div style={{ display: 'flex', fontSize: '28px', color: 'white', fontWeight: 600 }}>
-                  <span>{cpu}</span>
-                </div>
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <div style={{ display: 'flex', fontSize: '18px', color: '#64748b', marginBottom: '4px', textTransform: 'uppercase' }}>
-                  <span>RAM</span>
-                </div>
-                <div style={{ display: 'flex', fontSize: '28px', color: 'white', fontWeight: 600 }}>
-                  <span>{ram}</span>
-                </div>
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <div style={{ display: 'flex', fontSize: '18px', color: '#64748b', marginBottom: '4px', textTransform: 'uppercase' }}>
-                  <span>Disk</span>
-                </div>
-                <div style={{ display: 'flex', fontSize: '28px', color: 'white', fontWeight: 600 }}>
-                  <span>{disk}</span>
+                <div style={{ display: 'flex', flexDirection: 'row', gap: '20px', flexWrap: 'wrap' }}>
+                  {(host.info || '').split('\n')
+                    .map(l => l.trim())
+                    .filter(l => l.includes('.') && !l.includes(':') && !l.toLowerCase().includes('available domains'))
+                    .slice(0, 4)
+                    .map(domain => (
+                      <div key={domain} style={{ display: 'flex', padding: '10px 20px', backgroundColor: 'rgba(99, 102, 241, 0.1)', border: '1px solid rgba(99, 102, 241, 0.2)', borderRadius: '8px', color: '#818cf8', fontSize: '24px', fontWeight: 600 }}>
+                        {domain}
+                      </div>
+                    ))}
                 </div>
               </div>
-            </div>
+            ) : (
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  gap: '40px',
+                  marginBottom: '48px',
+                }}
+              >
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <div style={{ display: 'flex', fontSize: '18px', color: '#64748b', marginBottom: '4px', textTransform: 'uppercase' }}>
+                    <span>CPU</span>
+                  </div>
+                  <div style={{ display: 'flex', fontSize: '28px', color: 'white', fontWeight: 600 }}>
+                    <span>{cpu}</span>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <div style={{ display: 'flex', fontSize: '18px', color: '#64748b', marginBottom: '4px', textTransform: 'uppercase' }}>
+                    <span>RAM</span>
+                  </div>
+                  <div style={{ display: 'flex', fontSize: '28px', color: 'white', fontWeight: 600 }}>
+                    <span>{ram}</span>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <div style={{ display: 'flex', fontSize: '18px', color: '#64748b', marginBottom: '4px', textTransform: 'uppercase' }}>
+                    <span>Disk</span>
+                  </div>
+                  <div style={{ display: 'flex', fontSize: '28px', color: 'white', fontWeight: 600 }}>
+                    <span>{disk}</span>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Reviews Section */}
             <div

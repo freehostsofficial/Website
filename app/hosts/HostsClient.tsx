@@ -301,7 +301,7 @@ function HostsContent({ initialHosts }: { initialHosts: Host[] }) {
     return () => document.removeEventListener('click', handleClick)
   }, [])
 
-  const pageSize = 5
+  const pageSize = 24
 
   // Memoize Filter Options
   const locales = useMemo(() => {
