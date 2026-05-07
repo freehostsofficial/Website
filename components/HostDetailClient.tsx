@@ -259,7 +259,6 @@ export default function HostDetailClient({ host, related = [] }: HostDetailClien
                   
                   return (
                     <Link key={r.id} href={`/hosts/${slugify(r.name)}`} className="related-host-card">
-                      {idx === 0 && <div className="recommended-badge">Recommended</div>}
                       <div className="related-host-icon">{r.name.charAt(0).toUpperCase()}</div>
                       <div className="related-host-info">
                         <div className="related-host-name-row">
