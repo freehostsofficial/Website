@@ -3147,24 +3147,36 @@
   margin-top: var(--space-3xl);
   padding-top: var(--space-2xl);
   border-top: 1px solid var(--border);
+  position: relative;
 }
 
 .related-hosts-section .section-title {
-  font-size: var(--font-size-xl);
-  font-weight: 700;
-  margin-bottom: var(--space-xl);
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  margin-bottom: var(--space-2xl);
   color: var(--text);
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.related-hosts-section .section-title::before {
+  content: '';
+  width: 4px;
+  height: 24px;
+  background: var(--accent);
+  border-radius: 2px;
 }
 
 .related-hosts-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: var(--space-lg);
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--space-xl);
 }
 
 .related-host-card {
   display: flex;
-  align-items: center;
   gap: var(--space-md);
   padding: var(--space-md);
   background: rgba(255, 255, 255, 0.03);

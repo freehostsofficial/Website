@@ -48,166 +48,86 @@ export async function GET(req: NextRequest, { params }: Props) {
             height: '100%',
             width: '100%',
             display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            backgroundColor: '#0a0f1e',
-            backgroundImage: 'linear-gradient(to bottom right, #0a0f1e, #141824)',
-            padding: '80px',
+            flexDirection: 'column',
+            backgroundColor: '#050a18',
+            padding: '60px 80px',
+            position: 'relative',
+            overflow: 'hidden',
           }}
         >
-          {/* Left Side: Host Details */}
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              flex: 1,
-              justifyContent: 'center',
-            }}
-          >
-            {/* Host Name */}
-            <div
-              style={{
-                display: 'flex',
-                fontSize: '84px',
-                fontWeight: 800,
-                color: 'white',
-                lineHeight: 1.1,
-                marginBottom: '24px',
-                maxWidth: '700px',
-              }}
-            >
-              <span>{name}</span>
-            </div>
+          {/* Background Decorative Blobs */}
+          <div style={{ position: 'absolute', top: '-100px', right: '-100px', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(99, 102, 241, 0) 70%)', display: 'flex' }} />
+          <div style={{ position: 'absolute', bottom: '-150px', left: '-150px', width: '600px', height: '600px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(6, 182, 212, 0.1) 0%, rgba(6, 182, 212, 0) 70%)', display: 'flex' }} />
 
-            {/* Targets */}
-            <div
-              style={{
-                display: 'flex',
-                fontSize: '28px',
-                color: '#94a3b8',
-                marginBottom: '48px',
-                flexWrap: 'wrap',
-              }}
-            >
-              <span>{targets}</span>
+          {/* Header Row */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '40px', width: '100%' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+              <div style={{ display: 'flex', fontSize: '20px', fontWeight: 700, color: '#6366f1', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '2px' }}>
+                <span>Free Hosting Directory</span>
+              </div>
+              <div style={{ display: 'flex', fontSize: '84px', fontWeight: 800, color: 'white', lineHeight: 1.1, letterSpacing: '-2px' }}>
+                <span>{name}</span>
+              </div>
             </div>
+            {/* Logo */}
+            <div style={{ display: 'flex', backgroundColor: 'rgba(255,255,255,0.03)', padding: '20px', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.08)' }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={logoUrl} alt="Logo" width={100} height={100} />
+            </div>
+          </div>
 
-            {/* Specs or Domains Row */}
+          {/* Targets Pills */}
+          <div style={{ display: 'flex', gap: '12px', marginBottom: '60px', flexWrap: 'wrap' }}>
+            {host.targets?.slice(0, 5).map(t => (
+              <div key={t} style={{ display: 'flex', padding: '8px 16px', backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '99px', border: '1px solid rgba(255,255,255,0.1)', color: '#94a3b8', fontSize: '18px', fontWeight: 600 }}>
+                {t}
+              </div>
+            ))}
+          </div>
+
+          {/* Specs / Content Section */}
+          <div style={{ display: 'flex', flex: 1, alignItems: 'flex-end', justifyContent: 'space-between', width: '100%' }}>
             {host.targets?.some(t => t.toLowerCase().includes('domain')) ? (
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '12px',
-                  marginBottom: '48px',
-                }}
-              >
-                <div style={{ display: 'flex', fontSize: '18px', color: '#64748b', marginBottom: '8px', textTransform: 'uppercase' }}>
-                  <span>Available Domains</span>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <div style={{ display: 'flex', fontSize: '20px', fontWeight: 700, color: '#06b6d4', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                  <span>Available Extensions</span>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'row', gap: '20px', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', gap: '16px' }}>
                   {(host.info || '').split('\n')
                     .map(l => l.trim())
                     .filter(l => l.includes('.') && !l.includes(':') && !l.toLowerCase().includes('available domains'))
-                    .slice(0, 4)
+                    .slice(0, 5)
                     .map(domain => (
-                      <div key={domain} style={{ display: 'flex', padding: '10px 20px', backgroundColor: 'rgba(99, 102, 241, 0.1)', border: '1px solid rgba(99, 102, 241, 0.2)', borderRadius: '8px', color: '#818cf8', fontSize: '24px', fontWeight: 600 }}>
+                      <div key={domain} style={{ display: 'flex', padding: '16px 24px', background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%)', border: '1px solid rgba(99, 102, 241, 0.2)', borderRadius: '16px', color: '#818cf8', fontSize: '32px', fontWeight: 800 }}>
                         {domain}
                       </div>
                     ))}
                 </div>
               </div>
             ) : (
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  gap: '40px',
-                  marginBottom: '48px',
-                }}
-              >
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <div style={{ display: 'flex', fontSize: '18px', color: '#64748b', marginBottom: '4px', textTransform: 'uppercase' }}>
-                    <span>CPU</span>
-                  </div>
-                  <div style={{ display: 'flex', fontSize: '28px', color: 'white', fontWeight: 600 }}>
-                    <span>{cpu}</span>
-                  </div>
+              <div style={{ display: 'flex', gap: '30px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', width: '200px', padding: '24px', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.08)' }}>
+                  <span style={{ fontSize: '16px', color: '#64748b', fontWeight: 700, marginBottom: '8px', textTransform: 'uppercase' }}>CPU</span>
+                  <span style={{ fontSize: '32px', color: 'white', fontWeight: 800 }}>{cpu}</span>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <div style={{ display: 'flex', fontSize: '18px', color: '#64748b', marginBottom: '4px', textTransform: 'uppercase' }}>
-                    <span>RAM</span>
-                  </div>
-                  <div style={{ display: 'flex', fontSize: '28px', color: 'white', fontWeight: 600 }}>
-                    <span>{ram}</span>
-                  </div>
+                <div style={{ display: 'flex', flexDirection: 'column', width: '200px', padding: '24px', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.08)' }}>
+                  <span style={{ fontSize: '16px', color: '#64748b', fontWeight: 700, marginBottom: '8px', textTransform: 'uppercase' }}>RAM</span>
+                  <span style={{ fontSize: '32px', color: 'white', fontWeight: 800 }}>{ram}</span>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <div style={{ display: 'flex', fontSize: '18px', color: '#64748b', marginBottom: '4px', textTransform: 'uppercase' }}>
-                    <span>Disk</span>
-                  </div>
-                  <div style={{ display: 'flex', fontSize: '28px', color: 'white', fontWeight: 600 }}>
-                    <span>{disk}</span>
-                  </div>
+                <div style={{ display: 'flex', flexDirection: 'column', width: '200px', padding: '24px', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.08)' }}>
+                  <span style={{ fontSize: '16px', color: '#64748b', fontWeight: 700, marginBottom: '8px', textTransform: 'uppercase' }}>Disk</span>
+                  <span style={{ fontSize: '32px', color: 'white', fontWeight: 800 }}>{disk}</span>
                 </div>
               </div>
             )}
 
-            {/* Reviews Section */}
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: '20px',
-              }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: 'rgba(34, 197, 94, 0.15)',
-                  border: '1px solid rgba(34, 197, 94, 0.3)',
-                  padding: '12px 24px',
-                  borderRadius: '12px',
-                }}
-              >
-                <div style={{ display: 'flex', fontSize: '32px', fontWeight: 800, color: '#4ade80', marginRight: '12px' }}>
-                  <span>{rating}%</span>
-                </div>
-                <div style={{ display: 'flex', fontSize: '18px', color: '#4ade80', fontWeight: 600 }}>
-                  <span>Positive Reviews</span>
-                </div>
+            {/* Rating Badge */}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+              <div style={{ display: 'flex', padding: '12px 24px', background: 'linear-gradient(90deg, #22c55e 0%, #16a34a 100%)', borderRadius: '16px', color: 'white', fontSize: '36px', fontWeight: 900, boxShadow: '0 10px 20px rgba(34, 197, 94, 0.2)' }}>
+                <span>{rating}%</span>
               </div>
-              <div style={{ display: 'flex', fontSize: '18px', color: '#64748b' }}>
-                <span>Based on {totalReviews} community reviews</span>
-              </div>
+              <span style={{ fontSize: '16px', color: '#64748b', marginTop: '12px', fontWeight: 600 }}>{totalReviews} community reviews</span>
             </div>
-          </div>
-
-          {/* Right Side: Logo */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginLeft: '40px',
-            }}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={logoUrl}
-              alt="FreeHosts Logo"
-              width={320}
-              height={320}
-              style={{
-                display: 'flex',
-                filter: 'drop-shadow(0 0 30px rgba(99, 102, 241, 0.3))',
-              }}
-            />
           </div>
         </div>
       ),

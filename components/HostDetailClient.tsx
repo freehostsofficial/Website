@@ -245,7 +245,7 @@ export default function HostDetailClient({ host, related = [] }: HostDetailClien
             <div className="related-hosts-section">
               <h3 className="section-title">Similar Hosting Providers</h3>
               <div className="related-hosts-grid">
-                {related.map(r => {
+                {related.map((r, idx) => {
                   const rStatusClass = r.status && r.status.toLowerCase() === 'online' ? 'online' : 'closed'
                   const rRating = (r.approvals + r.disapprovals) > 0 
                     ? Math.round((r.approvals / (r.approvals + r.disapprovals)) * 100) 
@@ -259,6 +259,7 @@ export default function HostDetailClient({ host, related = [] }: HostDetailClien
                   
                   return (
                     <Link key={r.id} href={`/hosts/${slugify(r.name)}`} className="related-host-card">
+                      {idx === 0 && <div className="recommended-badge">Recommended</div>}
                       <div className="related-host-icon">{r.name.charAt(0).toUpperCase()}</div>
                       <div className="related-host-info">
                         <div className="related-host-name-row">
@@ -269,42 +270,42 @@ export default function HostDetailClient({ host, related = [] }: HostDetailClien
                         </div>
                         
                         {isDomainHost && extractedDomains.length > 0 ? (
-                          <div className="related-host-meta" style={{ gap: '2px' }}>
-                            <div className="related-host-spec" style={{ color: 'var(--accent-2)', fontWeight: '600', marginBottom: '2px' }}>
+                          <div className="related-host-meta">
+                            <div className="related-host-spec" style={{ color: 'var(--accent-2)', fontWeight: '700', marginBottom: '2px' }}>
                               <LinkIcon size={12} aria-hidden="true" />
-                              <span>Available Domains:</span>
+                              <span>Available Extensions:</span>
                             </div>
                             {extractedDomains.map(domain => (
-                              <div key={domain} className="related-host-spec" style={{ fontSize: '10px', paddingLeft: '18px' }}>
-                                {domain}
+                              <div key={domain} className="related-host-spec" style={{ fontSize: '11px', opacity: 0.9 }}>
+                                • {domain}
                               </div>
                             ))}
                           </div>
                         ) : (
                           <div className="related-host-meta">
                             <div className="related-host-spec">
-                              <Cpu size={12} aria-hidden="true" />
+                              <Cpu size={14} aria-hidden="true" />
                               <span>{r.cpu || 'Unknown'}</span>
                             </div>
                             <div className="related-host-spec">
-                              <MemoryStick size={12} aria-hidden="true" />
+                              <MemoryStick size={14} aria-hidden="true" />
                               <span>{r.ramMB ? formatSize(r.ramMB) : r.ram || 'Free'}</span>
                             </div>
                             <div className="related-host-spec">
-                              <HardDrive size={12} aria-hidden="true" />
+                              <HardDrive size={14} aria-hidden="true" />
                               <span>{r.diskMB ? formatSize(r.diskMB) : r.disk || 'Unknown'}</span>
                             </div>
                           </div>
                         )}
 
                         <div className="related-host-targets">
-                          {r.targets?.slice(0, 2).map(t => (
-                            <span key={t} className="target-badge" style={{ fontSize: '9px', padding: '1px 5px' }}>
+                          {r.targets?.slice(0, 3).map(t => (
+                            <span key={t} className="target-badge" style={{ fontSize: '10px', padding: '2px 8px' }}>
                               {t.split(',')[0]}
                             </span>
                           ))}
                           {rRating !== null && (
-                            <span className="rating-badge" style={{ marginLeft: 'auto', fontSize: '10px', color: 'var(--accent-2)', fontWeight: '700' }}>
+                            <span className="rating-badge" style={{ marginLeft: 'auto', fontSize: '11px', color: 'var(--accent-2)', fontWeight: '800' }}>
                               {rRating}%
                             </span>
                           )}
