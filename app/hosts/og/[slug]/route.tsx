@@ -12,7 +12,7 @@ export async function GET(req: NextRequest, { params }: Props) {
   try {
     const { slug } = await params;
     let host;
-    
+
     if (/^\d+$/.test(slug)) {
       host = await fetchHostById(slug);
     } else {
@@ -28,10 +28,10 @@ export async function GET(req: NextRequest, { params }: Props) {
     const cpu = host.cpu || 'Unknown';
     const ram = host.ram || 'Unknown';
     const disk = host.disk || 'Unknown';
-    const targets = host.targets && host.targets.length > 0 
-      ? host.targets.join(', ') 
+    const targets = host.targets && host.targets.length > 0
+      ? host.targets.join(', ')
       : 'Websites, Bots, Apps';
-    
+
     const totalReviews = (host.approvals || 0) + (host.disapprovals || 0);
     const rating = totalReviews > 0 ? Math.round(((host.approvals || 0) / totalReviews) * 100) : 0;
 
@@ -50,7 +50,7 @@ export async function GET(req: NextRequest, { params }: Props) {
             display: 'flex',
             flexDirection: 'column',
             backgroundColor: '#050a18',
-            padding: '60px 80px',
+            padding: '40px 50px',
             position: 'relative',
             overflow: 'hidden',
           }}
@@ -77,7 +77,7 @@ export async function GET(req: NextRequest, { params }: Props) {
           </div>
 
           {/* Targets Pills */}
-          <div style={{ display: 'flex', gap: '12px', marginBottom: '60px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '12px', marginBottom: '40px', flexWrap: 'wrap' }}>
             {host.targets?.slice(0, 5).map(t => (
               <div key={t} style={{ display: 'flex', padding: '8px 16px', backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '99px', border: '1px solid rgba(255,255,255,0.1)', color: '#94a3b8', fontSize: '18px', fontWeight: 600 }}>
                 {t}
@@ -94,18 +94,18 @@ export async function GET(req: NextRequest, { params }: Props) {
                 .filter(l => l.includes('.') && !l.includes(':') && !l.toLowerCase().includes('available domains') && !l.toLowerCase().includes('available extensions'))
               const extractedDomains = allExtractedDomains.slice(0, 8)
               const hasMoreDomains = allExtractedDomains.length > 8
-              
+
               if (host.targets?.some(t => t.toLowerCase().includes('domain')) && extractedDomains.length > 0) {
                 return (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                     <div style={{ display: 'flex', fontSize: '20px', fontWeight: 700, color: '#06b6d4', textTransform: 'uppercase', letterSpacing: '1px' }}>
                       <span>Available Extensions</span>
                     </div>
-                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap', maxWidth: '800px' }}>
+                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap', maxWidth: '900px' }}>
                       {extractedDomains.map(domain => {
                         const cleanDomain = domain.replace(/^[-\s•*]+/, '');
                         return (
-                          <div key={domain} style={{ display: 'flex', padding: '12px 20px', background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%)', border: '1px solid rgba(99, 102, 241, 0.2)', borderRadius: '16px', color: '#818cf8', fontSize: '24px', fontWeight: 800, marginBottom: '8px' }}>
+                          <div key={domain} style={{ display: 'flex', padding: '8px 14px', background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%)', border: '1px solid rgba(99, 102, 241, 0.2)', borderRadius: '12px', color: '#818cf8', fontSize: '20px', fontWeight: 700, marginBottom: '6px' }}>
                             {cleanDomain}
                           </div>
                         );
@@ -158,7 +158,7 @@ export async function GET(req: NextRequest, { params }: Props) {
       ),
       {
         width: 1200,
-        height: 630,
+        height: 675,
       }
     );
   } catch (e: unknown) {
