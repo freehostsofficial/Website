@@ -1,5 +1,6 @@
 'use client';
 
+import React, { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { useConsent } from '@/contexts/ConsentContext';
 import { ShieldCheck, Lock, ChevronRight, X, FileText, AlertTriangle } from 'lucide-react';
@@ -7,6 +8,62 @@ import { ShieldCheck, Lock, ChevronRight, X, FileText, AlertTriangle } from 'luc
 export default function GdprConsentBanner() {
   const { acceptConsent, declineConsent, consentState } = useConsent();
   const pathname = usePathname();
+
+  // Skip showing for crawlers/search engines
+  const isCrawler = React.useMemo(() => {
+    if (typeof navigator === 'undefined') return false;
+    const ua = navigator.userAgent.toLowerCase();
+    return ua.includes('googlebot') || ua.includes('bingbot') || ua.includes('yandexbot') || 
+           ua.includes('duckduckbot') || ua.includes('baiduspider') || ua.includes('slackbot') ||
+           ua.includes('discordbot') || ua.includes('twitterbot') || ua.includes('telegrambot') ||
+           ua.includes('anthropic-ai') || ua.includes('claude') || ua.includes('gptbot') ||
+           ua.includes('chatgpt') || ua.includes('bot') || ua.includes('spider') || ua.includes('crawl');
+  }, []);
+
+  if (isCrawler) return null;
+
+  // Anti tampering protection
+  useEffect(() => {
+    const protectElements = () => {
+      const banner = document.querySelector<HTMLElement>('.gdpr-banner-container');
+      const backdrop = document.querySelector<HTMLElement>('.gdpr-backdrop');
+
+      if (banner && backdrop) {
+        // Force banner to always be topmost
+        banner.style.setProperty('z-index', '999999999', 'important');
+        banner.style.setProperty('display', 'flex', 'important');
+        banner.style.setProperty('visibility', 'visible', 'important');
+        banner.style.setProperty('opacity', '1', 'important');
+        banner.style.setProperty('pointer-events', 'auto', 'important');
+        banner.style.setProperty('position', 'fixed', 'important');
+
+        backdrop.style.setProperty('z-index', '999999998', 'important');
+        backdrop.style.setProperty('display', 'block', 'important');
+        backdrop.style.setProperty('visibility', 'visible', 'important');
+        backdrop.style.setProperty('opacity', '1', 'important');
+        backdrop.style.setProperty('pointer-events', 'auto', 'important');
+        backdrop.style.setProperty('position', 'fixed', 'important');
+        backdrop.style.setProperty('inset', '0', 'important');
+      }
+    };
+
+    // Run immediately and on any DOM changes
+    protectElements();
+    const observer = new MutationObserver(protectElements);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      subtree: true,
+      attributeFilter: ['style', 'class', 'hidden']
+    });
+
+    // Also check periodically in case observer fails
+    const interval = setInterval(protectElements, 100);
+
+    return () => {
+      observer.disconnect();
+      clearInterval(interval);
+    };
+  }, []);
 
   // Never show on legal pages — let the user read before deciding
   if (pathname === '/tos' || pathname === '/privacy-policy') return null;

@@ -16,6 +16,7 @@ import { ComparisonProvider } from "../contexts/ComparisonContext";
 import { FavoritesProvider } from "../contexts/FavoritesContext";
 import GdprConsentBanner from "../components/GdprConsentBanner";
 import ComparisonPanel from "../components/ComparisonPanel";
+import ConsentGate from "../components/ConsentGate";
 import {
   BookOpen,
   ChevronDown,
@@ -355,7 +356,7 @@ export default function RootLayout({
               <GdprConsentBanner />
               <ComparisonPanel />
 
-              {children}
+              <ConsentGate>{children}</ConsentGate>
 
               <footer className="site-footer">
                 <div className="wrap footer-content">
