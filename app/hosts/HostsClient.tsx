@@ -71,6 +71,7 @@ function CustomDropdown({ id, value, options, placeholder, onChange }: CustomDro
         onClick={() => setOpen(o => !o)}
         aria-haspopup="listbox"
         aria-expanded={open}
+        aria-label={selected ? `${placeholder}: ${selected.label}` : placeholder}
       >
         <span className={selected ? 'filter-dropdown-value' : 'filter-dropdown-placeholder'}>
           {selected ? selected.label : placeholder}
@@ -165,7 +166,7 @@ function HostsLoading() {
             </div>
             <div className="hero-inner">
               <div className="hero-left">
-                <h1 id="hero-title">Freee Hosting Directory</h1>
+                <h1 id="hero-title">Free Hosting Directory</h1>
                 <p className="lead">Discover and compare the best free hosting providers for your projects.</p>
               </div>
             </div>
@@ -190,7 +191,6 @@ function HostsContent({ initialHosts }: { initialHosts: Host[] }) {
   const FILTERS_KEY = 'hosts_filters'
   const PAGE_KEY = 'hosts_page'
 
-  // Initialize from URL params only — safe for SSR, no sessionStorage on server.
   // sessionStorage overrides are applied in a useEffect after hydration.
   const [currentFilters, setCurrentFilters] = useState({
     search: searchParams.get('search') || '',
@@ -522,6 +522,7 @@ function HostsContent({ initialHosts }: { initialHosts: Host[] }) {
                   placeholder="Search for a host..."
                   value={currentFilters.search}
                   onChange={(e) => handleFilterChange('search', e.target.value)}
+                  aria-label="Search hosting providers"
                 />
               </div>
               <CustomDropdown

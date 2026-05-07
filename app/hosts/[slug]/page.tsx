@@ -19,11 +19,18 @@ export async function generateMetadata({ params }: Props) {
   const typeText = host.type && host.type.toLowerCase().includes('trusted') ? 'Trusted & Free' : host.type || 'Free'
   let description = `Learn about ${host.name}, a ${typeText.toLowerCase()} hosting provider. ${specsText} Read user reviews and compare options on FreeHosts.`
   if (description.length > 160) description = description.substring(0, 157) + '...'
+  const totalReviews = (host.approvals || 0) + (host.disapprovals || 0)
+  const rating = totalReviews > 0 ? Math.round(((host.approvals || 0) / totalReviews) * 100) : 0
+  
   const site = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://freehosts.space').replace(/\/$/, '')
   const hostUrl = `${site}/hosts/${slugify(host.name)}`
-  const ogImageUrl = host.image ?? `${site}/Src/Images/social-preview.png`
+  
+  // Construct dynamic OG image URL
+  const ogImageUrl = `${site}/hosts/og/${slug}`
+
   const title = `${host.name} - Free Hosting Provider Details | FreeHosts`
   const keywords = [host.name, 'free hosting', 'free hosts', ...(host.targets ?? [])].filter(Boolean)
+  
   return {
     title, description,
     alternates: { canonical: hostUrl },
@@ -31,8 +38,23 @@ export async function generateMetadata({ params }: Props) {
     authors: [{ name: 'FreeHosts', url: site }],
     metadataBase: new URL(site),
     robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large" as const, "max-snippet": -1 } },
-    openGraph: { title, description, url: hostUrl, siteName: 'FreeHosts', type: 'website', locale: 'en_US', images: [{ url: ogImageUrl, width: 1280, height: 720, alt: `${host.name} — Free hosting provider on FreeHosts` }] },
-    twitter: { card: 'summary_large_image', title, description, images: [{ url: ogImageUrl, alt: `${host.name} — Free hosting provider on FreeHosts` }], site: '@freehosts_', creator: '@freehosts_' }
+    openGraph: { 
+      title, 
+      description, 
+      url: hostUrl, 
+      siteName: 'FreeHosts', 
+      type: 'website', 
+      locale: 'en_US', 
+      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: `${host.name} — Free hosting provider on FreeHosts` }] 
+    },
+    twitter: { 
+      card: 'summary_large_image', 
+      title, 
+      description, 
+      images: [{ url: ogImageUrl, alt: `${host.name} — Free hosting provider on FreeHosts` }], 
+      site: '@freehosts_', 
+      creator: '@freehosts_' 
+    }
   }
 }
 

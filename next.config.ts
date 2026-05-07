@@ -23,7 +23,7 @@ const nextConfig = {
               // Images: self + data URIs (favicons/inline) + any https image
               "img-src 'self' data: https:",
               // Fetch/XHR: self + API + Matomo + Discord + Cloudflare
-              "connect-src 'self' https://matomo.codelabworks.is-a.dev https://*.discord.com https://*.cloudflareinsights.com",
+              "connect-src 'self' https://matomo.codelabworks.is-a.dev https://discord.com https://*.discord.com https://*.cloudflareinsights.com",
               // Frames: none
               "frame-src 'none'",
               // Objects: none

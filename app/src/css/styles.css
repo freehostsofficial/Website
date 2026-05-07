@@ -1085,12 +1085,14 @@ i[data-lucide] {
 }
 
 .typed-wrap {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: var(--space-sm);
     margin-left: 0;
     margin-top: var(--space-sm);
     font-weight: 600;
+    min-height: 1.5em; /* Prevent layout shift when text changes */
+    vertical-align: middle;
 }
 
 .typed {
@@ -1762,8 +1764,8 @@ i[data-lucide] {
 
 /* Constrain FontAwesome SVG icons inside social link buttons */
 .social-links a svg {
-    width: 18px;
-    height: 18px;
+    width: 22px;
+    height: 22px;
     flex-shrink: 0;
 }
 
@@ -1820,8 +1822,8 @@ i[data-lucide] {
 
 /* Constrain FontAwesome SVG icons inside footer list links */
 .footer-list a svg {
-    width: 14px;
-    height: 14px;
+    width: 18px;
+    height: 18px;
     flex-shrink: 0;
 }
 
