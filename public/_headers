@@ -1,22 +1,10 @@
-/*
-  X-Content-Type-Options: nosniff
-  X-Frame-Options: SAMEORIGIN
-  Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: camera=(), microphone=(), geolocation=()
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://matomo.codelabworks.is-a.dev https://*.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://matomo.codelabworks.is-a.dev https://discord.com https://*.discord.com https://*.cloudflareinsights.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'
-  Cache-Control: public, max-age=86400, s-maxage=604800, stale-while-revalidate=2592000
-
-# =========================
-# REDIRECT PAGES — never cache (security checkpoint)
-# =========================
-
 # =========================
 # NEXT.JS HASHED ASSETS (immutable — filename changes on every build)
 # =========================
 /_next/static/*
   Cache-Control: public, max-age=31536000, immutable
 
-# Next.js image optimisation endpoint — vary on Accept for format negotiation
+# Next.js image optimisation endpoint
 /_next/image*
   Cache-Control: public, max-age=86400, s-maxage=604800, stale-while-revalidate=604800
   Vary: Accept
@@ -30,43 +18,8 @@
   Cache-Control: public, max-age=604800, stale-while-revalidate=2592000
 
 # =========================
-# HOMEPAGE
-# =========================
-/
-  Cache-Control: max-age=86400, s-maxage=604800, stale-while-revalidate=2592000
-
-# =========================
-# STATIC / LEGAL / INFO PAGES
-# =========================
-/about
-  Cache-Control: public, max-age=86400, s-maxage=604800, stale-while-revalidate=2592000
-/faq
-  Cache-Control: public, max-age=86400, s-maxage=604800, stale-while-revalidate=2592000
-/tos
-  Cache-Control: public, max-age=86400, s-maxage=604800, stale-while-revalidate=2592000
-/privacy-policy
-  Cache-Control: public, max-age=86400, s-maxage=604800, stale-while-revalidate=2592000
-/submission-rules
-  Cache-Control: public, max-age=86400, s-maxage=604800, stale-while-revalidate=2592000
-/server-rules
-  Cache-Control: public, max-age=86400, s-maxage=604800, stale-while-revalidate=2592000
-/staff
-  Cache-Control: public, max-age=86400, s-maxage=604800, stale-while-revalidate=2592000
-
-# =========================
-# SUBMISSION PAGES
-# =========================
-/submit-host
-  Cache-Control: public, max-age=86400, s-maxage=604800, stale-while-revalidate=2592000
-/submit-layout
-  Cache-Control: public, max-age=86400, s-maxage=604800, stale-while-revalidate=2592000
-/other-free-hosts
-  Cache-Control: public, max-age=86400, s-maxage=604800, stale-while-revalidate=2592000
-
-# =========================
-# LISTING / DIRECTORY PAGES
+# SPECIAL OVERRIDES
 # =========================
 /hosts
   Cache-Control: public, max-age=1800, s-maxage=43200, stale-while-revalidate=604800
-/hosts/*
-  Cache-Control: public, max-age=86400, s-maxage=604800, stale-while-revalidate=2592000
+
