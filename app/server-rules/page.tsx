@@ -17,19 +17,19 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
   },
   alternates: {
-    canonical: "https://freehosts.space/server-rules",
+    canonical: process.env.APP_URL + "/server-rules",
   },
   openGraph: {
     locale: "en_US",
     siteName: "FreeHosts",
     type: "website",
-    url: "https://freehosts.space/server-rules",
+    url: process.env.APP_URL + "/server-rules",
     title: "Discord Server Rules & Community Guidelines - FreeHosts",
     description:
       "Our official server rules ensure a positive experience for everyone in the FreeHosts community. Review them here.",
     images: [
       {
-        url: "https://freehosts.space/Src/Images/banner.png",
+        url: process.env.APP_URL + "/Src/Images/banner.png",
         width: 1280,
         height: 720,
         alt: "FreeHosts - Server Rules",
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     title: "Discord Server Rules & Community Guidelines - FreeHosts",
     description:
       "All members must follow our community guidelines to remain part of the FreeHosts network.",
-    images: ["https://freehosts.space/Src/Images/banner.png"],
+    images: [process.env.APP_URL + "/Src/Images/banner.png"],
     site: "@freehosts_",
     creator: "@freehosts_",
   },
@@ -50,10 +50,10 @@ export const metadata: Metadata = {
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "WebPage",
-  "@id": "https://freehosts.space/server-rules#webpage",
-  url: "https://freehosts.space/server-rules",
+  "@id": process.env.APP_URL + "/server-rules#webpage",
+  url: process.env.APP_URL + "/server-rules",
   name: "Discord Server Rules & Community Guidelines - FreeHosts",
-  isPartOf: { "@id": "https://freehosts.space/#website" },
+  isPartOf: { "@id": process.env.APP_URL + "/#website" },
   inLanguage: "en",
   description:
     "Official Discord server rules and community guidelines for the FreeHosts community.",

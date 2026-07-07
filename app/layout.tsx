@@ -54,7 +54,7 @@ import "./src/css/styles.css";
 import "./src/css/hosts.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://freehosts.space"),
+  metadataBase: new URL(process.env.APP_URL),
   title: {
     default: "FreeHosts - Free Hosting for Anything You Build",
     template: "%s | FreeHosts",
@@ -73,7 +73,7 @@ export const metadata: Metadata = {
     "free nodejs hosting",
     "free database hosting",
   ],
-  authors: [{ name: "FreeHosts", url: "https://freehosts.space" }],
+  authors: [{ name: "FreeHosts", url: process.env.APP_URL }],
   creator: "FreeHosts",
   publisher: "FreeHosts",
   robots: {
@@ -91,7 +91,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     siteName: "FreeHosts",
     type: "website",
-    url: "https://freehosts.space/",
+    url: process.env.APP_URL,
     title: "FreeHosts - Discover Reliable Free Hosting for Websites, Bots & Apps",
     description:
       "Find reliable free hosting for websites, bots, apps, and Discord communities. Join our community directory to discover no-cost hosting solutions.",
@@ -215,10 +215,10 @@ export default function RootLayout({
           rel="sitemap"
           type="application/xml"
           title="Sitemap"
-          href="https://freehosts.space/sitemap.xml"
+          href={process.env.APP_URL + "/sitemap.xml"}
         />
-        <link rel="alternate" href="https://freehosts.space" hrefLang="x-default" />
-        <link rel="alternate" href="https://freehosts.space" hrefLang="en" />
+        <link rel="alternate" href={process.env.APP_URL} hrefLang="x-default" />
+        <link rel="alternate" href={process.env.APP_URL} hrefLang="en" />
       </head>
       <body>
         {/* Inline script: apply theme before first paint to avoid flash */}
@@ -290,7 +290,7 @@ export default function RootLayout({
                     </button>
                     <a
                       className="icon-btn"
-                      href="https://trustpilot.com/review/freehosts.space"
+                      href={process.env.TRUST_PILOT}
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label="View our Trustpilot reviews"
@@ -410,7 +410,7 @@ export default function RootLayout({
                       <li><Link href="/about">About Us</Link></li>
                       <li><Link href="/staff">Our Team</Link></li>
                       <li><Link href="/faq">FAQ</Link></li>
-                      <li><a href="https://trustpilot.com/review/freehosts.space" target="_blank" rel="noopener noreferrer">Trustpilot</a></li>
+                      <li><a href={process.env.TRUST_PILOT} target="_blank" rel="noopener noreferrer">Trustpilot</a></li>
                     </ul>
                   </div>
 
@@ -436,8 +436,8 @@ export default function RootLayout({
                     <h3 className="footer-section-title">Contact</h3>
                     <ul className="footer-list">
                       <li>
-                        <a href="mailto:support@freehosts.space" aria-label="Send an email to support">
-                          <Mail size={16} aria-hidden="true" /> support@freehosts.space
+                        <a href={"mailto:support@" + process.env.EMAIL_DOMAIN} aria-label="Send an email to support">
+                          <Mail size={16} aria-hidden="true" /> support@{process.env.EMAIL_DOMAIN}
                         </a>
                       </li>
                       <li>
@@ -463,7 +463,7 @@ export default function RootLayout({
                     <span className="separator">•</span>
                     <Link href="/privacy-policy">Privacy</Link>
                     <span className="separator">•</span>
-                    <a href="mailto:support@freehosts.space">Contact</a>
+                    <a href={"mailto:support@" + process.env.EMAIL_DOMAIN}>Contact</a>
                   </div>
                 </div>
               </footer>

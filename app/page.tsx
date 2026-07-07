@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     "freehosts",
   ],
   alternates: {
-    canonical: "https://freehosts.space/",
+    canonical: process.env.APP_URL,
   },
 };
 
@@ -26,8 +26,8 @@ const structuredData = {
   "@graph": [
     {
       "@type": "WebSite",
-      "@id": "https://freehosts.space/#website",
-      url: "https://freehosts.space/",
+      "@id": process.env.APP_URL + "/#website",
+      url: process.env.APP_URL,
       name: "FreeHosts",
       description: "A community-curated directory of free hosting providers for websites, bots, and apps.",
       inLanguage: "en",
@@ -35,19 +35,19 @@ const structuredData = {
         "@type": "SearchAction",
         target: {
           "@type": "EntryPoint",
-          urlTemplate: "https://freehosts.space/hosts?search={search_term_string}",
+          urlTemplate: process.env.APP_URL + "/hosts?search={search_term_string}",
         },
         "query-input": "required name=search_term_string",
       },
     },
     {
       "@type": "Organization",
-      "@id": "https://freehosts.space/#organization",
+      "@id": process.env.APP_URL + "/#organization",
       name: "FreeHosts",
-      url: "https://freehosts.space/",
+      url: process.env.APP_URL,
       logo: {
         "@type": "ImageObject",
-        url: "https://freehosts.space/Src/icons/icon.png",
+        url: process.env.APP_URL + "/Src/icons/icon.png",
         width: 512,
         height: 512,
       },
@@ -61,18 +61,18 @@ const structuredData = {
         "FreeHosts is a community-curated directory of free hosting providers and services.",
       contactPoint: {
         "@type": "ContactPoint",
-        email: "support@freehosts.space",
+        email: "support@" + process.env.EMAIL_DOMAIN,
         contactType: "customer support",
         availableLanguage: "English",
       },
     },
     {
       "@type": "WebPage",
-      "@id": "https://freehosts.space/#homepage",
-      url: "https://freehosts.space/",
+      "@id": process.env.APP_URL + "/#homepage",
+      url: process.env.APP_URL,
       name: "FreeHosts - Free Hosting for Anything You Build",
-      isPartOf: { "@id": "https://freehosts.space/#website" },
-      about: { "@id": "https://freehosts.space/#organization" },
+      isPartOf: { "@id": process.env.APP_URL + "/#website" },
+      about: { "@id": process.env.APP_URL + "/#organization" },
       inLanguage: "en",
       description:
         "FreeHosts helps developers, students, and makers discover and compare reliable free hosting for websites, bots, and more.",
@@ -83,7 +83,7 @@ const structuredData = {
             "@type": "ListItem",
             position: 1,
             name: "Home",
-            item: "https://freehosts.space/",
+            item: process.env.APP_URL,
           },
         ],
       },

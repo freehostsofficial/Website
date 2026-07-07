@@ -18,19 +18,19 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
   },
   alternates: {
-    canonical: "https://freehosts.space/staff",
+    canonical: process.env.APP_URL + "/staff",
   },
   openGraph: {
     locale: "en_US",
     siteName: "FreeHosts",
     type: "website",
-    url: "https://freehosts.space/staff",
+    url: process.env.APP_URL + "/staff",
     title: "Meet the FreeHosts Team - Staff & Contributors",
     description:
       "Meet the volunteers behind FreeHosts — owners, developers, moderators, and host publishers who keep this free hosting directory running.",
     images: [
       {
-        url: "https://freehosts.space/Src/Images/banner.png",
+        url: process.env.APP_URL + "/Src/Images/banner.png",
         width: 1280,
         height: 720,
         alt: "FreeHosts - Meet the Team",
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
       "Meet the volunteers behind FreeHosts — owners, developers, moderators, and host publishers who keep this free hosting directory running.",
     images: [
       {
-        url: "https://freehosts.space/Src/Images/banner.png",
+        url: process.env.APP_URL + "/Src/Images/banner.png",
         alt: "FreeHosts - Meet the Team",
       },
     ],
@@ -57,10 +57,10 @@ export default function StaffPage() {
   const webPageSchema = {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "@id": "https://freehosts.space/staff#webpage",
-    url: "https://freehosts.space/staff",
+    "@id": process.env.APP_URL + "/staff#webpage",
+    url: process.env.APP_URL + "/staff",
     name: "Meet the FreeHosts Team - Staff & Contributors",
-    isPartOf: { "@id": "https://freehosts.space/#website" },
+    isPartOf: { "@id": process.env.APP_URL + "/#website" },
     inLanguage: "en",
     description:
       "Meet the volunteers behind FreeHosts — owners, developers, moderators, and host publishers.",
@@ -71,7 +71,7 @@ export default function StaffPage() {
     "@type": "ItemList",
     name: "FreeHosts Team Members",
     description: "The staff and contributors who run the FreeHosts community directory.",
-    url: "https://freehosts.space/staff",
+    url: process.env.APP_URL + "/staff",
     numberOfItems: Object.keys(staffData).length,
     itemListElement: Object.entries(staffData).map(([, member], index) => ({
       "@type": "ListItem",
@@ -83,7 +83,7 @@ export default function StaffPage() {
           ? member.roles[0]
           : member.roles,
         worksFor: {
-          "@id": "https://freehosts.space/#organization",
+          "@id": process.env.APP_URL + "/#organization",
         },
         ...(member.links?.github
           ? { url: member.links.github }

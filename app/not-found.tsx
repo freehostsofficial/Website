@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "404 - Page Not Found | FreeHosts",
     description: "The page you were looking for could not be found.",
-    images: [{ url: "https://freehosts.space/Src/Images/banner.png", width: 1280, height: 720, alt: "FreeHosts - Discover Free Hosting" }],
+    images: [{ url: process.env.APP_URL + "/Src/Images/banner.png", width: 1280, height: 720, alt: "FreeHosts - Discover Free Hosting" }],
   },
 };
 
@@ -29,7 +29,7 @@ export default function NotFound() {
           <div className="error-actions">
             <Link className="btn primary" href="/"><Home size={14} aria-hidden="true" /> Back to Home</Link>
             <Link className="btn" href="/hosts"><Server size={14} aria-hidden="true" /> Browse Hosts</Link>
-            <a className="btn ghost" href="mailto:support@freehosts.space"><Mail size={14} aria-hidden="true" /> Report Issue</a>
+            <a className="btn ghost" href={"mailto:support@" + process.env.EMAIL_DOMAIN} ><Mail size={14} aria-hidden="true" /> Report Issue</a>
             <a className="btn" href="https://discord.gg/QbeZ3b5CQd" target="_blank" rel="noopener noreferrer">
               <FontAwesomeIcon icon={faDiscord} aria-hidden="true" /> Join Discord
             </a>

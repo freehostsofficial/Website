@@ -129,7 +129,7 @@ export default function FaqClient() {
             <FontAwesomeIcon icon={faDiscord} aria-hidden="true" />
             Join Discord
           </a>
-          <a href="mailto:support@freehosts.space" className="faq-cta-btn secondary">
+          <a href={"mailto:support@" + process.env.EMAIL_DOMAIN} className="faq-cta-btn secondary">
             <Mail size={14} aria-hidden="true" />
             Email Us
           </a>

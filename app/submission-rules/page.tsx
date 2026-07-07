@@ -17,19 +17,19 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
   },
   alternates: {
-    canonical: "https://freehosts.space/submission-rules",
+    canonical: process.env.APP_URL + "/submission-rules",
   },
   openGraph: {
     locale: "en_US",
     siteName: "FreeHosts",
     type: "website",
-    url: "https://freehosts.space/submission-rules",
+    url: process.env.APP_URL + "/submission-rules",
     title: "Host Submission Rules & Guidelines - FreeHosts",
     description:
       "Read the official submission rules before listing your hosting service on FreeHosts.",
     images: [
       {
-        url: "https://freehosts.space/Src/Images/banner.png",
+        url: process.env.APP_URL + "/Src/Images/banner.png",
         width: 1280,
         height: 720,
         alt: "FreeHosts - Submission Rules",
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     title: "Host Submission Rules & Guidelines - FreeHosts",
     description:
       "Read the official submission rules before listing your hosting service on FreeHosts.",
-    images: ["https://freehosts.space/Src/Images/banner.png"],
+    images: [process.env.APP_URL + "/Src/Images/banner.png"],
     site: "@freehosts_",
     creator: "@freehosts_",
   },
@@ -50,10 +50,10 @@ export const metadata: Metadata = {
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "WebPage",
-  "@id": "https://freehosts.space/submission-rules#webpage",
-  url: "https://freehosts.space/submission-rules",
+  "@id": process.env.APP_URL + "/submission-rules#webpage",
+  url: process.env.APP_URL + "/submission-rules",
   name: "Host Submission Rules & Guidelines - FreeHosts",
-  isPartOf: { "@id": "https://freehosts.space/#website" },
+  isPartOf: { "@id": process.env.APP_URL + "/#website" },
   inLanguage: "en",
   description:
     "Official rules and guidelines for submitting a hosting service to the FreeHosts directory.",

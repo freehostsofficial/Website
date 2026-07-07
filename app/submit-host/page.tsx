@@ -18,19 +18,19 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
   },
   alternates: {
-    canonical: "https://freehosts.space/submit-host",
+    canonical: process.env.APP_URL + "/submit-host",
   },
   openGraph: {
     locale: "en_US",
     siteName: "FreeHosts",
     type: "website",
-    url: "https://freehosts.space/submit-host",
+    url: process.env.APP_URL + "/submit-host",
     title: "Submit a Free Host - Get Listed on FreeHosts",
     description:
       "Join the community-curated directory of free hosting. Learn the submission process and get your host listed today.",
     images: [
       {
-        url: "https://freehosts.space/Src/Images/banner.png",
+        url: process.env.APP_URL + "/Src/Images/banner.png",
         width: 1280,
         height: 720,
         alt: "FreeHosts - Submit a Host",
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     title: "Submit a Free Host - Get Listed on FreeHosts",
     description:
       "Want to get your hosting service listed? Follow our guide and use our layout builder for a seamless submission experience.",
-    images: ["https://freehosts.space/Src/Images/banner.png"],
+    images: [process.env.APP_URL + "/Src/Images/banner.png"],
     site: "@freehosts_",
     creator: "@freehosts_",
   },
@@ -51,10 +51,10 @@ export const metadata: Metadata = {
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "WebPage",
-  "@id": "https://freehosts.space/submit-host#webpage",
-  url: "https://freehosts.space/submit-host",
+  "@id": process.env.APP_URL + "/submit-host#webpage",
+  url: process.env.APP_URL + "/submit-host",
   name: "Submit a Free Host - Get Listed on FreeHosts",
-  isPartOf: { "@id": "https://freehosts.space/#website" },
+  isPartOf: { "@id": process.env.APP_URL + "/#website" },
   inLanguage: "en",
   description:
     "Submit your free hosting service to the FreeHosts directory. Learn the process and get listed.",
