@@ -54,7 +54,7 @@ export default function ConstructionPage({
             <Link className="btn" href="/hosts">
               <Server size={14} aria-hidden="true" /> Browse Hosts
             </Link>
-            <a className="btn ghost" href="mailto:support@freehosts.space">
+            <a className="btn ghost" href={"mailto:support@" + process.env.EMAIL_DOMAIN} >
               <Mail size={14} aria-hidden="true" /> Contact Us
             </a>
           </div>

@@ -12,19 +12,19 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
   },
   alternates: {
-    canonical: "https://freehosts.space/tos",
+    canonical: process.env.APP_URL + "/tos",
   },
   openGraph: {
     locale: "en_US",
     siteName: "FreeHosts",
     type: "website",
-    url: "https://freehosts.space/tos",
+    url: process.env.APP_URL + "/tos",
     title: "Terms of Service - FreeHosts",
     description:
       "Read the FreeHosts Terms of Service. Understand your rights and responsibilities when using our free hosting directory.",
     images: [
       {
-        url: "https://freehosts.space/Src/Images/banner.png",
+        url: process.env.APP_URL + "/Src/Images/banner.png",
         width: 1280,
         height: 720,
         alt: "FreeHosts - Terms of Service",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     title: "Terms of Service - FreeHosts",
     description:
       "Read the FreeHosts Terms of Service. Understand your rights and responsibilities when using our free hosting directory.",
-    images: ["https://freehosts.space/Src/Images/banner.png"],
+    images: [process.env.APP_URL + "/Src/Images/banner.png"],
     site: "@freehosts_",
     creator: "@freehosts_",
   },
@@ -45,10 +45,10 @@ export const metadata: Metadata = {
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "WebPage",
-  "@id": "https://freehosts.space/tos#webpage",
-  url: "https://freehosts.space/tos",
+  "@id": process.env.APP_URL + "/tos#webpage",
+  url: process.env.APP_URL + "/tos",
   name: "Terms of Service - FreeHosts",
-  isPartOf: { "@id": "https://freehosts.space/#website" },
+  isPartOf: { "@id": process.env.APP_URL + "/#website" },
   inLanguage: "en",
   description:
     "Read the FreeHosts Terms of Service. Understand your rights and responsibilities when using our free hosting directory.",

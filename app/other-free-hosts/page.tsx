@@ -11,9 +11,9 @@ export const metadata: Metadata = {
   description: "Discover other trusted platforms and directories that list free hosting services for websites, Minecraft servers, and applications. Curated by the FreeHosts community.",
   keywords: ["other free hosting platforms", "free hosting directories", "free minecraft hosting list", "hosting resource list"],
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 } },
-  alternates: { canonical: "https://freehosts.space/other-free-hosts" },
-  openGraph: { locale: "en_US", siteName: "FreeHosts", type: "website", url: "https://freehosts.space/other-free-hosts", title: "Other Free Hosting Platforms & Directories - FreeHosts", description: "Discover other trusted platforms and directories that list free hosting services for websites, Minecraft servers, and applications.", images: [{ url: "https://freehosts.space/Src/Images/banner.png", width: 1280, height: 720, alt: "FreeHosts - Other Free Hosting Platforms" }] },
-  twitter: { card: "summary_large_image", title: "Other Free Hosting Platforms & Directories - FreeHosts", description: "Discover other trusted platforms and directories that list free hosting services for websites, Minecraft servers, and applications.", images: [{ url: "https://freehosts.space/Src/Images/banner.png", alt: "FreeHosts - Other Free Hosting Platforms" }], site: "@freehosts_", creator: "@freehosts_" },
+  alternates: { canonical: process.env.APP_URL + "/other-free-hosts" },
+  openGraph: { locale: "en_US", siteName: "FreeHosts", type: "website", url: process.env.APP_URL + "/other-free-hosts", title: "Other Free Hosting Platforms & Directories - FreeHosts", description: "Discover other trusted platforms and directories that list free hosting services for websites, Minecraft servers, and applications.", images: [{ url: process.env.APP_URL + "/Src/Images/banner.png", width: 1280, height: 720, alt: "FreeHosts - Other Free Hosting Platforms" }] },
+  twitter: { card: "summary_large_image", title: "Other Free Hosting Platforms & Directories - FreeHosts", description: "Discover other trusted platforms and directories that list free hosting services for websites, Minecraft servers, and applications.", images: [{ url: process.env.APP_URL + "/Src/Images/banner.png", alt: "FreeHosts - Other Free Hosting Platforms" }], site: "@freehosts_", creator: "@freehosts_" },
 };
 
 type HostLink = { href: string; lucideIcon?: LucideIcon; faIcon?: IconDefinition; label: string };
@@ -49,9 +49,9 @@ const externalHosts: { initials?: string; image?: string; name: string; descript
 
 export default function OtherFreeHostsPage() {
   const structuredData = {
-    "@context": "https://schema.org", "@type": "WebPage", "@id": "https://freehosts.space/other-free-hosts#webpage",
-    url: "https://freehosts.space/other-free-hosts", name: "Other Free Hosting Platforms & Directories - FreeHosts",
-    isPartOf: { "@id": "https://freehosts.space/#website" }, inLanguage: "en",
+    "@context": "https://schema.org", "@type": "WebPage", "@id": process.env.APP_URL + "/other-free-hosts#webpage",
+    url: process.env.APP_URL + "/other-free-hosts", name: "Other Free Hosting Platforms & Directories - FreeHosts",
+    isPartOf: { "@id": process.env.APP_URL + "/#website" }, inLanguage: "en",
     description: "Discover other trusted platforms and directories that list free hosting services for websites, Minecraft servers, and applications.",
   };
 

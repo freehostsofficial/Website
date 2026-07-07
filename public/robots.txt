@@ -7,4 +7,4 @@ Disallow: /private/
 Disallow: /cgi-bin/
 Disallow: /hosts/*/redirect/*
 
-Sitemap: https://freehosts.space/sitemap.xml
+Sitemap: https://freehosts.eu/sitemap.xml

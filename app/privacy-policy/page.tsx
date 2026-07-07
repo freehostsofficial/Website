@@ -12,19 +12,19 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
   },
   alternates: {
-    canonical: "https://freehosts.space/privacy-policy",
+    canonical: process.env.APP_URL + "/privacy-policy",
   },
   openGraph: {
     locale: "en_US",
     siteName: "FreeHosts",
     type: "website",
-    url: "https://freehosts.space/privacy-policy",
+    url: process.env.APP_URL + "/privacy-policy",
     title: "Privacy Policy - FreeHosts",
     description:
       "Read the FreeHosts Privacy Policy. Learn how we collect, use, and protect your data.",
     images: [
       {
-        url: "https://freehosts.space/Src/Images/banner.png",
+        url: process.env.APP_URL + "/Src/Images/banner.png",
         width: 1280,
         height: 720,
         alt: "FreeHosts - Privacy Policy",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     title: "Privacy Policy - FreeHosts",
     description:
       "Read the FreeHosts Privacy Policy. Learn how we collect, use, and protect your data.",
-    images: ["https://freehosts.space/Src/Images/banner.png"],
+    images: [process.env.APP_URL + "/Src/Images/banner.png"],
     site: "@freehosts_",
     creator: "@freehosts_",
   },
@@ -45,10 +45,10 @@ export const metadata: Metadata = {
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "WebPage",
-  "@id": "https://freehosts.space/privacy-policy#webpage",
-  url: "https://freehosts.space/privacy-policy",
+  "@id": process.env.APP_URL + "/privacy-policy#webpage",
+  url: process.env.APP_URL + "/privacy-policy",
   name: "Privacy Policy - FreeHosts",
-  isPartOf: { "@id": "https://freehosts.space/#website" },
+  isPartOf: { "@id": process.env.APP_URL + "/#website" },
   inLanguage: "en",
   description:
     "Read the FreeHosts Privacy Policy. Learn how we collect, use, and protect your data.",

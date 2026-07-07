@@ -3,7 +3,7 @@ import { fetchHosts } from '../lib/cache'
 import { slugify } from '../lib/slugify'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://freehosts.space'
+  const baseUrl = process.env.APP_URL ?? 'https://freehosts.space';
   
   // Static routes
   const staticRoutes = [

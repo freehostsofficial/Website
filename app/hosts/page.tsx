@@ -23,18 +23,18 @@ export const metadata = {
     googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
   },
   alternates: {
-    canonical: 'https://freehosts.space/hosts',
+    canonical: process.env.APP_URL + '/hosts',
   },
   openGraph: {
     locale: 'en_US',
     siteName: 'FreeHosts',
     type: 'website',
-    url: 'https://freehosts.space/hosts',
+    url: process.env.APP_URL + '/hosts',
     title: 'Free Hosting Directory - Browse 100+ Providers | FreeHosts',
     description: 'Browse 100+ free hosting providers for websites, Discord bots, and apps. Filter by CPU, RAM, storage, language, and target.',
     images: [
       {
-        url: 'https://freehosts.space/Src/Images/banner.png',
+        url: process.env.APP_URL + '/Src/Images/banner.png',
         width: 1280,
         height: 720,
         alt: 'FreeHosts — Free Hosting Directory',
@@ -47,7 +47,7 @@ export const metadata = {
     description: 'Browse 100+ free hosting providers for websites, Discord bots, and apps. Filter by CPU, RAM, storage, language, and target.',
     images: [
       {
-        url: 'https://freehosts.space/Src/Images/banner.png',
+        url: process.env.APP_URL + '/Src/Images/banner.png',
         alt: 'FreeHosts — Free Hosting Directory',
       },
     ],
@@ -68,12 +68,12 @@ export default async function HostsPage() {
     '@type': 'ItemList',
     name: 'Free Hosting Directory',
     description: 'A curated directory of free hosting providers for websites, bots, and apps.',
-    url: 'https://freehosts.space/hosts',
+    url: process.env.APP_URL + '/hosts',
     numberOfItems: hosts.length,
     itemListElement: hosts.slice(0, 50).map((host, index) => ({
       '@type': 'ListItem',
       position: index + 1,
-      url: `https://freehosts.space/hosts/${slugify(host.name)}`,
+      url: `${process.env.APP_URL}/hosts/${slugify(host.name)}`,
       name: host.name,
     })),
   }
@@ -81,10 +81,10 @@ export default async function HostsPage() {
   const webPageSchema = {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
-    '@id': 'https://freehosts.space/hosts#webpage',
-    url: 'https://freehosts.space/hosts',
+    '@id': process.env.APP_URL + '/hosts#webpage',
+    url: process.env.APP_URL + '/hosts',
     name: 'Free Hosting Directory | FreeHosts',
-    isPartOf: { '@id': 'https://freehosts.space/#website' },
+    isPartOf: { '@id': process.env.APP_URL + '/#website' },
     inLanguage: 'en',
     description: 'Browse and compare free hosting providers for websites, bots, and apps.',
   }

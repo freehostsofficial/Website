@@ -30,19 +30,19 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
   },
   alternates: {
-    canonical: "https://freehosts.space/about",
+    canonical: process.env.APP_URL + "/about",
   },
   openGraph: {
     locale: "en_US",
     siteName: "FreeHosts",
     type: "website",
-    url: "https://freehosts.space/about",
+    url: process.env.APP_URL + "/about",
     title: "About FreeHosts - Our Mission, Team & Community",
     description:
       "A community-driven directory to discover, compare and review free hosting services for websites, bots, and apps.",
     images: [
       {
-        url: "https://freehosts.space/Src/Images/banner.png",
+        url: process.env.APP_URL + "/Src/Images/banner.png",
         width: 1280,
         height: 720,
         alt: "FreeHosts - Discover Free Hosting",
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
       "A community-driven directory to discover, compare and review free hosting services for websites, bots, and apps.",
     images: [
       {
-        url: "https://freehosts.space/Src/Images/banner.png",
+        url: process.env.APP_URL + "/Src/Images/banner.png",
         alt: "FreeHosts - Discover Free Hosting",
       },
     ],
@@ -70,12 +70,12 @@ const structuredData = {
   "@graph": [
     {
       "@type": "Organization",
-      "@id": "https://freehosts.space/#organization",
+      "@id": process.env.APP_URL + "/#organization",
       name: "FreeHosts",
-      url: "https://freehosts.space/",
+      url: process.env.APP_URL,
       logo: {
         "@type": "ImageObject",
-        url: "https://freehosts.space/Src/icons/icon.png",
+        url: process.env.APP_URL + "/Src/icons/icon.png",
         width: 512,
         height: 512,
       },
@@ -90,7 +90,7 @@ const structuredData = {
       contactPoint: [
         {
           "@type": "ContactPoint",
-          email: "support@freehosts.space",
+          email: "support@" + process.env.EMAIL_DOMAIN,
           contactType: "customer support",
           availableLanguage: "English",
         },
@@ -104,11 +104,11 @@ const structuredData = {
     },
     {
       "@type": "WebPage",
-      "@id": "https://freehosts.space/about#webpage",
-      url: "https://freehosts.space/about",
+      "@id": process.env.APP_URL + "/about#webpage",
+      url: process.env.APP_URL + "/about",
       name: "About FreeHosts - Our Mission, Team & Community",
-      isPartOf: { "@id": "https://freehosts.space/#website" },
-      about: { "@id": "https://freehosts.space/#organization" },
+      isPartOf: { "@id": process.env.APP_URL + "/#website" },
+      about: { "@id": process.env.APP_URL + "/#organization" },
       inLanguage: "en",
       description:
         "Learn about FreeHosts — a community-driven directory helping developers, students, and makers discover reliable free hosting.",
@@ -331,7 +331,7 @@ export default function AboutPage() {
                   For general inquiries, partnerships, or formal communications, reach
                   out via email.
                 </p>
-                <a href="mailto:support@freehosts.space" className="contact-btn">
+                <a href={"mailto:support@" + process.env.EMAIL_DOMAIN} className="contact-btn">
                   <Mail size={14} aria-hidden="true" />
                   Send Email
                 </a>

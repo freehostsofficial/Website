@@ -89,13 +89,13 @@ export const faqItems: FaqItem[] = [
     category: "submissions",
     question: "Can I update or remove my listing?",
     answer:
-      "Yes! If your hosting service has changed, been discontinued, or you want to update information, contact us via Discord or email at support@freehosts.space. Provide the listing link and the changes you would like made, and our team will update or remove it accordingly.",
+      `Yes! If your hosting service has changed, been discontinued, or you want to update information, contact us via Discord or email at support@${process.env.EMAIL_DOMAIN}. Provide the listing link and the changes you would like made, and our team will update or remove it accordingly.`,
   },
   {
     category: "support",
     question: "How do I contact the team?",
     answer:
-      "You can reach us through our Discord server for quick responses, or email us at support@freehosts.space for formal inquiries.",
+      `You can reach us through our Discord server for quick responses, or email us at support@${process.env.EMAIL_DOMAIN} for formal inquiries.`,
   },
   {
     category: "support",
@@ -113,7 +113,7 @@ export const faqItems: FaqItem[] = [
     category: "support",
     question: "How can I report a host for fraud or misconduct?",
     answer:
-      "Please report any suspicious activity or fraudulent hosting services immediately via our Discord server or by emailing support@freehosts.space with evidence and details. We take these reports seriously and investigate thoroughly.",
+      `Please report any suspicious activity or fraudulent hosting services immediately via our Discord server or by emailing support@${process.env.EMAIL_DOMAIN} with evidence and details. We take these reports seriously and investigate thoroughly.`,
   },
   {
     category: "support",

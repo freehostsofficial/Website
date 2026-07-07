@@ -109,7 +109,7 @@ export default function TosContent() {
       <p>
         We operate the website{" "}
         <span className="question" style={{ color: "rgb(0, 58, 250)" }}>
-          freehosts.space
+          {process.env.RAW_APP_URL}
         </span>{" "}
         (the {"'"}
         <strong>Site</strong>
@@ -134,7 +134,7 @@ export default function TosContent() {
       <p>
         You can contact us by email at{" "}
         <span className="question">
-          <a href="mailto:legal@freehosts.space">legal@freehosts.space</a>
+          <a href={"mailto:legal@" + process.env.EMAIL_DOMAIN} >legal@{process.env.EMAIL_DOMAIN}</a>
         </span>
         .
       </p>
@@ -271,7 +271,7 @@ export default function TosContent() {
         as set out in this section or elsewhere in our Legal Terms, please
         address your request to:{" "}
         <span className="question">
-          <a href="mailto:legal@freehosts.space">legal@freehosts.space</a>
+          <a href={"mailto:legal@" + process.env.EMAIL_DOMAIN}>legal@{process.env.EMAIL_DOMAIN}</a>
         </span>
         . If we ever grant you the permission to post, reproduce, or publicly
         display any part of our Services or Content, you must identify us as the
@@ -573,7 +573,7 @@ export default function TosContent() {
         </li>
         <li>
           <span className="question">
-            Selling or transferring your freehosts.space account or your
+            Selling or transferring your {process.env.RAW_APP_URL} account or your
             listing/profile without explicit permission is prohibited.
           </span>
         </li>
@@ -804,7 +804,7 @@ export default function TosContent() {
         Policy:{" "}
         <strong>
           <span style={{ color: "rgb(0, 58, 250)" }}>
-            freehosts.space/privacy-policy
+            {process.env.RAW_APP_URL}/privacy-policy
           </span>
         </strong>
         . By using the Services, you agree to be bound by our Privacy Policy,
@@ -1120,7 +1120,7 @@ export default function TosContent() {
 
       <p>
         Law enforcement and other formal legal inquiries must be submitted to{" "}
-        <a href="mailto:legal@freehosts.space">legal@freehosts.space</a> by
+        <a href={"mailto:legal@" + process.env.EMAIL_DOMAIN}>legal@{process.env.EMAIL_DOMAIN}</a> by
         authorized law enforcement officials or licensed attorneys acting on
         behalf of such agencies.
       </p>
@@ -1144,7 +1144,7 @@ export default function TosContent() {
       <p>
         <strong>FreeHosts</strong>
         <br />
-        Email: <a href="mailto:legal@freehosts.space">legal@freehosts.space</a>
+        Email: <a href={"mailto:legal@" + process.env.EMAIL_DOMAIN}>legal@{process.env.EMAIL_DOMAIN}</a>
       </p>
     </div>
   );

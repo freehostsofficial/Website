@@ -76,7 +76,7 @@ export default function SubmitHostClient() {
               </a>
               <p className="support-text">
                 Need help with a listing? Contact us at{" "}
-                <a href="mailto:support@freehosts.space">support@freehosts.space</a>
+                <a href={"mailto:support@" + process.env.EMAIL_DOMAIN}>support@{process.env.EMAIL_DOMAIN}</a>
               </p>
             </div>
           </aside>

@@ -1,6 +1,7 @@
 import React from "react";
 
 export default function PrivacyPolicyContent() {
+  const supportEmail = `support@${process.env.EMAIL_DOMAIN}`;
   return (
     <div className="tos-content wrap">
       <h1>PRIVACY POLICY</h1>
@@ -121,7 +122,7 @@ export default function PrivacyPolicyContent() {
           is processed. If you do not agree with our policies and practices,
           please do not use our Services. If you still have any questions or
           concerns, please contact us at{" "}
-          <a href="mailto:support@freehosts.space">support@freehosts.space</a>.
+          <a href={"mailto:" + supportEmail}>{supportEmail}</a>.
         </p>
       </div>
 
@@ -177,7 +178,7 @@ export default function PrivacyPolicyContent() {
       <p>
         Like many businesses, we also collect information through cookies and
         similar technologies. You can find out more about this in our Cookie
-        Notice: <span className="question" style={{ color: "rgb(0, 58, 250)" }}>freehosts.space/cookies</span>.
+        Notice: <span className="question" style={{ color: "rgb(0, 58, 250)" }}>{process.env.RAW_APP_URL}/cookies</span>.
       </p>
 
       <p>The information we collect includes:</p>
@@ -361,7 +362,7 @@ export default function PrivacyPolicyContent() {
       <p>
         Specific information about how we use such technologies and how you can
         refuse certain cookies is set out in our Cookie Notice:{" "}
-        <span className="question" style={{ color: "rgb(0, 58, 250)" }}>freehosts.space/cookies</span>.
+        <span className="question" style={{ color: "rgb(0, 58, 250)" }}>{process.env.RAW_APP_URL}/cookies</span>.
       </p>
 
       <h3>Google Analytics</h3>
@@ -476,7 +477,7 @@ export default function PrivacyPolicyContent() {
 
       <p>
         If you have questions or comments about your privacy rights, you may
-        email us at <a href="mailto:support@freehosts.space">support@freehosts.space</a>.
+        email us at <a href={"mailto:" + supportEmail}>{supportEmail}</a>.
       </p>
 
       <hr className="section-divider" />
@@ -576,7 +577,7 @@ export default function PrivacyPolicyContent() {
 
       <p>
         To exercise these rights, you can contact us by emailing us at{" "}
-        <a href="mailto:support@freehosts.space">support@freehosts.space</a>, or by
+        <a href={"mailto:" + supportEmail}>{supportEmail}</a>, or by
         referring to the contact details at the bottom of this document.
       </p>
 
@@ -605,7 +606,7 @@ export default function PrivacyPolicyContent() {
 
       <p>
         If you have questions or comments about this notice, you may email us at{" "}
-        <a href="mailto:support@freehosts.space">support@freehosts.space</a>.
+        <a href={"mailto:" + supportEmail}>{supportEmail}</a>.
       </p>
 
       <div className="highlight-box">
@@ -614,7 +615,7 @@ export default function PrivacyPolicyContent() {
           <br />
           Privacy Team
           <br />
-          <a href="mailto:support@freehosts.space">support@freehosts.space</a>
+          <a href={"mailto:" + supportEmail}>{supportEmail}</a>
         </p>
       </div>
 
