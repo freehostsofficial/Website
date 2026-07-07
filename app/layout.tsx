@@ -54,7 +54,7 @@ import "./src/css/styles.css";
 import "./src/css/hosts.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.APP_URL),
+  metadataBase: new URL(process.env.APP_URL ?? "https://freehosts.space"),
   title: {
     default: "FreeHosts - Free Hosting for Anything You Build",
     template: "%s | FreeHosts",
