@@ -20,6 +20,9 @@ import {
 } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 const inviteCode = "QbeZ3b5CQd";
 const inviteUrl = `https://discord.gg/${inviteCode}`;
@@ -262,12 +265,14 @@ export default function HomeClient() {
             </p>
 
             <div className="hero-cta">
-              <Link href="/about" className="btn large">
-                <Info size={16} aria-hidden="true" /> About FreeHosts
+              <Link href="/about">
+                <Button variant="default" size="lg">
+                  <Info size={16} aria-hidden="true" /> About FreeHosts
+                </Button>
               </Link>
-              <a className="btn ghost" id="joinCommunity" href={inviteUrl}>
+              <Button variant="ghost" size="lg" id="joinCommunity" render={<a href={inviteUrl} />}>
                 <FontAwesomeIcon icon={faDiscord} aria-hidden="true" /> Join the community
-              </a>
+              </Button>
             </div>
 
             <div className="hero-stats" aria-hidden="true">
@@ -296,14 +301,14 @@ export default function HomeClient() {
                 <div className="dw-right">
                   <div className="dw-count" id="discordCount">{discord.count}</div>
                   {discord.showInvite ? (
-                    <button
-                      className="btn small"
+                    <Button
+                      variant="outline"
+                      size="xs"
                       id="discordInvite"
-                      type="button"
                       onClick={() => window.open(inviteUrl, "_blank", "noopener")}
                     >
                       <DoorOpen size={14} aria-hidden="true" /> Join
-                    </button>
+                    </Button>
                   ) : null}
                 </div>
               </div>
@@ -344,37 +349,49 @@ export default function HomeClient() {
         </div>
       </section>
 
-      <section id="features" className="section features wrap">
+      <section id="features" className="section wrap">
         <h2 className="section-title">Why people use FreeHosts</h2>
         <p className="section-sub">Quick highlights - no fluff.</p>
-        <div className="cards-grid" aria-hidden="true">
-          <article className="feature-card">
-            <div className="icon"><Rocket size={24} aria-hidden="true" /></div>
-            <h3>Fast discovery</h3>
-            <p>Find hosts by use-case quickly - deploy a demo in minutes.</p>
-          </article>
-          <article className="feature-card">
-            <div className="icon"><HandHeart size={24} aria-hidden="true" /></div>
-            <h3>Community tips</h3>
-            <p>User-contributed reviews and sample setups to get you started.</p>
-          </article>
-          <article className="feature-card">
-            <div className="icon"><Filter size={24} aria-hidden="true" /></div>
-            <h3>Curated lists</h3>
-            <p>Hand-curated, up-to-date listings so you do not waste time.</p>
-          </article>
+        <div className="grid gap-4 sm:grid-cols-3" aria-hidden="true">
+          <Card>
+            <CardHeader>
+              <Rocket size={24} aria-hidden="true" className="text-accent mb-2" />
+              <CardTitle>Fast discovery</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">Find hosts by use-case quickly - deploy a demo in minutes.</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <HandHeart size={24} aria-hidden="true" className="text-accent mb-2" />
+              <CardTitle>Community tips</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">User-contributed reviews and sample setups to get you started.</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <Filter size={24} aria-hidden="true" className="text-accent mb-2" />
+              <CardTitle>Curated lists</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">Hand-curated, up-to-date listings so you do not waste time.</p>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
-      <section id="what-is-free-hosting" className="section wrap what-is-hosting-section">
-        <div className="what-is-hosting-shell">
-          <div className="what-is-hosting-intro">
-            <div className="what-is-hosting-kicker">
+      <section id="what-is-free-hosting" className="section wrap">
+        <div className="max-w-5xl mx-auto space-y-8">
+          <div className="space-y-4">
+            <Badge variant="outline" className="inline-flex items-center gap-1.5">
               <Sparkles size={14} aria-hidden="true" />
               Learn the Basics
-            </div>
+            </Badge>
             <h2 className="section-title">What is Free Hosting?</h2>
-            <p className="what-is-hosting-lead">
+            <p className="text-lg text-muted-foreground max-w-3xl leading-relaxed">
               Free hosting gives developers, students, and hobbyists a way to deploy
               websites, apps, bots, and community projects without paying for server
               infrastructure upfront. It is ideal for learning, experiments, prototypes,
@@ -382,74 +399,90 @@ export default function HomeClient() {
             </p>
           </div>
 
-          <div className="what-is-hosting-highlight">
-            <div className="hosting-highlight-icon">
-              <Compass size={20} aria-hidden="true" />
-            </div>
-            <div>
-              <h3>Why FreeHosts helps</h3>
-              <p>
-                FreeHosts curates verified providers, community reviews, staff picks,
-                and feature breakdowns so you can find the right option faster instead
-                of comparing random services blind.
-              </p>
-            </div>
-          </div>
+          <Card className="border-accent/20">
+            <CardHeader className="flex-row items-start gap-4">
+              <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-accent/10 text-accent">
+                <Compass size={20} aria-hidden="true" />
+              </div>
+              <div>
+                <CardTitle>Why FreeHosts helps</CardTitle>
+                <p className="text-sm text-muted-foreground mt-1">
+                  FreeHosts curates verified providers, community reviews, staff picks,
+                  and feature breakdowns so you can find the right option faster instead
+                  of comparing random services blind.
+                </p>
+              </div>
+            </CardHeader>
+          </Card>
 
-          <div className="hosting-category-grid">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {hostingCategories.map((category) => (
-              <article className="hosting-category-card" key={category.title}>
-                <div className="hosting-category-icon">
-                  {category.icon}
-                </div>
-                <h3>{category.title}</h3>
-                <p>{category.text}</p>
-              </article>
+              <Card key={category.title}>
+                <CardHeader>
+                  <div className="flex size-10 items-center justify-center rounded-lg bg-accent/10 text-accent mb-2">
+                    {category.icon}
+                  </div>
+                  <CardTitle className="text-base">{category.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">{category.text}</p>
+                </CardContent>
+              </Card>
             ))}
           </div>
 
-          <div className="hosting-guide-grid">
-            <article className="hosting-guide-card">
-              <h3>
-                <ListChecks size={16} aria-hidden="true" /> How to Choose Free Hosting
-              </h3>
-              <ul className="hosting-checklist">
-                {choiceChecklist.map((item) => (
-                  <li key={item}>
-                    <Check size={14} aria-hidden="true" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </article>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <ListChecks size={16} aria-hidden="true" /> How to Choose Free Hosting
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-3">
+                  {choiceChecklist.map((item) => (
+                    <li key={item} className="flex gap-2 text-sm text-muted-foreground">
+                      <Check size={14} className="mt-0.5 shrink-0 text-accent" aria-hidden="true" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
 
-            <article className="hosting-guide-card hosting-guide-card-accent">
-              <h3>
-                <Users size={16} aria-hidden="true" /> Join Our Community
-              </h3>
-              <p>
-                Our staff and community regularly update hosting lists, publish answers,
-                and share real deployment experience. It is the quickest way to avoid
-                weak providers and find something that actually fits your project.
-              </p>
-              <p>
-                Most free hosting plans have limits, but they are often generous enough
-                for portfolios, bots, MVPs, and learning projects. And when your app
-                starts growing, many providers offer an easy path to paid upgrades.
-              </p>
-            </article>
+            <Card className="border-accent/20">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Users size={16} aria-hidden="true" /> Join Our Community
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3 text-sm text-muted-foreground">
+                <p>
+                  Our staff and community regularly update hosting lists, publish answers,
+                  and share real deployment experience. It is the quickest way to avoid
+                  weak providers and find something that actually fits your project.
+                </p>
+                <p>
+                  Most free hosting plans have limits, but they are often generous enough
+                  for portfolios, bots, MVPs, and learning projects. And when your app
+                  starts growing, many providers offer an easy path to paid upgrades.
+                </p>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
 
-      <section id="about-teaser" className="section about wrap">
+      <section id="about-teaser" className="section wrap">
         <h2 className="section-title">About FreeHosts</h2>
         <p className="section-sub">
           Built by people who love the web - a friendly place to discover hosting
           options at zero cost.
         </p>
-        <Link href="/about" className="btn ghost">
-          <Info size={14} aria-hidden="true" /> Read more
+        <Link href="/about">
+          <Button variant="outline" size="sm">
+            <Info size={14} aria-hidden="true" /> Read more
+          </Button>
         </Link>
       </section>
     </main>

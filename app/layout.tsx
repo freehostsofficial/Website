@@ -5,9 +5,6 @@ import Link from "@/components/NoPrefetchLink";
 import RouteInitializer from "../components/RouteInitializer";
 import GlobalStructuredData from "../components/GlobalStructuredData";
 import MatomoTracker from "../components/MatomoTracker";
-import ThemeProvider from "../components/ThemeProvider";
-import SidebarController from "../components/SidebarController";
-import SnowEffect from "../components/SnowEffect";
 import PreviewCard from "../components/PreviewCard";
 import ToastContainer from "../components/Toast";
 import BackToTop from "../components/BackToTop";
@@ -29,14 +26,12 @@ import {
   Lock,
   Mail,
   Menu,
-  Moon,
   Pencil,
   Plus,
   Scale,
   Server,
   Shield,
   Star,
-  Sun,
   Upload,
   Users,
   X,
@@ -52,6 +47,10 @@ config.autoAddCss = false;
 import "./src/css/globals.css";
 import "./src/css/styles.css";
 import "./src/css/hosts.css";
+import { Geist } from "next/font/google";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.APP_URL ?? "https://freehosts.space"),
@@ -119,7 +118,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#071028",
+  themeColor: "#0A0A0A",
 };
 
 const submitLinks = [
@@ -141,33 +140,21 @@ const legalLinks = [
   { href: "/privacy-policy", icon: <Lock size={18} aria-hidden="true" />, label: "Privacy Policy" },
 ];
 
-function Dropdown({
-  icon,
-  label,
-  links,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  links: { href: string; icon: React.ReactNode; label: string }[];
-}) {
-  return (
-    <div className="nav-item">
-      <span className="nav-link has-dropdown">
-        {icon} {label}
-        <ChevronDown size={14} className="dropdown-arrow" aria-hidden="true" />
-      </span>
-      <div className="dropdown-menu">
-        {links.map((link) => (
-          <Link href={link.href} key={link.href}>
-            {link.icon} {link.label}
-          </Link>
-        ))}
-      </div>
-    </div>
-  );
-}
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetClose,
+} from "@/components/ui/sheet";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
-function SidebarDropdown({
+function NavDropdown({
   icon,
   label,
   links,
@@ -177,20 +164,25 @@ function SidebarDropdown({
   links: { href: string; icon: React.ReactNode; label: string }[];
 }) {
   return (
-    <div className="sidebar-dropdown">
-      <button className="sidebar-dropdown-toggle" type="button">
-        {icon}
-        <span>{label}</span>
-        <ChevronDown size={14} aria-hidden="true" />
-      </button>
-      <div className="sidebar-dropdown-menu">
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        render={
+          <button className="inline-flex items-center gap-1.5 px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+            {icon} {label}
+            <ChevronDown size={14} aria-hidden="true" />
+          </button>
+        }
+      />
+      <DropdownMenuContent align="start" className="min-w-44">
         {links.map((link) => (
-          <Link href={link.href} key={link.href}>
+          <DropdownMenuItem key={link.href}
+            render={<Link href={link.href} className="flex items-center gap-2" />}
+          >
             {link.icon} {link.label}
-          </Link>
+          </DropdownMenuItem>
         ))}
-      </div>
-    </div>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 
@@ -202,7 +194,7 @@ export default function RootLayout({
   const year = new Date().getFullYear();
 
   return (
-    <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
+    <html lang="en" className={cn("dark font-sans", geist.variable)} suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
@@ -221,15 +213,6 @@ export default function RootLayout({
         <link rel="alternate" href={process.env.APP_URL} hrefLang="en" />
       </head>
       <body>
-        {/* Inline script: apply theme before first paint to avoid flash */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('fh_theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`,
-          }}
-        />
-        <ThemeProvider />
-        <SidebarController />
-        <SnowEffect />
         <PreviewCard />
         <RouteInitializer />
         <GlobalStructuredData />
@@ -238,117 +221,100 @@ export default function RootLayout({
           <ComparisonProvider>
             <FavoritesProvider>
 
-              <header className="site-header">
-                <div className="wrap header-inner">
-                  <button
-                    id="sidebarToggle"
-                    className="icon-btn mobile-only"
-                    aria-label="Open menu"
-                  >
-                    <Menu size={18} aria-hidden="true" />
-                  </button>
+              <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-md">
+                <div className="mx-auto flex h-14 max-w-7xl items-center gap-4 px-4">
 
-                  <Link className="logo" href="/" aria-label="FreeHosts Home">
-                    <Image src="/Src/icons/icon-transparent.png" alt="FreeHosts" width={32} height={32} className="logo-img" />
-                    FreeHosts
+                  <Sheet>
+                    <SheetTrigger render={<Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open menu" />}>
+                      <Menu size={18} />
+                    </SheetTrigger>
+                    <SheetContent side="left" className="w-72 p-0" showCloseButton={false}>
+                      <div className="flex items-center gap-2 border-b border-border px-4 h-14">
+                        <Image src="/Src/icons/icon-transparent.png" alt="FreeHosts" width={28} height={28} />
+                        <span className="font-semibold">FreeHosts</span>
+                        <SheetClose className="ml-auto" render={<Button variant="ghost" size="icon-sm" aria-label="Close menu" />}>
+                          <X size={16} />
+                        </SheetClose>
+                      </div>
+                      <nav className="flex flex-col gap-1 p-2">
+                        <SheetClose render={<Link href="/hosts" className="flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-muted" />}>
+                          <Server size={18} /> Hosts
+                        </SheetClose>
+                        <SheetClose render={<Link href="/compare" className="flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-muted" />}>
+                          <GitCompare size={18} /> Compare
+                        </SheetClose>
+                        <SheetClose render={<Link href="/saved" className="flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-muted" />}>
+                          <Star size={18} /> Saved
+                        </SheetClose>
+                        <SheetClose render={<Link href="/#features" className="flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-muted" />}>
+                          <ListChecks size={18} /> Features
+                        </SheetClose>
+                        <div className="my-1 border-t border-border" />
+                        <span className="px-3 py-1 text-xs font-medium text-muted-foreground">Submit</span>
+                        {submitLinks.map((link) => (
+                          <SheetClose key={link.href} render={<Link href={link.href} className="flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-muted" />}>
+                            {link.icon} {link.label}
+                          </SheetClose>
+                        ))}
+                        <span className="px-3 py-1 mt-1 text-xs font-medium text-muted-foreground">Resources</span>
+                        {resourceLinks.map((link) => (
+                          <SheetClose key={link.href} render={<Link href={link.href} className="flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-muted" />}>
+                            {link.icon} {link.label}
+                          </SheetClose>
+                        ))}
+                        <span className="px-3 py-1 mt-1 text-xs font-medium text-muted-foreground">Legal</span>
+                        {legalLinks.map((link) => (
+                          <SheetClose key={link.href} render={<Link href={link.href} className="flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-muted" />}>
+                            {link.icon} {link.label}
+                          </SheetClose>
+                        ))}
+                      </nav>
+                      <div className="mt-auto border-t border-border p-4">
+                        <a
+                          href="https://discord.gg/QbeZ3b5CQd"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-center gap-2 rounded-lg bg-[#5865F2] px-4 py-2 text-sm font-medium text-white hover:bg-[#4752C4] transition-colors"
+                        >
+                          <FontAwesomeIcon icon={faDiscord} /> Join Discord
+                        </a>
+                      </div>
+                    </SheetContent>
+                  </Sheet>
+
+                  <Link href="/" className="flex items-center gap-2 font-semibold shrink-0" aria-label="FreeHosts Home">
+                    <Image src="/Src/icons/icon-transparent.png" alt="" width={28} height={28} />
+                    <span className="hidden sm:inline">FreeHosts</span>
                   </Link>
 
-                  <nav className="nav" role="navigation" aria-label="Main">
-                    <div className="nav-item">
-                      <Link href="/hosts" className="nav-link">
-                        <Server size={18} aria-hidden="true" /> Hosts
-                      </Link>
-                    </div>
-                    <div className="nav-item">
-                      <Link href="/compare" className="nav-link"><GitCompare size={18} aria-hidden="true" /> Compare</Link>
-                    </div>
-                    <div className="nav-item">
-                      <Link href="/saved" className="nav-link"><Star size={18} aria-hidden="true" /> Saved</Link>
-                    </div>
-                    <div className="nav-item">
-                      <Link href="/#features" className="nav-link">
-                        <ListChecks size={18} aria-hidden="true" /> Features
-                      </Link>
-                    </div>
-                    <Dropdown icon={<Upload size={18} aria-hidden="true" />} label="Submit" links={submitLinks} />
-                    <Dropdown icon={<BookOpen size={18} aria-hidden="true" />} label="Resources" links={resourceLinks} />
-                    <Dropdown icon={<Scale size={18} aria-hidden="true" />} label="Legal" links={legalLinks} />
+                  <nav className="hidden lg:flex items-center gap-1 ml-6" role="navigation" aria-label="Main">
+                    <Link href="/hosts" className="inline-flex items-center gap-1.5 px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                      <Server size={16} /> Hosts
+                    </Link>
+                    <Link href="/compare" className="inline-flex items-center gap-1.5 px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                      <GitCompare size={16} /> Compare
+                    </Link>
+                    <Link href="/saved" className="inline-flex items-center gap-1.5 px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                      <Star size={16} /> Saved
+                    </Link>
+                    <Link href="/#features" className="inline-flex items-center gap-1.5 px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                      <ListChecks size={16} /> Features
+                    </Link>
+                    <NavDropdown icon={<Upload size={16} />} label="Submit" links={submitLinks} />
+                    <NavDropdown icon={<BookOpen size={16} />} label="Resources" links={resourceLinks} />
+                    <NavDropdown icon={<Scale size={16} />} label="Legal" links={legalLinks} />
                   </nav>
 
-                  <div className="actions" id="headerActions">
-                    <button
-                      data-theme-toggle
-                      className="icon-btn"
-                      aria-pressed="false"
-                      aria-label="Toggle theme"
-                    >
-                      <Moon size={22} aria-hidden="true" className="theme-icon-dark" />
-                      <Sun size={22} aria-hidden="true" className="theme-icon-light" />
-                    </button>
-                    <a
-                      className="icon-btn"
-                      href={process.env.TRUST_PILOT}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="View our Trustpilot reviews"
-                      title="Trustpilot"
-                    >
-                      <Star size={22} aria-hidden="true" style={{ color: '#00b67a' }} />
+                  <div className="flex items-center gap-2 ml-auto">
+                    <a href={process.env.TRUST_PILOT} target="_blank" rel="noopener noreferrer" aria-label="Trustpilot reviews" className="inline-flex items-center justify-center rounded-lg size-8 text-muted-foreground hover:text-foreground transition-colors">
+                      <Star size={18} className="text-[#00b67a]" />
                     </a>
-                    <a
-                      className="icon-btn"
-                      id="discordBtn"
-                      href="https://discord.gg/QbeZ3b5CQd"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="Join our Discord community"
-                      title="Join Discord"
-                    >
-                      <FontAwesomeIcon icon={faDiscord} aria-hidden="true" style={{ color: '#5865F2' }} />
+                    <a href="https://discord.gg/QbeZ3b5CQd" target="_blank" rel="noopener noreferrer" aria-label="Join Discord" className="inline-flex items-center justify-center rounded-lg size-8 text-muted-foreground hover:text-foreground transition-colors">
+                      <FontAwesomeIcon icon={faDiscord} className="text-[#5865F2]" />
                     </a>
                   </div>
                 </div>
               </header>
-
-              <aside className="sidebar" id="sidebar" aria-hidden="true">
-                <div className="sidebar-top">
-                  <Link className="logo" href="/">
-                    <Image src="/Src/icons/icon-transparent.png" alt="FreeHosts" width={32} height={32} className="logo-img" />
-                    FreeHosts
-                  </Link>
-                  <button id="sidebarClose" className="icon-btn" aria-label="Close menu">
-                    <X size={18} aria-hidden="true" />
-                  </button>
-                </div>
-
-                <nav className="sidebar-nav" role="navigation">
-                  <Link href="/hosts" className="sidebar-link">
-                    <Server size={20} aria-hidden="true" /> Hosts
-                  </Link>
-                  <Link href="/compare" className="sidebar-link"><GitCompare size={20} aria-hidden="true" /> Compare</Link>
-                  <Link href="/saved" className="sidebar-link"><Star size={20} aria-hidden="true" /> Saved</Link>
-                  <Link href="/#features" className="sidebar-link">
-                    <ListChecks size={20} aria-hidden="true" /> Features
-                  </Link>
-                  <SidebarDropdown icon={<Upload size={20} aria-hidden="true" />} label="Submit Host" links={submitLinks} />
-                  <SidebarDropdown icon={<BookOpen size={20} aria-hidden="true" />} label="Resources" links={resourceLinks} />
-                  <SidebarDropdown icon={<Scale size={20} aria-hidden="true" />} label="Legal" links={legalLinks} />
-                </nav>
-
-                <div className="sidebar-footer">
-                  <a
-                    className="btn primary full"
-                    id="discordBtnSidebar"
-                    href="https://discord.gg/QbeZ3b5CQd"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <FontAwesomeIcon icon={faDiscord} aria-hidden="true" /> Join Discord
-                  </a>
-                </div>
-              </aside>
-
-              <div className="overlay" id="overlay" tabIndex={-1} aria-hidden="true" />
 
               <ComparisonPanel />
 

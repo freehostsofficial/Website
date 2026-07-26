@@ -10,6 +10,10 @@ import { parseCPUValue, parseMemoryToMB } from '../../lib/parseSpecs';
 import { ChevronDown, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Search, X, Shuffle, ArrowDownAZ, Cpu, MemoryStick, HardDrive, Clock, GitCompare, Star, ThumbsUp } from 'lucide-react';
 import { useComparison } from '../../contexts/ComparisonContext';
 import { useFavorites } from '../../contexts/FavoritesContext';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 // ─── Custom Dropdown ──────────────────────────────────────────────────────────
 
@@ -156,25 +160,14 @@ export default function HostsClient({ initialHosts }: { initialHosts: Host[] }) 
 function HostsLoading() {
   return (
     <main id="main-content">
-      <div id="hosts-page">
-        <div className="wrap">
-          <section className="hero centered-hero" id="home" aria-labelledby="hero-title">
-            <div className="blobs" aria-hidden="true">
-              <div className="blob b1"></div>
-              <div className="blob b2"></div>
-              <div className="blob b3"></div>
-            </div>
-            <div className="hero-inner">
-              <div className="hero-left">
-                <h1 id="hero-title">Free Hosting Directory</h1>
-                <p className="lead">Discover and compare the best free hosting providers for your projects.</p>
-              </div>
-            </div>
-          </section>
-          <div className="loading">
-            <div className="spinner"></div>
-            <p style={{ color: 'var(--muted)' }}>Loading hosts...</p>
-          </div>
+      <div id="hosts-page" className="wrap py-12">
+        <section className="text-center mb-8">
+          <h1 className="text-3xl font-bold">Free Hosting Directory</h1>
+          <p className="text-muted-foreground mt-2">Discover and compare the best free hosting providers for your projects.</p>
+        </section>
+        <div className="flex flex-col items-center gap-3 py-12">
+          <div className="size-8 animate-spin rounded-full border-2 border-border border-t-accent" />
+          <p className="text-sm text-muted-foreground">Loading hosts...</p>
         </div>
       </div>
     </main>
@@ -511,75 +504,72 @@ function HostsContent({ initialHosts }: { initialHosts: Host[] }) {
           </section>
 
           {/* Search Section */}
-          <div className="search-section">
-            <div className="search-grid">
-              <div className="search-input-wrapper">
-                <Search size={16} aria-hidden="true" className="search-icon" />
-                <input
-                  type="text"
-                  id="search"
-                  className={`search-input${isSearching ? ' search-input--loading' : ''}`}
-                  placeholder="Search for a host..."
-                  value={currentFilters.search}
-                  onChange={(e) => handleFilterChange('search', e.target.value)}
-                  aria-label="Search hosting providers"
-                />
-              </div>
-              <CustomDropdown
-                id="locale"
-                value={currentFilters.locale}
-                placeholder="All Languages"
-                options={locales.map(locale => ({
-                  value: locale,
-                  label: `${getLanguageName(locale)} (${locale})`
-                }))}
-                onChange={(val) => handleFilterChange('locale', val)}
-              />
-              <CustomDropdown
-                id="target-filter"
-                value={currentFilters.target}
-                placeholder="All Targets"
-                options={targets.map(target => ({
-                  value: target,
-                  label: target
-                }))}
-                onChange={(val) => handleFilterChange('target', val)}
+          <div className="flex flex-wrap items-center gap-3 rounded-xl border border-border bg-card p-4 mb-6">
+            <div className="relative flex-1 min-w-[200px]">
+              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+              <Input
+                type="text"
+                id="search"
+                placeholder="Search for a host..."
+                value={currentFilters.search}
+                onChange={(e) => handleFilterChange('search', e.target.value)}
+                aria-label="Search hosting providers"
+                className="pl-9"
               />
             </div>
+            <CustomDropdown
+              id="locale"
+              value={currentFilters.locale}
+              placeholder="All Languages"
+              options={locales.map(locale => ({
+                value: locale,
+                label: `${getLanguageName(locale)} (${locale})`
+              }))}
+              onChange={(val) => handleFilterChange('locale', val)}
+            />
+            <CustomDropdown
+              id="target-filter"
+              value={currentFilters.target}
+              placeholder="All Targets"
+              options={targets.map(target => ({
+                value: target,
+                label: target
+              }))}
+              onChange={(val) => handleFilterChange('target', val)}
+            />
           </div>
 
           {/* Sort Bar */}
-          <div className="sort-bar">
-            <div className="sort-left">
-              <div className="sort-label">Sort by:</div>
-              <div className="sort-buttons">
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-muted-foreground">Sort by:</span>
+              <div className="flex flex-wrap gap-1">
                 {['random', 'name', 'cpu', 'ram', 'storage', 'reviews', 'recent'].map(sortType => (
-                  <button
+                  <Button
                     key={sortType}
-                    className={`sort-btn ${currentFilters.sort === sortType ? 'active' : ''}`}
+                    variant={currentFilters.sort === sortType ? 'default' : 'ghost'}
+                    size="xs"
                     onClick={() => handleSortChange(sortType)}
                   >
                     {getSortIcon(sortType)}
                     {getSortLabel(sortType)}
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>
-            <div className="sort-right">
-              {/* Results Info */}
-              <div className="results-info" id="results-info">
+            <div className="flex items-center gap-3">
+              <span className="text-xs text-muted-foreground" id="results-info">
                 {hasActiveFilters ? (
                   `Showing ${filteredHosts.length} of ${hosts.length} hosts`
                 ) : (
                   `Showing all ${hosts.length} hosts`
                 )}
-              </div>
-              <button 
-                className={`clear-filters-btn ${hasActiveFilters ? 'active' : ''}`}
-                onClick={clearFilters}
-              >
-                <X size={14} aria-hidden="true" /> Clear Filters
-              </button>
+              </span>
+              {hasActiveFilters && (
+                <Button variant="ghost" size="xs" onClick={clearFilters}>
+                  <X size={14} aria-hidden="true" /> Clear Filters
+                </Button>
+              )}
             </div>
           </div>
 
@@ -596,14 +586,14 @@ function HostsContent({ initialHosts }: { initialHosts: Host[] }) {
                 </p>
                 <div style={{ display: 'flex', gap: 'var(--space-sm)', flexWrap: 'wrap', justifyContent: 'center' }}>
                   {hasActiveFilters && (
-                    <button className="btn ghost" onClick={clearFilters}>
+                    <Button variant="ghost" size="xs" onClick={clearFilters}>
                       <X size={14} aria-hidden="true" /> Clear all filters
-                    </button>
+                    </Button>
                   )}
                   {currentFilters.search && (
-                    <button className="btn ghost" onClick={() => handleFilterChange('search', '')}>
+                    <Button variant="ghost" size="xs" onClick={() => handleFilterChange('search', '')}>
                       Clear search
-                    </button>
+                    </Button>
                   )}
                 </div>
               </div>
@@ -621,54 +611,39 @@ function HostsContent({ initialHosts }: { initialHosts: Host[] }) {
 
           {/* Pagination */}
           {filteredHosts.length > pageSize && (
-            <div className="pagination" id="pagination">
-              <button 
-                className="pagination-btn" 
-                onClick={() => goToPage(1)}
-                disabled={currentPage === 1}
-              >
+            <div className="flex items-center justify-center gap-2 mt-8" id="pagination">
+              <Button variant="outline" size="xs" onClick={() => goToPage(1)} disabled={currentPage === 1}>
                 <ChevronsLeft size={14} aria-hidden="true" /> First
-              </button>
-              <button 
-                className="pagination-btn" 
-                onClick={() => goToPage(currentPage - 1)}
-                disabled={currentPage === 1}
-              >
+              </Button>
+              <Button variant="outline" size="xs" onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>
                 <ChevronLeft size={14} aria-hidden="true" /> Previous
-              </button>
+              </Button>
               
-              <div className="pagination-pages" id="page-numbers">
+              <div className="flex gap-1" id="page-numbers">
                 {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                   const startPage = Math.max(1, currentPage - 2)
                   const pageNum = startPage + i
                   if (pageNum > totalPages) return null
                   
                   return (
-                    <button
+                    <Button
                       key={pageNum}
-                      className={`page-btn ${pageNum === currentPage ? 'active' : ''}`}
+                      variant={pageNum === currentPage ? 'default' : 'outline'}
+                      size="xs"
                       onClick={() => goToPage(pageNum)}
                     >
                       {pageNum}
-                    </button>
+                    </Button>
                   )
                 })}
               </div>
               
-              <button 
-                className="pagination-btn" 
-                onClick={() => goToPage(currentPage + 1)}
-                disabled={currentPage === totalPages}
-              >
+              <Button variant="outline" size="xs" onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>
                 Next <ChevronRight size={14} aria-hidden="true" />
-              </button>
-              <button 
-                className="pagination-btn" 
-                onClick={() => goToPage(totalPages)}
-                disabled={currentPage === totalPages}
-              >
+              </Button>
+              <Button variant="outline" size="xs" onClick={() => goToPage(totalPages)} disabled={currentPage === totalPages}>
                 Last <ChevronsRight size={14} aria-hidden="true" />
-              </button>
+              </Button>
             </div>
           )}
         </div>
@@ -692,156 +667,151 @@ function HostCard({ host, isNew, formatSize }: HostCardProps) {
   const totalReviews = (host.approvals || 0) + (host.disapprovals || 0)
   const rating = totalReviews > 0 ? Math.round(((host.approvals || 0) / totalReviews) * 100) : 0
   const iconLetter = host.name ? host.name.charAt(0).toUpperCase() : '?'
-  const statusClass = host.status && host.status.toLowerCase() === 'online' ? 'online' : 'closed'
+  const isOnline = host.status && host.status.toLowerCase() === 'online'
   const typeDisplay = host.type ? host.type.split(',').map(t => t.trim().replace(/\s*\([^)]*\)/g, '').trim()) : []
 
   return (
-    <div className="host-card">
-      {isNew && <div className="host-badge">NEW</div>}
+    <Card className="relative">
+      {isNew && <Badge variant="default" className="absolute -top-2 -right-2 z-10">NEW</Badge>}
 
-      {/* Top: icon + name/badges */}
-      <div className="host-card-top">
-        <div className="host-icon">{iconLetter}</div>
-        <div className="host-name-group">
-          <div className="host-name">{host.name}</div>
-          <div className="badges-container">
-            <span className={`status-badge ${statusClass}`}>{host.status || 'Unknown'}</span>
-            {typeDisplay.map(type => (
-              <span key={type} className="host-type-badge">{type}</span>
-            ))}
-            {(host.locale || []).map(locale => (
-              <span key={locale} className="language-badge">{getLanguageName(locale)}</span>
-            ))}
-            {(host.targets || []).flatMap(target =>
-              target.split(',').map(t => {
-                const d = t.trim()
-                return d ? <span key={d} className="target-badge">{d}</span> : null
-              }).filter(Boolean)
+      <CardContent className="p-4 space-y-3">
+        <div className="flex items-start gap-3">
+          <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-accent/10 text-sm font-bold text-accent">
+            {iconLetter}
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="font-semibold text-sm truncate">{host.name}</div>
+            <div className="flex flex-wrap gap-1.5 mt-1">
+              <Badge variant={isOnline ? "default" : "secondary"} className="text-[10px] px-1.5 py-0">
+                {host.status || 'Unknown'}
+              </Badge>
+              {typeDisplay.map(type => (
+                <Badge key={type} variant="outline" className="text-[10px] px-1.5 py-0">{type}</Badge>
+              ))}
+              {(host.locale || []).map(locale => (
+                <Badge key={locale} variant="secondary" className="text-[10px] px-1.5 py-0">{getLanguageName(locale)}</Badge>
+              ))}
+              {(host.targets || []).flatMap(target =>
+                target.split(',').map(t => {
+                  const d = t.trim()
+                  return d ? <Badge key={d} variant="outline" className="text-[10px] px-1.5 py-0">{d}</Badge> : null
+                }).filter(Boolean)
+              )}
+            </div>
+            {host.description && (
+              <p className="text-xs text-muted-foreground mt-1.5 line-clamp-2">{host.description}</p>
             )}
           </div>
-          {host.description && (
-            <p className="host-description">{host.description}</p>
-          )}
         </div>
-      </div>
 
-      {(() => {
-        const isDomainHost = host.targets?.some(t => t.toLowerCase().includes('domain'));
-        const combinedText = `${host.info || ''}\n${host.description || ''}\n${host.free_plan || ''}`;
-        const allExtractedDomains = isDomainHost ? Array.from(new Set(combinedText.split('\n')
-          .map(l => l.trim())
-          .filter(l => /^\s*[-–•*\s]*[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+[\r\n]*$/.test(l))
-          .map(l => l.replace(/^[-–•*\s]+/, '').trim().split(/\s/)[0])
-        )) : [];
-        const extractedDomains = allExtractedDomains.slice(0, 10);
-        const hasMoreDomains = allExtractedDomains.length > 10;
+        {(() => {
+          const isDomainHost = host.targets?.some(t => t.toLowerCase().includes('domain'));
+          const combinedText = `${host.info || ''}\n${host.description || ''}\n${host.free_plan || ''}`;
+          const allExtractedDomains = isDomainHost ? Array.from(new Set(combinedText.split('\n')
+            .map(l => l.trim())
+            .filter(l => /^\s*[-–•*\s]*[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+[\r\n]*$/.test(l))
+            .map(l => l.replace(/^[-–•*\s]+/, '').trim().split(/\s/)[0])
+          )) : [];
+          const extractedDomains = allExtractedDomains.slice(0, 10);
+          const hasMoreDomains = allExtractedDomains.length > 10;
 
-         if (isDomainHost && extractedDomains.length > 0) {
-           return (
-             <div className="host-specs" style={{ display: 'flex', flexDirection: 'column', gap: '4px', padding: '8px 12px', minHeight: '80px', justifyContent: 'center' }}>
-               <div style={{ fontSize: '11px', color: 'var(--accent-2)', fontWeight: '700', marginBottom: '2px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-                 Extensions:
-               </div>
-               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '2px' }}>
-                 {extractedDomains.map(domain => {
-                   const cleanDomain = domain.replace(/^[-\s•*]+/, '');
-                   return (
-                     <span key={domain} style={{ 
-                       fontSize: '11px', 
-                       opacity: 0.9,
-                       backgroundColor: 'rgba(99, 102, 241, 0.1)',
-                       padding: '2px 8px',
-                       borderRadius: '6px',
-                       border: '1px solid rgba(99, 102, 241, 0.2)',
-                       color: '#818cf8',
-                       fontWeight: 600
-                     }}>
-                       {cleanDomain}
-                     </span>
-                   );
-                 })}
-               </div>
-               {hasMoreDomains && (
-                 <div style={{ fontSize: '10px', opacity: 0.6, fontStyle: 'italic' }}>
-                   + {allExtractedDomains.length - 10} more available
+           if (isDomainHost && extractedDomains.length > 0) {
+             return (
+               <div className="flex flex-col gap-1 py-2 min-h-[60px] justify-center">
+                 <div className="text-[11px] font-bold text-accent flex items-center gap-1">
+                   <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                   Extensions:
                  </div>
-               )}
+                 <div className="flex flex-wrap gap-1.5">
+                   {extractedDomains.map(domain => {
+                     const cleanDomain = domain.replace(/^[-\s•*]+/, '');
+                     return (
+                       <Badge key={domain} variant="outline" className="text-[10px] px-1.5 py-0 text-accent border-accent/30 bg-accent/5">
+                         {cleanDomain}
+                       </Badge>
+                     );
+                   })}
+                 </div>
+                 {hasMoreDomains && (
+                   <div className="text-[10px] text-muted-foreground italic">
+                     + {allExtractedDomains.length - 10} more available
+                   </div>
+                 )}
+               </div>
+             );
+           } else if (host.targets?.some(t => t.toLowerCase().includes('subdomain'))) {
+             return null;
+           }
+
+           return (
+             <div className="grid grid-cols-3 gap-2">
+               <div className="flex items-center gap-2 rounded-lg bg-muted/50 p-2">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="text-muted-foreground shrink-0"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M15 2v2M9 2v2M2 15h2M2 9h2M15 20v2M9 20v2M20 15h2M20 9h2"/></svg>
+                 <div className="min-w-0">
+                   <div className="text-xs font-medium truncate">{host.cpu || 'Unknown'}</div>
+                   <div className="text-[10px] text-muted-foreground">CPU</div>
+                 </div>
+               </div>
+               <div className="flex items-center gap-2 rounded-lg bg-muted/50 p-2">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="text-muted-foreground shrink-0"><path d="M6 19v-3"/><path d="M10 19v-3"/><path d="M14 19v-3"/><path d="M18 19v-3"/><path d="M8 11V9"/><path d="M16 11V9"/><path d="M12 11V9"/><path d="M2 15h20"/><path d="M2 7a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v1.1a2 2 0 0 0 0 3.837V17a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-5.1a2 2 0 0 0 0-3.837Z"/></svg>
+                 <div className="min-w-0">
+                   <div className="text-xs font-medium truncate">{ramDisplay}</div>
+                   <div className="text-[10px] text-muted-foreground">Memory</div>
+                 </div>
+               </div>
+               <div className="flex items-center gap-2 rounded-lg bg-muted/50 p-2">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="text-muted-foreground shrink-0"><line x1="22" x2="2" y1="12" y2="12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/><line x1="6" x2="6.01" y1="16" y2="16"/><line x1="10" x2="10.01" y1="16" y2="16"/></svg>
+                 <div className="min-w-0">
+                   <div className="text-xs font-medium truncate">{storageDisplay}</div>
+                   <div className="text-[10px] text-muted-foreground">Storage</div>
+                 </div>
+               </div>
              </div>
            );
-         } else if (host.targets?.some(t => t.toLowerCase().includes('subdomain'))) {
-           return null;
-         }
+        })()}
+      </CardContent>
 
-         return (
-           <div className="host-specs">
-             <div className="host-spec-card">
-               <div className="host-spec-icon">
-                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M15 2v2M9 2v2M2 15h2M2 9h2M15 20v2M9 20v2M20 15h2M20 9h2"/></svg>
-               </div>
-               <div className="spec-copy">
-                 <div className="spec-box-value">{host.cpu || 'Unknown'}</div>
-                 <div className="spec-box-label">CPU</div>
-               </div>
-             </div>
-             <div className="host-spec-card">
-               <div className="host-spec-icon">
-                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M6 19v-3"/><path d="M10 19v-3"/><path d="M14 19v-3"/><path d="M18 19v-3"/><path d="M8 11V9"/><path d="M16 11V9"/><path d="M12 11V9"/><path d="M2 15h20"/><path d="M2 7a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v1.1a2 2 0 0 0 0 3.837V17a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-5.1a2 2 0 0 0 0-3.837Z"/></svg>
-               </div>
-               <div className="spec-copy">
-                 <div className="spec-box-value">{ramDisplay}</div>
-                 <div className="spec-box-label">Memory</div>
-               </div>
-             </div>
-             <div className="host-spec-card">
-               <div className="host-spec-icon">
-                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><line x1="22" x2="2" y1="12" y2="12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/><line x1="6" x2="6.01" y1="16" y2="16"/><line x1="10" x2="10.01" y1="16" y2="16"/></svg>
-               </div>
-               <div className="spec-copy">
-                 <div className="spec-box-value">{storageDisplay}</div>
-                 <div className="spec-box-label">Storage</div>
-               </div>
-             </div>
-           </div>
-         );
-      })()}
-
-      {/* Footer: rating + view details */}
-      <div className="host-card-footer">
-        <div className="host-rating">
-          <div className="rating-value">{rating}%</div>
-          <div className="rating-label">{totalReviews} reviews</div>
-          <div className="rating-bar">
-            <div className="rating-fill" style={{ width: `${rating}%` }} />
+      <CardFooter className="flex items-center justify-between gap-2 border-t border-border px-4 py-2">
+        <div className="flex items-center gap-1.5">
+          <span className="text-sm font-semibold">{rating}%</span>
+          <span className="text-[11px] text-muted-foreground">{totalReviews} reviews</span>
+          <div className="w-12 h-1.5 rounded-full bg-muted overflow-hidden">
+            <div className="h-full rounded-full bg-accent" style={{ width: `${rating}%` }} />
           </div>
         </div>
-        <div className="host-card-actions">
-          <button
-            className={`compare-btn icon-btn${isSelected(host.id) ? ' active' : ''}`}
+        <div className="flex items-center gap-1">
+          <Button
+            variant="ghost"
+            size="icon-xs"
             onClick={() => isSelected(host.id) ? removeHost(host.id) : addHost(host)}
             disabled={isFull && !isSelected(host.id)}
             aria-pressed={isSelected(host.id)}
             aria-label={isSelected(host.id) ? `Remove ${host.name} from comparison` : `Add ${host.name} to comparison`}
-            type="button"
+            data-active={isSelected(host.id) ? '' : undefined}
+            className="data-[active]:text-accent"
           >
-            <GitCompare size={14} aria-hidden="true" />
-          </button>
-          <button
-            className={`favorite-btn icon-btn${isFavorite(host.id) ? ' active' : ''}`}
+            <GitCompare size={14} />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon-xs"
             onClick={() => toggleFavorite(host.id)}
             aria-pressed={isFavorite(host.id)}
             aria-label={isFavorite(host.id) ? `Remove ${host.name} from favorites` : `Add ${host.name} to favorites`}
-            type="button"
+            data-active={isFavorite(host.id) ? '' : undefined}
+            className="data-[active]:text-yellow-500"
           >
-            <Star size={14} aria-hidden="true" fill={isFavorite(host.id) ? 'currentColor' : 'none'} />
-          </button>
-          <Link href={`/hosts/${slugify(host.name)}`} className="view-details-btn">
-            View Details
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            <Star size={14} fill={isFavorite(host.id) ? 'currentColor' : 'none'} />
+          </Button>
+          <Link href={`/hosts/${slugify(host.name)}`}>
+            <Button variant="outline" size="xs">
+              View Details
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </Button>
           </Link>
         </div>
-      </div>
-    </div>
+      </CardFooter>
+    </Card>
   )
 }
 

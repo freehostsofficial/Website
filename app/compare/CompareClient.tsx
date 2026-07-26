@@ -6,6 +6,17 @@ import { useComparison } from '../../contexts/ComparisonContext';
 import { ROWS, findBestIndex, computeRating } from '../../lib/comparisonRows';
 import { slugify } from '../../lib/slugify';
 import { useFavorites } from '../../contexts/FavoritesContext';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -25,54 +36,23 @@ export default function CompareClient() {
   if (selection.length < 2) {
     return (
       <main id="main-content">
-        <div id="compare-page">
-          <div className="wrap">
-            <section
-              className="hero centered-hero compare-hero"
-              aria-labelledby="compare-hero-title"
-            >
-              <div className="blobs" aria-hidden="true">
-                <div className="blob b1" />
-                <div className="blob b2" />
-                <div className="blob b3" />
-              </div>
-              <div className="hero-inner">
-                <div className="hero-left">
-                  <h1 id="compare-hero-title">Compare Hosts</h1>
-                  <p className="lead">
-                    Select at least two hosts to compare them side by side.
-                  </p>
-                </div>
-              </div>
-            </section>
-
-            <div className="compare-empty-state">
-              <div className="compare-empty-icon" aria-hidden="true">
-                <GitCompare size={48} />
-              </div>
-              <h2 className="compare-empty-title">No hosts selected yet</h2>
-              <p className="compare-empty-desc">
-                Browse the host directory and click the{' '}
-                <GitCompare
-                  size={14}
-                  aria-hidden="true"
-                  style={{ display: 'inline', verticalAlign: 'middle' }}
-                />{' '}
-                compare button on any host card to add it here.
-                {selection.length === 1 && (
-                  <>
-                    {' '}You have <strong>1 host</strong> selected — add one more to start comparing.
-                  </>
-                )}
-              </p>
-              <div className="compare-empty-actions">
-                <Link href="/hosts" className="btn primary">
-                  Browse Hosts
-                </Link>
-                {selection.length === 1 && (
-                  <span className="compare-empty-hint">1 of 2 hosts selected</span>
-                )}
-              </div>
+        <div className="mx-auto max-w-7xl px-4 py-12">
+          <div className="text-center space-y-6">
+            <GitCompare size={48} className="mx-auto text-muted-foreground" />
+            <h1 className="text-2xl font-bold">Compare Hosts</h1>
+            <p className="text-muted-foreground max-w-md mx-auto">
+              Browse the host directory and click the <GitCompare size={14} className="inline" /> compare button on any host card to add it here.
+              {selection.length === 1 && (
+                <> You have <strong>1 host</strong> selected — add one more to start comparing.</>
+              )}
+            </p>
+            <div className="flex items-center justify-center gap-3">
+              <Link href="/hosts">
+                <Button>Browse Hosts</Button>
+              </Link>
+              {selection.length === 1 && (
+                <Badge variant="secondary">1 of 2 hosts selected</Badge>
+              )}
             </div>
           </div>
         </div>
@@ -107,165 +87,123 @@ export default function CompareClient() {
 
   return (
     <main id="main-content">
-      <div id="compare-page">
-        <div className="wrap">
+      <div className="mx-auto max-w-7xl px-4 py-8 space-y-6">
 
-          {/* ── Hero ──────────────────────────────────────────────────── */}
-          <section
-            className="hero centered-hero compare-hero"
-            aria-labelledby="compare-hero-title"
-          >
-            <div className="blobs" aria-hidden="true">
-              <div className="blob b1" />
-              <div className="blob b2" />
-              <div className="blob b3" />
-            </div>
-            <div className="hero-inner">
-              <div className="hero-left">
-                <h1 id="compare-hero-title">Compare Hosts</h1>
-                <p className="lead">
-                  Comparing{' '}
-                  <strong style={{ color: 'var(--text)' }}>
-                    {selection.length} hosts
-                  </strong>{' '}
-                  side by side.
-                </p>
-              </div>
-            </div>
-          </section>
-
-          {/* ── Toolbar ───────────────────────────────────────────────── */}
-          <div className="compare-toolbar">
-            <Link href="/hosts" className="compare-back-link">
-              <ArrowLeft size={14} aria-hidden="true" />
-              Back to Hosts
-            </Link>
-            <div className="compare-toolbar-right">
-              <Link href="/hosts" className="compare-add-more-btn">
-                <GitCompare size={13} aria-hidden="true" />
-                Add / Swap Hosts
-              </Link>
-              <button
-                type="button"
-                className="compare-clear-all-btn"
-                onClick={clearAll}
-              >
-                <Trash2 size={13} aria-hidden="true" />
-                Clear All
-              </button>
-            </div>
+        {/* ── Toolbar ───────────────────────────────────────────────── */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold">Compare Hosts</h1>
+            <p className="text-sm text-muted-foreground">
+              Comparing {selection.length} hosts side by side
+            </p>
           </div>
+          <div className="flex items-center gap-2">
+            <Link href="/hosts">
+              <Button variant="outline" size="sm">
+                <ArrowLeft size={14} /> Back to Hosts
+              </Button>
+            </Link>
+            <Link href="/hosts">
+              <Button variant="outline" size="sm">
+                <GitCompare size={14} /> Add / Swap
+              </Button>
+            </Link>
+            <Button variant="destructive" size="sm" onClick={clearAll}>
+              <Trash2 size={14} /> Clear All
+            </Button>
+          </div>
+        </div>
 
-          {/* ── Host header cards ─────────────────────────────────────── */}
-          <div
-            className="compare-host-cards"
-            style={{
-              gridTemplateColumns: `200px repeat(${selection.length}, minmax(280px, 1fr))`
-            }}
-          >
-            {/* Empty top-left corner */}
-            <div className="compare-corner-cell" />
-
-            {hostData.map(({ host, ratingPct, totalReviews, statusOnline }, idx) => (
-              <div
-                key={host.id}
-                className={`compare-host-card${bestRatingIdx === idx ? ' compare-host-card--best' : ''}`}
-              >
+        {/* ── Host header cards ─────────────────────────────────────── */}
+        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selection.length}, 1fr)` }}>
+          {hostData.map(({ host, ratingPct, totalReviews, statusOnline }, idx) => (
+            <Card key={host.id} className={bestRatingIdx === idx && totalReviews > 0 ? 'ring-2 ring-accent' : ''}>
+              <CardContent className="p-4 space-y-3">
                 {bestRatingIdx === idx && totalReviews > 0 && (
-                  <div className="compare-best-label">Top Rated</div>
+                  <Badge variant="default" className="w-fit">Top Rated</Badge>
                 )}
-                <div className="compare-host-card-icon" aria-hidden="true">
-                  {host.name.charAt(0).toUpperCase()}
-                </div>
-                <div className="compare-host-card-name">{host.name}</div>
-                {host.description && (
-                  <p className="compare-host-card-desc">{host.description}</p>
-                )}
-                <div className="compare-host-card-status">
-                  {statusOnline
-                    ? <><CheckCircle2 size={12} aria-hidden="true" className="compare-status-online" /> Online</>
-                    : <><XCircle size={12} aria-hidden="true" className="compare-status-offline" /> {host.status || 'Unknown'}</>
-                  }
-                </div>
-                {ratingPct !== null && (
-                  <div className="compare-host-card-rating">
-                    <div className="compare-rating-bar">
-                      <div
-                        className="compare-rating-fill"
-                        style={{ width: `${ratingPct}%` }}
-                        aria-label={`${ratingPct}% approval`}
-                      />
+                <div className="flex items-center gap-2">
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-accent/10 text-sm font-bold text-accent">
+                    {host.name.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <div className="font-semibold text-sm">{host.name}</div>
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                      {statusOnline
+                        ? <><CheckCircle2 size={12} className="text-accent" /> Online</>
+                        : <><XCircle size={12} className="text-destructive" /> {host.status || 'Unknown'}</>
+                      }
                     </div>
-                    <span className="compare-rating-text">
-                      {ratingPct}% <span className="compare-rating-sub">({totalReviews} reviews)</span>
-                    </span>
+                  </div>
+                </div>
+                {host.description && (
+                  <p className="text-xs text-muted-foreground line-clamp-2">{host.description}</p>
+                )}
+                {ratingPct !== null && (
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
+                      <div className="h-full rounded-full bg-accent" style={{ width: `${ratingPct}%` }} />
+                    </div>
+                    <span className="text-xs text-muted-foreground shrink-0">{ratingPct}% ({totalReviews})</span>
                   </div>
                 )}
-                <div className="compare-host-card-actions">
-                  <Link
-                    href={`/hosts/${slugify(host.name)}`}
-                    className="compare-view-btn"
-                  >
-                    View Details
+                <div className="flex items-center gap-1">
+                  <Link href={`/hosts/${slugify(host.name)}`}>
+                    <Button variant="outline" size="xs">View Details</Button>
                   </Link>
-                  <button
-                    type="button"
-                    className={`compare-fav-btn${isFavorite(host.id) ? ' active' : ''}`}
+                  <Button
+                    variant="ghost"
+                    size="icon-xs"
                     onClick={() => toggleFavorite(host.id)}
                     aria-pressed={isFavorite(host.id)}
-                    aria-label={isFavorite(host.id) ? `Remove ${host.name} from favorites` : `Save ${host.name}`}
+                    className={isFavorite(host.id) ? 'text-yellow-500' : ''}
                   >
-                    <Star
-                      size={14}
-                      aria-hidden="true"
-                      fill={isFavorite(host.id) ? 'currentColor' : 'none'}
-                    />
-                  </button>
-                  <button
-                    type="button"
-                    className="compare-remove-host-btn"
+                    <Star size={14} fill={isFavorite(host.id) ? 'currentColor' : 'none'} />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon-xs"
                     onClick={() => removeHost(host.id)}
-                    aria-label={`Remove ${host.name} from comparison`}
+                    className="text-destructive"
                   >
-                    Remove
-                  </button>
+                    <Trash2 size={14} />
+                  </Button>
                 </div>
-              </div>
-            ))}
-          </div>
-
-          {/* ── Comparison rows ───────────────────────────────────────── */}
-          <div className="compare-rows-section">
-            {ROWS.map((row, rowIdx) => (
-              <div
-                key={row.label}
-                className={`compare-row${rowIdx % 2 === 0 ? ' compare-row--alt' : ''}`}
-                style={{
-                  gridTemplateColumns: `200px repeat(${selection.length}, minmax(280px, 1fr))`
-                }}
-              >
-                <div className="compare-row-label">{row.label}</div>
-                {selection.map((host, colIdx) => {
-                  const isBest =
-                    row.getNumeric !== undefined &&
-                    bestIndices[row.label] === colIdx;
-                  return (
-                    <div
-                      key={host.id}
-                      className={`compare-row-cell${isBest ? ' compare-row-cell--best' : ''}`}
-                    >
-                      {isBest && (
-                        <span className="compare-cell-star" aria-label="Best value">★</span>
-                      )}
-                      <span className="compare-cell-value">{row.getValue(host)}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            ))}
-          </div>
-
+              </CardContent>
+            </Card>
+          ))}
         </div>
+
+        {/* ── Comparison table ───────────────────────────────────────── */}
+        <div className="rounded-lg border border-border overflow-hidden">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[200px]">Feature</TableHead>
+                {selection.map(host => (
+                  <TableHead key={host.id} className="text-center">{host.name}</TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {ROWS.map((row) => (
+                <TableRow key={row.label}>
+                  <TableCell className="font-medium text-sm">{row.label}</TableCell>
+                  {selection.map((host, colIdx) => {
+                    const isBest = row.getNumeric !== undefined && bestIndices[row.label] === colIdx;
+                    return (
+                      <TableCell key={host.id} className={`text-center text-sm ${isBest ? 'bg-accent/5 font-semibold' : ''}`}>
+                        {isBest && <span className="text-accent mr-1">★</span>}
+                        {row.getValue(host)}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+
       </div>
     </main>
   );
