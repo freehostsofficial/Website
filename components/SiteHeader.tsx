@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "@/components/NoPrefetchLink";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -39,7 +40,15 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Separator } from "@/components/ui/separator";
+import CommandPalette from "@/components/CommandPalette";
+import { cn } from "@/lib/utils";
 
 type NavLink = { href: string; icon: React.ReactNode; label: string };
 
@@ -68,32 +77,52 @@ const legalLinks: NavLink[] = [
   { href: "/privacy-policy", icon: <Lock className="size-4" />, label: "Privacy Policy" },
 ];
 
+function isActive(pathname: string, href: string): boolean {
+  if (href === "/") return pathname === "/";
+  return pathname.startsWith(href);
+}
+
 function NavDropdown({
   icon,
   label,
   links,
+  pathname,
 }: {
   icon: React.ReactNode;
   label: string;
   links: NavLink[];
+  pathname: string;
 }) {
+  const hasActive = links.some((l) => isActive(pathname, l.href));
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
           size="sm"
-              className="gap-1.5 text-muted-foreground transition-all duration-200 hover:text-foreground"
-            >
-              {icon}
-              {label}
-              <ChevronDown className="size-3.5 transition-transform duration-200 group-data-[state=open]:rotate-180" />
-            </Button>
+          className={cn(
+            "gap-1.5 transition-all duration-200",
+            hasActive
+              ? "text-foreground"
+              : "text-muted-foreground hover:text-foreground"
+          )}
+        >
+          {icon}
+          {label}
+          <ChevronDown className="size-3.5 transition-transform duration-200 group-data-[state=open]:rotate-180" />
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start">
         {links.map((link) => (
           <DropdownMenuItem key={link.href} asChild>
-            <Link href={link.href}>
+            <Link
+              href={link.href}
+              className={cn(
+                isActive(pathname, link.href) &&
+                  "border-l-2 border-primary pl-[calc(0.5rem-2px)] font-medium text-foreground"
+              )}
+            >
               {link.icon}
               {link.label}
             </Link>
@@ -104,7 +133,54 @@ function NavDropdown({
   );
 }
 
+function AccordionGroup({
+  label,
+  links,
+  pathname,
+}: {
+  label: string;
+  links: NavLink[];
+  pathname: string;
+}) {
+  const hasActive = links.some((l) => isActive(pathname, l.href));
+
+  return (
+    <Accordion type="single" collapsible>
+      <AccordionItem value={label} className="border-none">
+        <AccordionTrigger
+          className={cn(
+            "rounded-md px-3 py-2 text-sm font-medium hover:bg-secondary hover:no-underline",
+            hasActive && "text-foreground"
+          )}
+        >
+          {label}
+        </AccordionTrigger>
+        <AccordionContent className="pb-1">
+          <div className="ml-2 flex flex-col gap-0.5 border-l border-border pl-2">
+            {links.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={cn(
+                  "flex items-center gap-3 rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground",
+                  isActive(pathname, link.href) &&
+                    "border-l-2 border-primary pl-[calc(0.75rem-2px)] font-medium text-foreground"
+                )}
+              >
+                {link.icon}
+                {link.label}
+              </Link>
+            ))}
+          </div>
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
+  );
+}
+
 export default function SiteHeader({ trustpilotUrl }: { trustpilotUrl?: string }) {
+  const pathname = usePathname();
+
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border bg-background/80 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="mx-auto flex h-14 max-w-[1200px] items-center gap-2 px-4 sm:px-6">
@@ -130,7 +206,12 @@ export default function SiteHeader({ trustpilotUrl }: { trustpilotUrl?: string }
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-foreground hover:bg-secondary"
+                  className={cn(
+                    "flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-secondary",
+                    isActive(pathname, link.href)
+                      ? "border-l-2 border-primary pl-[calc(0.75rem-2px)] font-medium text-foreground"
+                      : "text-muted-foreground"
+                  )}
                 >
                   {link.icon}
                   {link.label}
@@ -138,43 +219,10 @@ export default function SiteHeader({ trustpilotUrl }: { trustpilotUrl?: string }
               ))}
 
               <Separator className="my-2" />
-              <p className="px-3 pb-1 text-xs font-medium text-muted-foreground">Submit</p>
-              {submitLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-foreground hover:bg-secondary"
-                >
-                  {link.icon}
-                  {link.label}
-                </Link>
-              ))}
 
-              <Separator className="my-2" />
-              <p className="px-3 pb-1 text-xs font-medium text-muted-foreground">Resources</p>
-              {resourceLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-foreground hover:bg-secondary"
-                >
-                  {link.icon}
-                  {link.label}
-                </Link>
-              ))}
-
-              <Separator className="my-2" />
-              <p className="px-3 pb-1 text-xs font-medium text-muted-foreground">Legal</p>
-              {legalLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-foreground hover:bg-secondary"
-                >
-                  {link.icon}
-                  {link.label}
-                </Link>
-              ))}
+              <AccordionGroup label="Submit" links={submitLinks} pathname={pathname} />
+              <AccordionGroup label="Resources" links={resourceLinks} pathname={pathname} />
+              <AccordionGroup label="Legal" links={legalLinks} pathname={pathname} />
             </nav>
 
             <div className="mt-auto border-t border-border p-3">
@@ -200,7 +248,12 @@ export default function SiteHeader({ trustpilotUrl }: { trustpilotUrl?: string }
               asChild
               variant="ghost"
               size="sm"
-              className="gap-1.5 text-muted-foreground hover:text-foreground"
+              className={cn(
+                "gap-1.5 transition-all duration-200",
+                isActive(pathname, link.href)
+                  ? "text-foreground"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
             >
               <Link href={link.href}>
                 {link.icon}
@@ -208,12 +261,14 @@ export default function SiteHeader({ trustpilotUrl }: { trustpilotUrl?: string }
               </Link>
             </Button>
           ))}
-          <NavDropdown icon={<Upload className="size-4" />} label="Submit" links={submitLinks} />
-          <NavDropdown icon={<BookOpen className="size-4" />} label="Resources" links={resourceLinks} />
-          <NavDropdown icon={<Scale className="size-4" />} label="Legal" links={legalLinks} />
+          <NavDropdown icon={<Upload className="size-4" />} label="Submit" links={submitLinks} pathname={pathname} />
+          <NavDropdown icon={<BookOpen className="size-4" />} label="Resources" links={resourceLinks} pathname={pathname} />
+          <NavDropdown icon={<Scale className="size-4" />} label="Legal" links={legalLinks} pathname={pathname} />
         </nav>
 
-        <div className="ml-auto flex items-center gap-1.5">
+        <div className="ml-auto flex items-center gap-0.5">
+          <CommandPalette />
+
           <Button asChild variant="ghost" size="icon" className="hidden sm:inline-flex" title="Trustpilot">
             <a
               href={trustpilotUrl ?? "#"}

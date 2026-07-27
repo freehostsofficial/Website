@@ -16,6 +16,7 @@ import ConsentGate from "../components/ConsentGate";
 import RevealProvider from "../components/RevealProvider";
 import SiteHeader from "../components/SiteHeader";
 import SiteFooter from "../components/SiteFooter";
+import PageBreadcrumbs from "../components/PageBreadcrumbs";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 
@@ -136,6 +137,9 @@ export default function RootLayout({
                 <GdprConsentBanner className="consent-banner" />
 
                 <div className="skippable">
+                    <Suspense fallback={null}>
+                      <PageBreadcrumbs />
+                    </Suspense>
                     {children}
                 </div>
               </ConsentGate>
