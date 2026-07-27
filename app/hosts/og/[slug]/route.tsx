@@ -4,6 +4,23 @@ import { fetchHostBySlug, fetchHostById } from '../../../../lib/cache';
 
 export const runtime = 'edge';
 
+// Literal hex values mirroring the site's design tokens (defined in
+// app/src/css/globals.css). Satori (next/og) renders outside the browser
+// and cannot read CSS custom properties, so the palette is duplicated here
+// intentionally — keep these in sync if the token values ever change.
+const COLORS = {
+  background: '#0a0a0a',
+  card: '#121212',
+  border: 'rgba(255,255,255,0.10)',
+  borderSubtle: 'rgba(255,255,255,0.08)',
+  foreground: '#fafafa',
+  muted: '#a3a3a3',
+  mutedDim: '#71717a',
+  accent: '#3ecf6d',
+  accentDim: 'rgba(62,207,109,0.12)',
+  accentBorder: 'rgba(62,207,109,0.30)',
+};
+
 type Props = {
   params: Promise<{ slug: string }>;
 };
@@ -28,12 +45,10 @@ export async function GET(req: NextRequest, { params }: Props) {
     const cpu = host.cpu || 'Unknown';
     const ram = host.ram || 'Unknown';
     const disk = host.disk || 'Unknown';
-    const targets = host.targets && host.targets.length > 0
-      ? host.targets.join(', ')
-      : 'Websites, Bots, Apps';
 
     const totalReviews = (host.approvals || 0) + (host.disapprovals || 0);
     const rating = totalReviews > 0 ? Math.round(((host.approvals || 0) / totalReviews) * 100) : 0;
+    const isOnline = host.status?.toLowerCase() === 'online';
 
     // Base URL for assets
     const host_header = req.headers.get('host') || 'freehosts.space';
@@ -49,37 +64,50 @@ export async function GET(req: NextRequest, { params }: Props) {
             width: '100%',
             display: 'flex',
             flexDirection: 'column',
-            backgroundColor: '#050a18',
-            padding: '40px 50px',
+            backgroundColor: COLORS.background,
+            padding: '56px 64px',
             position: 'relative',
-            overflow: 'hidden',
           }}
         >
-          {/* Background Decorative Blobs */}
-          <div style={{ position: 'absolute', top: '-100px', right: '-100px', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(99, 102, 241, 0) 70%)', display: 'flex' }} />
-          <div style={{ position: 'absolute', bottom: '-150px', left: '-150px', width: '600px', height: '600px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(6, 182, 212, 0.1) 0%, rgba(6, 182, 212, 0) 70%)', display: 'flex' }} />
-
           {/* Header Row */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '40px', width: '100%' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '44px', width: '100%' }}>
             <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-              <div style={{ display: 'flex', fontSize: '20px', fontWeight: 700, color: '#6366f1', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '2px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '18px', fontWeight: 600, color: COLORS.muted, marginBottom: '18px', textTransform: 'uppercase', letterSpacing: '3px' }}>
+                <span style={{ display: 'flex', width: '6px', height: '6px', borderRadius: '50%', backgroundColor: COLORS.accent }} />
                 <span>Free Hosting Directory</span>
               </div>
-              <div style={{ display: 'flex', fontSize: '84px', fontWeight: 800, color: 'white', lineHeight: 1.1, letterSpacing: '-2px' }}>
+              <div style={{ display: 'flex', fontSize: '76px', fontWeight: 700, color: COLORS.foreground, lineHeight: 1.1, letterSpacing: '-2px' }}>
                 <span>{name}</span>
               </div>
             </div>
             {/* Logo */}
-            <div style={{ display: 'flex', backgroundColor: 'rgba(255,255,255,0.03)', padding: '20px', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.08)' }}>
+            <div style={{ display: 'flex', backgroundColor: COLORS.card, padding: '18px', borderRadius: '16px', border: `1px solid ${COLORS.border}` }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={logoUrl} alt="Logo" width={100} height={100} />
+              <img src={logoUrl} alt="Logo" width={88} height={88} />
             </div>
           </div>
 
-          {/* Targets Pills */}
-          <div style={{ display: 'flex', gap: '12px', marginBottom: '40px', flexWrap: 'wrap' }}>
-            {host.targets?.slice(0, 5).map(t => (
-              <div key={t} style={{ display: 'flex', padding: '8px 16px', backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '99px', border: '1px solid rgba(255,255,255,0.1)', color: '#94a3b8', fontSize: '18px', fontWeight: 600 }}>
+          {/* Status + Targets Pills */}
+          <div style={{ display: 'flex', gap: '10px', marginBottom: '44px', flexWrap: 'wrap' }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '9px 18px',
+                backgroundColor: isOnline ? COLORS.accentDim : 'rgba(229,72,77,0.12)',
+                borderRadius: '8px',
+                border: `1px solid ${isOnline ? COLORS.accentBorder : 'rgba(229,72,77,0.3)'}`,
+                color: isOnline ? COLORS.accent : '#f2777a',
+                fontSize: '18px',
+                fontWeight: 600,
+              }}
+            >
+              <span style={{ display: 'flex', width: '8px', height: '8px', borderRadius: '50%', backgroundColor: isOnline ? COLORS.accent : '#f2777a' }} />
+              {host.status || 'Unknown'}
+            </div>
+            {host.targets?.slice(0, 4).map(t => (
+              <div key={t} style={{ display: 'flex', padding: '9px 18px', backgroundColor: COLORS.card, borderRadius: '8px', border: `1px solid ${COLORS.border}`, color: COLORS.muted, fontSize: '18px', fontWeight: 500 }}>
                 {t}
               </div>
             ))}
@@ -98,21 +126,21 @@ export async function GET(req: NextRequest, { params }: Props) {
 
               if (host.targets?.some(t => t.toLowerCase().includes('domain')) && extractedDomains.length > 0) {
                 return (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                    <div style={{ display: 'flex', fontSize: '20px', fontWeight: 700, color: '#06b6d4', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+                    <div style={{ display: 'flex', fontSize: '18px', fontWeight: 600, color: COLORS.muted, textTransform: 'uppercase', letterSpacing: '2px' }}>
                       <span>Available Extensions</span>
                     </div>
                     <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap', maxWidth: '900px' }}>
                       {extractedDomains.map(domain => {
                         const cleanDomain = domain.replace(/^[-\s•*]+/, '');
                         return (
-                          <div key={domain} style={{ display: 'flex', padding: '8px 14px', background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%)', border: '1px solid rgba(99, 102, 241, 0.2)', borderRadius: '12px', color: '#818cf8', fontSize: '20px', fontWeight: 700, marginBottom: '6px' }}>
+                          <div key={domain} style={{ display: 'flex', padding: '9px 16px', backgroundColor: COLORS.accentDim, border: `1px solid ${COLORS.accentBorder}`, borderRadius: '10px', color: COLORS.accent, fontSize: '20px', fontWeight: 700 }}>
                             {cleanDomain}
                           </div>
                         );
                       })}
                       {hasMoreDomains && (
-                        <div style={{ display: 'flex', color: '#64748b', fontSize: '20px', fontWeight: 600, marginLeft: '10px', fontStyle: 'italic' }}>
+                        <div style={{ display: 'flex', color: COLORS.mutedDim, fontSize: '20px', fontWeight: 500, marginLeft: '6px', fontStyle: 'italic' }}>
                           + more available
                         </div>
                       )}
@@ -121,27 +149,18 @@ export async function GET(req: NextRequest, { params }: Props) {
                 );
               } else if (host.targets?.some(t => t.toLowerCase().includes('subdomain'))) {
                 return (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                    <div style={{ display: 'flex', fontSize: '20px', fontWeight: 700, color: '#6366f1', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+                    <div style={{ display: 'flex', fontSize: '18px', fontWeight: 600, color: COLORS.muted, textTransform: 'uppercase', letterSpacing: '2px' }}>
                       <span>Free Subdomain Hosting</span>
                     </div>
                   </div>
                 );
               } else {
                 return (
-                  <div style={{ display: 'flex', gap: '30px' }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', width: '200px', padding: '24px', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.08)' }}>
-                      <span style={{ fontSize: '16px', color: '#64748b', fontWeight: 700, marginBottom: '8px', textTransform: 'uppercase' }}>CPU</span>
-                      <span style={{ fontSize: '32px', color: 'white', fontWeight: 800 }}>{cpu}</span>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', width: '200px', padding: '24px', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.08)' }}>
-                      <span style={{ fontSize: '16px', color: '#64748b', fontWeight: 700, marginBottom: '8px', textTransform: 'uppercase' }}>RAM</span>
-                      <span style={{ fontSize: '32px', color: 'white', fontWeight: 800 }}>{ram}</span>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', width: '200px', padding: '24px', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.08)' }}>
-                      <span style={{ fontSize: '16px', color: '#64748b', fontWeight: 700, marginBottom: '8px', textTransform: 'uppercase' }}>Disk</span>
-                      <span style={{ fontSize: '32px', color: 'white', fontWeight: 800 }}>{disk}</span>
-                    </div>
+                  <div style={{ display: 'flex', gap: '20px' }}>
+                    <SpecBox label="CPU" value={cpu} />
+                    <SpecBox label="RAM" value={ram} />
+                    <SpecBox label="Disk" value={disk} />
                   </div>
                 );
               }
@@ -149,10 +168,10 @@ export async function GET(req: NextRequest, { params }: Props) {
 
             {/* Rating Badge */}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-              <div style={{ display: 'flex', padding: '12px 24px', background: 'linear-gradient(90deg, #22c55e 0%, #16a34a 100%)', borderRadius: '16px', color: 'white', fontSize: '36px', fontWeight: 900, boxShadow: '0 10px 20px rgba(34, 197, 94, 0.2)' }}>
+              <div style={{ display: 'flex', padding: '14px 26px', backgroundColor: COLORS.foreground, borderRadius: '10px', color: COLORS.background, fontSize: '34px', fontWeight: 800 }}>
                 <span>{rating}%</span>
               </div>
-              <span style={{ fontSize: '16px', color: '#64748b', marginTop: '12px', fontWeight: 600 }}>{totalReviews} community reviews</span>
+              <span style={{ fontSize: '16px', color: COLORS.mutedDim, marginTop: '12px', fontWeight: 500 }}>{totalReviews} community reviews</span>
             </div>
           </div>
         </div>
@@ -168,4 +187,13 @@ export async function GET(req: NextRequest, { params }: Props) {
       status: 500,
     });
   }
+}
+
+function SpecBox({ label, value }: { label: string; value: string }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', width: '190px', padding: '22px', backgroundColor: COLORS.card, borderRadius: '14px', border: `1px solid ${COLORS.border}` }}>
+      <span style={{ fontSize: '15px', color: COLORS.mutedDim, fontWeight: 600, marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '1px' }}>{label}</span>
+      <span style={{ fontSize: '30px', color: COLORS.foreground, fontWeight: 700 }}>{value}</span>
+    </div>
+  );
 }

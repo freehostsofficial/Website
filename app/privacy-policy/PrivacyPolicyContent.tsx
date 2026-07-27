@@ -177,8 +177,9 @@ export default function PrivacyPolicyContent() {
 
       <p>
         Like many businesses, we also collect information through cookies and
-        similar technologies. You can find out more about this in our Cookie
-        Notice: <span className="question" style={{ color: "rgb(0, 58, 250)" }}>{process.env.RAW_APP_URL}/cookies</span>.
+        similar technologies. You can find out more about this, including a
+        full list of the cookies we use, in our{" "}
+        <a href="/cookies">Cookie Policy</a>.
       </p>
 
       <p>The information we collect includes:</p>
@@ -324,10 +325,8 @@ export default function PrivacyPolicyContent() {
 
       <ul>
         <li>
-          <strong>Web and Mobile Analytics:</strong> Google Analytics and Matomo
-        </li>
-        <li>
-          <strong>Website Performance Monitoring:</strong> Matomo
+          <strong>Web and Mobile Analytics (opt-in only):</strong> Matomo,
+          self-hosted, used only if you consent to analytics cookies
         </li>
       </ul>
 
@@ -360,22 +359,22 @@ export default function PrivacyPolicyContent() {
       </p>
 
       <p>
-        Specific information about how we use such technologies and how you can
-        refuse certain cookies is set out in our Cookie Notice:{" "}
-        <span className="question" style={{ color: "rgb(0, 58, 250)" }}>{process.env.RAW_APP_URL}/cookies</span>.
+        Specific information about every cookie we use, how long each one
+        lasts, and how you can refuse or withdraw consent for non-essential
+        cookies is set out in our <a href="/cookies">Cookie Policy</a>.
       </p>
 
-      <h3>Google Analytics</h3>
+      <h3>Matomo Analytics</h3>
 
       <p>
-        We may share your information with Google Analytics to track and
-        analyze the use of the Services. To opt out of being tracked by Google
-        Analytics across the Services, visit{" "}
-        <a href="https://tools.google.com/dlpage/gaoptout">
-          https://tools.google.com/dlpage/gaoptout
-        </a>
-        . For more information on the privacy practices of Google, please visit
-        the <a href="https://policies.google.com/privacy">Google Privacy & Terms page</a>.
+        We use <strong>Matomo</strong>, a self-hosted, privacy-respecting
+        analytics tool, to understand aggregate site usage. We do not use
+        Google Analytics or share data with advertising networks. Matomo is
+        not loaded and sets no cookies until you explicitly opt in through our
+        cookie banner or the &quot;Cookie Preferences&quot; control in the
+        site footer. You can withdraw this consent at any time in the same
+        place, and any Matomo cookies already set will be removed. See our{" "}
+        <a href="/cookies">Cookie Policy</a> for full details.
       </p>
 
       <hr className="section-divider" />

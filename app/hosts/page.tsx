@@ -57,7 +57,7 @@ export const metadata = {
 }
 
 export const viewport = {
-  themeColor: '#071028',
+  themeColor: '#0a0a0a',
 };
 
 export default async function HostsPage() {

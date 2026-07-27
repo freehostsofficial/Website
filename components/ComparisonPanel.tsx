@@ -3,46 +3,77 @@
 import Link from 'next/link';
 import { X, GitCompare, ArrowRight } from 'lucide-react';
 import { useComparison } from '../contexts/ComparisonContext';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+
+// ─── Component ────────────────────────────────────────────────────────────────
 
 export default function ComparisonPanel() {
   const { selection, removeHost, clearAll } = useComparison();
 
-  if (selection.length === 0) return null;
+  // Show a "tray" even with 1 host selected so the user knows they can add more
+  if (selection.length === 0) {
+    return null;
+  }
 
   const canCompare = selection.length >= 2;
 
   return (
-    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 shadow-lg max-w-[calc(100vw-2rem)]">
-      <div className="flex items-center gap-2 shrink-0">
-        <GitCompare size={15} className="text-accent" />
-        <span className="text-sm font-medium whitespace-nowrap">
-          {canCompare ? `Comparing ${selection.length} hosts` : 'Add 1 more host to compare'}
-        </span>
+    <div
+      className="comparison-panel"
+      role="region"
+      aria-label="Host comparison tray"
+    >
+      <div className="comparison-panel-header">
+        <div className="comparison-panel-left">
+          <GitCompare size={15} aria-hidden="true" className="comparison-panel-icon" />
+          <span className="comparison-panel-title">
+            {canCompare
+              ? `Comparing ${selection.length} hosts`
+              : 'Add 1 more host to compare'}
+          </span>
+        </div>
+        <div className="comparison-panel-actions">
+          {canCompare && (
+            <Link href="/compare" className="comparison-go-btn">
+              Compare now
+              <ArrowRight size={13} aria-hidden="true" />
+            </Link>
+          )}
+          <button
+            className="comparison-clear-btn"
+            onClick={clearAll}
+            type="button"
+            aria-label="Clear all hosts from comparison"
+          >
+            Clear
+          </button>
+        </div>
       </div>
-      <div className="flex items-center gap-1.5 overflow-x-auto">
+
+      {/* Host chips */}
+      <div className="comparison-chips-row">
         {selection.map((host) => (
-          <Badge key={host.id} variant="secondary" className="gap-1.5 pr-1 text-xs whitespace-nowrap">
-            <span className="flex size-4 items-center justify-center rounded-full bg-accent/20 text-[10px] font-bold text-accent">
+          <div key={host.id} className="comparison-chip">
+            <span className="comparison-chip-icon" aria-hidden="true">
               {host.name.charAt(0).toUpperCase()}
             </span>
-            {host.name}
-            <button type="button" onClick={() => removeHost(host.id)} aria-label={`Remove ${host.name}`} className="ml-0.5 hover:text-destructive">
-              <X size={11} />
+            <span className="comparison-chip-name">{host.name}</span>
+            <button
+              type="button"
+              className="comparison-chip-remove"
+              onClick={() => removeHost(host.id)}
+              aria-label={`Remove ${host.name} from comparison`}
+            >
+              <X size={11} aria-hidden="true" />
             </button>
-          </Badge>
+          </div>
         ))}
-      </div>
-      <div className="flex items-center gap-2 shrink-0">
-        {canCompare && (
-          <Link href="/compare">
-            <Button size="xs">
-              Compare now <ArrowRight size={13} />
-            </Button>
-          </Link>
-        )}
-        <Button variant="ghost" size="xs" onClick={clearAll}>Clear</Button>
+        {/* Empty slot indicators */}
+        {selection.length < 4 && Array.from({ length: Math.min(1, 4 - selection.length) }).map((_, i) => (
+          <div key={`empty-${i}`} className="comparison-chip comparison-chip--empty">
+            <span className="comparison-chip-icon comparison-chip-icon--empty" aria-hidden="true">+</span>
+            <span className="comparison-chip-name comparison-chip-name--empty">Add a host</span>
+          </div>
+        ))}
       </div>
     </div>
   );

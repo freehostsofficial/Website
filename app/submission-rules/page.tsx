@@ -66,9 +66,7 @@ export default function SubmissionRulesPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
-      <main className="wrap">
-        <SubmissionRulesContent />
-      </main>
+      <SubmissionRulesContent />
     </>
   );
 }

@@ -5,6 +5,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import type { LucideIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 export const metadata: Metadata = {
   title: "Other Free Hosting Platforms & Directories - FreeHosts",
@@ -58,45 +60,73 @@ export default function OtherFreeHostsPage() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
-      <main className="wrap">
-        <div className="external-page-header">
-          <h1 className="external-page-title">Other Free Hosting Platforms</h1>
-          <p className="external-page-subtitle">Explore a curated collection of reliable platforms offering free hosting services for your websites, applications, and projects.</p>
+      <main className="mx-auto max-w-[1200px] px-4 py-12 sm:px-6">
+        <div className="text-center">
+          <h1>Other Free Hosting Platforms</h1>
+          <p className="mx-auto mt-2 max-w-md text-muted-foreground">
+            Explore a curated collection of reliable platforms offering free hosting
+            services for your websites, applications, and projects.
+          </p>
         </div>
 
-        <div className="external-info-banner">
-          <Info size={18} className="external-info-banner-icon" aria-hidden="true" />
-          <div className="external-info-banner-content">
-            <h3>Important Information</h3>
-            <p>The platforms listed below are independent services not managed by FreeHosts. We have included them as a helpful resource for our community. While we have carefully selected these options, we cannot guarantee their availability, quality, or reliability. Always review each platform terms of service before use.</p>
+        <div className="mt-8 flex gap-3 rounded-lg border border-border bg-card p-4">
+          <Info className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
+          <div>
+            <h3 className="text-sm font-semibold">Important Information</h3>
+            <p className="mt-1 text-sm text-muted-foreground">
+              The platforms listed below are independent services not managed by
+              FreeHosts. We have included them as a helpful resource for our
+              community. While we have carefully selected these options, we cannot
+              guarantee their availability, quality, or reliability. Always review
+              each platform terms of service before use.
+            </p>
           </div>
         </div>
 
-        <section className="external-category-section">
-          <h2 className="external-category-title">
-            <List size={18} aria-hidden="true" />
+        <section className="mt-10">
+          <h2 className="flex items-center gap-2 text-lg">
+            <List className="size-4" />
             Specialized Hosting Directories
           </h2>
-          <p className="external-category-description">Comprehensive directories focused on specific types of hosting services.</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Comprehensive directories focused on specific types of hosting services.
+          </p>
 
-          <div className="external-hosts-grid">
+          <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {externalHosts.map((host) => (
-              <article className="external-host-card" key={host.name}>
-                <div className="external-host-header">
-                  <div className="external-host-icon-wrapper">
-                    {host.image ? <Image src={host.image} alt={host.name} width={40} height={40} /> : host.initials}
+              <Card key={host.name} className="gap-3 py-4">
+                <CardContent className="flex flex-col gap-2">
+                  <div className="flex items-center gap-3">
+                    <div className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-md bg-secondary">
+                      {host.image ? (
+                        <Image src={host.image} alt={host.name} width={40} height={40} />
+                      ) : (
+                        host.initials
+                      )}
+                    </div>
+                    <h3 className="text-sm font-semibold">{host.name}</h3>
                   </div>
-                  <h3 className="external-host-name">{host.name}</h3>
-                </div>
-                <p className="external-host-description">{host.description}</p>
-                <div className="external-host-links">
-                  {host.links.map((link) => (
-                    <a key={link.href} href={link.href} className="external-host-link" target="_blank" rel="noopener noreferrer" aria-label={`${host.name} ${link.label}`}>
-                      {link.lucideIcon ? <link.lucideIcon size={16} aria-hidden="true" /> : link.faIcon ? <FontAwesomeIcon icon={link.faIcon} aria-hidden="true" /> : null}
-                    </a>
-                  ))}
-                </div>
-              </article>
+                  <p className="text-sm text-muted-foreground">{host.description}</p>
+                  <div className="mt-1 flex gap-2">
+                    {host.links.map((link) => (
+                      <Button key={link.href} asChild variant="outline" size="icon">
+                        <a
+                          href={link.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`${host.name} ${link.label}`}
+                        >
+                          {link.lucideIcon ? (
+                            <link.lucideIcon className="size-4" />
+                          ) : link.faIcon ? (
+                            <FontAwesomeIcon icon={link.faIcon} className="size-4" />
+                          ) : null}
+                        </a>
+                      </Button>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </section>

@@ -1,13 +1,41 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import type { LucideIcon } from "lucide-react";
-import { ArrowUpRight, Award, Code, Crown, Globe, GraduationCap, HandHeart, HandMetal, Heart, LayoutGrid, Newspaper, Server, Shield, ShieldCheck, Terminal, Upload, UserCheck, Users } from "lucide-react";
-import { staffData, type StaffJsonMember } from "./data";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import {
+  ArrowUpRight,
+  Award,
+  Code,
+  Crown,
+  Globe,
+  GraduationCap,
+  HandHeart,
+  HandMetal,
+  Heart,
+  LayoutGrid,
+  Newspaper,
+  Server,
+  Shield,
+  ShieldCheck,
+  Terminal,
+  Upload,
+  UserCheck,
+  Users,
+} from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+import { faDiscord, faGithub, faLinkedin, faTwitter } from "@fortawesome/free-brands-svg-icons";
+
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { staffData, type StaffJsonMember } from "./data";
 
 type FilterKey =
   | "all"
@@ -51,14 +79,14 @@ const roleConfig: Record<string, RoleInfo> = {
   provider: { icon: Server, className: "hosting-provider", priority: 7, displayName: "Hosting Provider", filterKey: "hosting-provider" },
 };
 
-const sections: Record<Exclude<FilterKey, "all">, { title: string; desc: string; iconClass: string; icon: LucideIcon }> = {
-  owner: { title: "Owners", desc: "Founders and leaders of FreeHosts", iconClass: "leadership", icon: Crown },
-  administrator: { title: "Administrators", desc: "Team administrators managing operations", iconClass: "leadership", icon: UserCheck },
-  developer: { title: "Developers", desc: "Building and maintaining our platform", iconClass: "development", icon: Code },
-  moderator: { title: "Moderators", desc: "Community moderators keeping things safe", iconClass: "community", icon: Shield },
-  helper: { title: "Helpers", desc: "Support team helping our community", iconClass: "community", icon: HandHeart },
-  "host-publisher": { title: "Host Publishers", desc: "Contributors managing host listings", iconClass: "hosting", icon: Upload },
-  "hosting-provider": { title: "Hosting Providers", desc: "Partners providing hosting services", iconClass: "hosting", icon: Server },
+const sections: Record<Exclude<FilterKey, "all">, { title: string; desc: string; icon: LucideIcon }> = {
+  owner: { title: "Owners", desc: "Founders and leaders of FreeHosts", icon: Crown },
+  administrator: { title: "Administrators", desc: "Team administrators managing operations", icon: UserCheck },
+  developer: { title: "Developers", desc: "Building and maintaining our platform", icon: Code },
+  moderator: { title: "Moderators", desc: "Community moderators keeping things safe", icon: Shield },
+  helper: { title: "Helpers", desc: "Support team helping our community", icon: HandHeart },
+  "host-publisher": { title: "Host Publishers", desc: "Contributors managing host listings", icon: Upload },
+  "hosting-provider": { title: "Hosting Providers", desc: "Partners providing hosting services", icon: Server },
 };
 
 const filters: { key: FilterKey; icon: LucideIcon; label: string }[] = [
@@ -72,12 +100,12 @@ const filters: { key: FilterKey; icon: LucideIcon; label: string }[] = [
   { key: "hosting-provider", icon: Server, label: "Hosting Provider" },
 ];
 
-const linkIcons: Record<string, { icon: LucideIcon; label: string }> = {
-  github: { icon: Globe, label: "GitHub Profile" },
+const linkIcons: Record<string, { icon: LucideIcon | IconDefinition; label: string; isBrand?: boolean }> = {
+  github: { icon: faGithub, label: "GitHub Profile", isBrand: true },
   website: { icon: Globe, label: "Website" },
-  discord: { icon: Globe, label: "Discord" },
-  twitter: { icon: Globe, label: "Twitter" },
-  linkedin: { icon: Globe, label: "LinkedIn" },
+  discord: { icon: faDiscord, label: "Discord", isBrand: true },
+  twitter: { icon: faTwitter, label: "Twitter", isBrand: true },
+  linkedin: { icon: faLinkedin, label: "LinkedIn", isBrand: true },
 };
 
 function categorizeRole(role: string) {
@@ -115,20 +143,6 @@ export default function StaffClient() {
   const [activeFilter, setActiveFilter] = useState<FilterKey>("all");
   const [selectedMember, setSelectedMember] = useState<StaffMember | null>(null);
 
-  useEffect(() => {
-    if (!selectedMember) return;
-
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setSelectedMember(null);
-    };
-
-    document.addEventListener("keydown", onKeyDown);
-
-    return () => {
-      document.removeEventListener("keydown", onKeyDown);
-    };
-  }, [selectedMember]);
-
   const grouped = useMemo(() => {
     const result = Object.keys(sections).reduce(
       (acc, key) => ({ ...acc, [key]: [] }),
@@ -147,26 +161,28 @@ export default function StaffClient() {
   }, [activeFilter, members]);
 
   return (
-    <main className="wrap py-12">
-      <section className="text-center mb-8">
-        <div className="flex justify-center text-accent mb-4">
-          <Users size={24} aria-hidden="true" />
+    <main className="mx-auto max-w-[1200px] px-4 py-12 sm:px-6">
+      <section className="flex flex-col items-center gap-3 text-center">
+        <div className="flex size-12 items-center justify-center rounded-full bg-secondary">
+          <Users className="size-6" />
         </div>
-        <h1 className="text-3xl font-bold">Meet Our Team</h1>
-        <p className="text-muted-foreground mt-2 max-w-xl mx-auto">
+        <h1>Meet Our Team</h1>
+        <p className="max-w-md text-muted-foreground">
           Dedicated volunteers who help run, maintain, and grow the FreeHosts community.
         </p>
       </section>
 
-      <div className="flex flex-wrap gap-2 justify-center mb-8">
+      <div className="mt-8 flex flex-wrap justify-center gap-2">
         {filters.map((filter) => (
           <Button
-            variant={activeFilter === filter.key ? "default" : "ghost"}
-            size="sm"
-            onClick={() => setActiveFilter(filter.key)}
             key={filter.key}
+            type="button"
+            size="sm"
+            variant={activeFilter === filter.key ? "default" : "outline"}
+            onClick={() => setActiveFilter(filter.key)}
+            className="gap-1.5"
           >
-            {React.createElement(filter.icon, { size: 14, "aria-hidden": "true" })}
+            <filter.icon className="size-3.5" />
             {filter.label}
           </Button>
         ))}
@@ -174,99 +190,33 @@ export default function StaffClient() {
 
       <StaffSections grouped={grouped} onSelect={setSelectedMember} />
 
-      <Card className="max-w-lg mx-auto mt-12 text-center">
-        <CardContent className="py-8 space-y-4">
-          <div className="flex justify-center text-accent">
-            <HandMetal size={24} aria-hidden="true" />
-          </div>
-          <h2 className="text-xl font-semibold">Want to Join the Team?</h2>
-          <p className="text-sm text-muted-foreground">
-            We&apos;re always looking for passionate volunteers to help grow and improve FreeHosts.
-          </p>
-          <div className="grid grid-cols-2 gap-3 text-left">
-            <div className="rounded-lg bg-muted/50 p-3 space-y-1">
-              <Heart size={16} className="text-accent" />
-              <div className="text-sm font-medium">Make an Impact</div>
-              <div className="text-xs text-muted-foreground">Help thousands find the right hosting</div>
-            </div>
-            <div className="rounded-lg bg-muted/50 p-3 space-y-1">
-              <Users size={16} className="text-accent" />
-              <div className="text-sm font-medium">Join Community</div>
-              <div className="text-xs text-muted-foreground">Work with passionate volunteers</div>
-            </div>
-            <div className="rounded-lg bg-muted/50 p-3 space-y-1">
-              <GraduationCap size={16} className="text-accent" />
-              <div className="text-sm font-medium">Learn & Grow</div>
-              <div className="text-xs text-muted-foreground">Gain experience and skills</div>
-            </div>
-            <div className="rounded-lg bg-muted/50 p-3 space-y-1">
-              <Award size={16} className="text-accent" />
-              <div className="text-sm font-medium">Recognition</div>
-              <div className="text-xs text-muted-foreground">Get credited for your work</div>
-            </div>
-          </div>
-          <a href="https://discord.gg/QbeZ3b5CQd" target="_blank" rel="noopener noreferrer">
-            <Button>
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0741.0741 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.1776-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189z"/></svg>
-              Join Our Discord
-            </Button>
-          </a>
-        </CardContent>
-      </Card>
+      <section className="mt-16 flex flex-col items-center gap-4 rounded-lg border border-border bg-card p-10 text-center">
+        <div className="flex size-12 items-center justify-center rounded-full bg-secondary">
+          <HandMetal className="size-6" />
+        </div>
+        <h2>Want to Join the Team?</h2>
+        <p className="max-w-md text-muted-foreground">
+          We&apos;re always looking for passionate volunteers to help grow and improve
+          FreeHosts. Whether you&apos;re interested in curation, moderation,
+          development, or community support, there&apos;s a place for you here.
+        </p>
 
-      <Dialog open={!!selectedMember} onOpenChange={(open) => { if (!open) setSelectedMember(null); }}>
-        {selectedMember && (
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <div className="flex items-center gap-3 mb-2">
-                <div className="flex size-10 items-center justify-center rounded-lg bg-accent/10 text-accent">
-                  {React.createElement(selectedMember.primaryRole.icon, { size: 20, "aria-hidden": "true" })}
-                </div>
-                <div>
-                  <DialogTitle>{selectedMember.name}</DialogTitle>
-                  <DialogDescription>
-                    <RoleBadges roles={selectedMember.roles} />
-                  </DialogDescription>
-                </div>
-              </div>
-            </DialogHeader>
-            <div className="space-y-4">
-              {selectedMember.about && (
-                <div>
-                  <h4 className="text-sm font-semibold mb-1">About</h4>
-                  <p className="text-sm text-muted-foreground">{selectedMember.about}</p>
-                </div>
-              )}
-              {selectedMember.links && Object.entries(selectedMember.links).filter(([, v]) => v).length > 0 && (
-                <div>
-                  <h4 className="text-sm font-semibold mb-2">Links</h4>
-                  <div className="space-y-2">
-                    {Object.entries(selectedMember.links).filter(([, v]) => v).map(([key, value]) => {
-                      const info = linkIcons[key] || { icon: Globe, label: key };
-                      return (
-                        <a
-                          href={value}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          key={key}
-                          className="flex items-center gap-3 rounded-lg border border-border p-3 hover:bg-muted/50 transition-colors"
-                        >
-                          {React.createElement(info.icon, { size: 16, "aria-hidden": "true", className: "text-muted-foreground shrink-0" })}
-                          <div className="min-w-0 flex-1">
-                            <div className="text-sm font-medium truncate">{info.label}</div>
-                            <div className="text-xs text-muted-foreground truncate">{value}</div>
-                          </div>
-                          <ArrowUpRight size={16} className="text-muted-foreground shrink-0" />
-                        </a>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-            </div>
-          </DialogContent>
-        )}
-      </Dialog>
+        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <Benefit icon={Heart} title="Make an Impact" text="Help thousands find the right hosting" />
+          <Benefit icon={Users} title="Join Community" text="Work with passionate volunteers" />
+          <Benefit icon={GraduationCap} title="Learn & Grow" text="Gain experience and skills" />
+          <Benefit icon={Award} title="Recognition" text="Get credited for your work" />
+        </div>
+
+        <Button asChild className="mt-2 gap-2">
+          <a href="https://discord.gg/QbeZ3b5CQd" target="_blank" rel="noopener noreferrer">
+            <FontAwesomeIcon icon={faDiscord} className="size-4" />
+            Join Our Discord
+          </a>
+        </Button>
+      </section>
+
+      <StaffModal member={selectedMember} onClose={() => setSelectedMember(null)} />
     </main>
   );
 }
@@ -281,57 +231,145 @@ function StaffSections({
   const visible = Object.entries(sections).filter(([key]) => grouped[key as Exclude<FilterKey, "all">].length > 0);
 
   if (visible.length === 0) {
-    return <p className="text-center text-muted-foreground">No staff members found in this category.</p>;
+    return (
+      <p className="mt-12 text-center text-muted-foreground">
+        No staff members found in this category.
+      </p>
+    );
   }
 
   return (
-    <div className="space-y-8">
+    <>
       {visible.map(([key, section]) => {
         const members = grouped[key as Exclude<FilterKey, "all">];
         return (
-          <section key={key}>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="flex size-10 items-center justify-center rounded-lg bg-accent/10 text-accent">
-                {React.createElement(section.icon, { size: 20, "aria-hidden": "true" })}
+          <section className="mt-12" key={key}>
+            <div className="mb-4 flex items-center gap-3">
+              <div className="flex size-9 items-center justify-center rounded-md bg-secondary">
+                <section.icon className="size-4" />
               </div>
               <div>
-                <h2 className="text-lg font-semibold">{section.title}</h2>
+                <h2 className="text-lg">{section.title}</h2>
                 <p className="text-sm text-muted-foreground">{section.desc}</p>
               </div>
             </div>
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {members.map((member) => (
-                <button type="button" key={member.username} className="text-left" onClick={() => onSelect(member)}>
-                  <Card className="cursor-pointer hover:border-accent/50 transition-colors h-full">
-                    <CardContent className="flex items-center gap-3 p-4">
-                      <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-accent/10 text-accent">
-                        {React.createElement(member.primaryRole.icon, { size: 20, "aria-hidden": "true" })}
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="font-semibold text-sm truncate">{member.name}</div>
-                        <RoleBadges roles={member.roles} />
-                      </div>
-                    </CardContent>
-                  </Card>
-                </button>
+                <Card
+                  key={member.username}
+                  className="cursor-pointer p-0 transition-colors hover:border-foreground/30"
+                  onClick={() => onSelect(member)}
+                >
+                  <CardContent className="flex items-center gap-3 p-4">
+                    <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-secondary">
+                      <member.primaryRole.icon className="size-4" />
+                    </div>
+                    <div className="min-w-0 text-left">
+                      <h3 className="truncate text-sm font-medium">{member.name}</h3>
+                      <RoleBadges roles={member.roles} />
+                    </div>
+                  </CardContent>
+                </Card>
               ))}
             </div>
           </section>
         );
       })}
-    </div>
+    </>
   );
 }
 
 function RoleBadges({ roles }: { roles: RoleInfo[] }) {
   return (
-    <div className="flex flex-wrap gap-1 mt-0.5">
+    <div className="mt-1 flex flex-wrap gap-1">
       {roles.map((role) => (
-        <Badge variant="secondary" className="text-[10px] px-1.5 py-0 gap-1" key={`${role.filterKey}-${role.displayName}`}>
-          {React.createElement(role.icon, { size: 10, "aria-hidden": "true" })}
+        <Badge
+          key={`${role.filterKey}-${role.displayName}`}
+          variant="secondary"
+          className="gap-1 text-[11px]"
+        >
+          <role.icon className="size-3" />
           {role.displayName}
         </Badge>
       ))}
+    </div>
+  );
+}
+
+function StaffModal({ member, onClose }: { member: StaffMember | null; onClose: () => void }) {
+  const links = Object.entries(member?.links || {}).filter(([, value]) => Boolean(value));
+
+  return (
+    <Dialog open={Boolean(member)} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent>
+        {member && (
+          <>
+            <DialogHeader>
+              <div className="flex items-center gap-3">
+                <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-secondary">
+                  <member.primaryRole.icon className="size-5" />
+                </div>
+                <div>
+                  <DialogTitle>{member.name}</DialogTitle>
+                  <RoleBadges roles={member.roles} />
+                </div>
+              </div>
+            </DialogHeader>
+
+            {member.about ? (
+              <div>
+                <h3 className="text-sm font-medium">About</h3>
+                <p className="mt-1 text-sm text-muted-foreground">{member.about}</p>
+              </div>
+            ) : null}
+
+            {links.length > 0 ? (
+              <div>
+                <h3 className="text-sm font-medium">Links</h3>
+                <div className="mt-2 flex flex-col gap-2">
+                  {links.map(([key, value]) => {
+                    const info = linkIcons[key] || { icon: Globe, label: key };
+                    return (
+                      <a
+                        key={key}
+                        href={value}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-3 rounded-md border border-border p-3 text-sm hover:bg-secondary"
+                      >
+                        <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-secondary">
+                          {info.isBrand ? (
+                            <FontAwesomeIcon icon={info.icon as IconDefinition} className="size-4" />
+                          ) : (
+                            React.createElement(info.icon as LucideIcon, { className: "size-4" })
+                          )}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <strong className="block">{info.label}</strong>
+                          <span className="block truncate text-muted-foreground">{value}</span>
+                        </div>
+                        <ArrowUpRight className="size-4 shrink-0 text-muted-foreground" />
+                      </a>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : null}
+          </>
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function Benefit({ icon: Icon, title, text }: { icon: LucideIcon; title: string; text: string }) {
+  return (
+    <div className="flex flex-col items-center gap-1.5 text-center">
+      <div className="flex size-9 items-center justify-center rounded-md bg-secondary">
+        <Icon className="size-4" />
+      </div>
+      <strong className="text-sm">{title}</strong>
+      <span className="text-xs text-muted-foreground">{text}</span>
     </div>
   );
 }

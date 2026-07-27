@@ -20,8 +20,18 @@ import {
   Wand,
   Zap,
 } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 type SpecType = "same" | "different";
 type RenewalStatus = "" | "yes" | "no";
@@ -181,231 +191,358 @@ export default function SubmitLayoutClient() {
   };
 
   const renderSpecInputs = (spec: PlanSpec, onChange: (p: Partial<PlanSpec>) => void) => (
-    <div className="spec-grid">
+    <div className="grid grid-cols-3 gap-2">
       {(["ram", "cpu", "disk"] as const).map((field) => (
-        <div className="form-group" key={field}>
-          <label className="form-label">{field.toUpperCase()}</label>
-          <input className="form-input" value={spec[field]}
+        <div key={field} className="flex flex-col gap-1.5">
+          <Label className="text-xs text-muted-foreground uppercase">{field}</Label>
+          <Input
+            value={spec[field]}
             placeholder={field === "ram" ? "e.g., 4GB" : field === "cpu" ? "e.g., 2 vCores" : "e.g., 40GB SSD"}
-            onChange={(e) => onChange({ [field]: e.target.value })} />
+            onChange={(e) => onChange({ [field]: e.target.value })}
+          />
         </div>
       ))}
     </div>
   );
 
   return (
-    <main>
-      <div className="builder-container">
-        <section className="builder-hero">
-          <h1 className="builder-title">
-            <Wand size={20} aria-hidden="true" /> Discord Layout Builder
-          </h1>
-          <p className="builder-subtitle">
-            Create Discord-formatted hosting layouts instantly. Perfect formatting for Discord submissions with a live preview and one-click copy.
-          </p>
-          <div className="builder-stats">
-            <div className="builder-stat"><Zap size={14} aria-hidden="true" /><span>Instant Generation</span></div>
-            <div className="builder-stat"><Copy size={14} aria-hidden="true" /><span>One-Click Copy</span></div>
-          </div>
-        </section>
+    <main className="mx-auto max-w-[1200px] px-4 py-10 sm:px-6">
+      <section className="text-center">
+        <h1 className="flex items-center justify-center gap-2">
+          <Wand className="size-5" />
+          Discord Layout Builder
+        </h1>
+        <p className="mx-auto mt-2 max-w-md text-muted-foreground">
+          Create Discord-formatted hosting layouts instantly, with a live preview and one-click copy.
+        </p>
+        <div className="mt-3 flex justify-center gap-4 text-sm text-muted-foreground">
+          <span className="flex items-center gap-1.5">
+            <Zap className="size-3.5" />
+            Instant Generation
+          </span>
+          <span className="flex items-center gap-1.5">
+            <Copy className="size-3.5" />
+            One-Click Copy
+          </span>
+        </div>
+      </section>
 
-        <div className="builder-layout">
-          <Card>
-            <CardContent className="p-6">
-            <div className="form-header">
-              <div className="form-icon"><Pencil size={20} aria-hidden="true" /></div>
+      <div className="mt-10 grid gap-6 lg:grid-cols-2">
+        {/* ── Form ─────────────────────────────────────────────────── */}
+        <Card>
+          <CardContent className="flex flex-col gap-6">
+            <div className="flex items-center gap-3">
+              <div className="flex size-10 items-center justify-center rounded-md bg-secondary">
+                <Pencil className="size-4" />
+              </div>
               <div>
-                <h2 className="form-title">Build Your Layout</h2>
-                <p className="form-subtitle">Fill in the information below</p>
+                <h2 className="text-base">Build Your Layout</h2>
+                <p className="text-sm text-muted-foreground">Fill in the information below</p>
               </div>
             </div>
 
-            <form id="layoutBuilderForm" onReset={resetForm}>
-              <div className="form-section">
-                <div className="section-label"><Pin size={14} aria-hidden="true" /><span>Basic Information</span></div>
-                <TInput id="hostName" label="Host Name" required value={form.hostName} onChange={(v) => updateForm("hostName", v)} placeholder="e.g., Example Host" />
-                <div className="form-group">
-                  <label htmlFor="plans" className="form-label">Plans <span className="required">*</span></label>
-                  <input id="plans" className="form-input" value={form.plans} placeholder="e.g., Nextjs, Javascript, Python, Node.js" onChange={(e) => updateForm("plans", e.target.value)} />
-                  <div className="help-text"><Info size={12} aria-hidden="true" /><span>Comma separated list of plan names</span></div>
+            <form onReset={resetForm} className="flex flex-col gap-6">
+              {/* Basic Information */}
+              <FormSection icon={<Pin className="size-3.5" />} title="Basic Information">
+                <TInput label="Host Name" required value={form.hostName} onChange={(v) => updateForm("hostName", v)} placeholder="e.g., Example Host" />
+                <div className="flex flex-col gap-1.5">
+                  <Label>
+                    Plans <span className="text-destructive">*</span>
+                  </Label>
+                  <Input value={form.plans} placeholder="e.g., Nextjs, Javascript, Python, Node.js" onChange={(e) => updateForm("plans", e.target.value)} />
+                  <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <Info className="size-3" />
+                    Comma separated list of plan names
+                  </p>
                 </div>
-                <TInput id="targets" label="Targets" required value={form.targets} onChange={(v) => updateForm("targets", v)} placeholder="e.g., Coding, Gaming" />
-                <TInput id="locales" label="Locales / Languages" required value={form.locales} onChange={(v) => updateForm("locales", v)} placeholder="e.g., en, es" />
-              </div>
+                <TInput label="Targets" required value={form.targets} onChange={(v) => updateForm("targets", v)} placeholder="e.g., Coding, Gaming" />
+                <TInput label="Locales / Languages" required value={form.locales} onChange={(v) => updateForm("locales", v)} placeholder="e.g., en, es" />
+              </FormSection>
 
-              <div className="form-section">
-                <div className="section-label"><Boxes size={14} aria-hidden="true" /><span>Specifications</span></div>
-                <div className="form-group">
-                  <label className="form-label">Spec Type <span className="required">*</span></label>
-                  <div className="radio-group">
-                    <label className="radio-option">
-                      <input type="radio" name="specType" value="same" checked={form.specType === "same"} onChange={() => updateForm("specType", "same")} />
-                      <span>Same specs for all plans</span>
+              {/* Specifications */}
+              <FormSection icon={<Boxes className="size-3.5" />} title="Specifications">
+                <div className="flex flex-col gap-2">
+                  <Label>
+                    Spec Type <span className="text-destructive">*</span>
+                  </Label>
+                  <RadioGroup
+                    value={form.specType}
+                    onValueChange={(v) => updateForm("specType", v as SpecType)}
+                    className="gap-2"
+                  >
+                    <label className="flex items-center gap-2 text-sm">
+                      <RadioGroupItem value="same" /> Same specs for all plans
                     </label>
-                    <label className="radio-option">
-                      <input type="radio" name="specType" value="different" checked={form.specType === "different"} onChange={() => updateForm("specType", "different")} />
-                      <span>Different specs per target/plan</span>
+                    <label className="flex items-center gap-2 text-sm">
+                      <RadioGroupItem value="different" /> Different specs per target/plan
                     </label>
-                  </div>
+                  </RadioGroup>
                 </div>
+
                 {form.specType === "same" ? (
-                  <div className="spec-plan-card">{renderSpecInputs({ originalName: "", name: "", ram: form.sameRam, cpu: form.sameCpu, disk: form.sameDisk }, (p) => { if (p.ram !== undefined) updateForm("sameRam", p.ram); if (p.cpu !== undefined) updateForm("sameCpu", p.cpu); if (p.disk !== undefined) updateForm("sameDisk", p.disk); })}</div>
+                  <div className="rounded-md border border-border p-3">
+                    {renderSpecInputs(
+                      { originalName: "", name: "", ram: form.sameRam, cpu: form.sameCpu, disk: form.sameDisk },
+                      (p) => {
+                        if (p.ram !== undefined) updateForm("sameRam", p.ram);
+                        if (p.cpu !== undefined) updateForm("sameCpu", p.cpu);
+                        if (p.disk !== undefined) updateForm("sameDisk", p.disk);
+                      },
+                    )}
+                  </div>
                 ) : (
                   <>
-                    <div className="form-group">
-                      <label className="checkbox-option">
-                        <input type="checkbox" checked={Boolean(otherSpec)} onChange={(e) => setOtherSpec(e.target.checked ? { originalName: "other", name: "All Other Plans", ram: "", cpu: "", disk: "" } : null)} />
-                        <span>All other plans not listed above share the same specs</span>
-                      </label>
-                    </div>
-                    <div className="add-plan-container">
-                      <select className="form-select" value={selectedPlan} onChange={(e) => setSelectedPlan(e.target.value)}>
+                    <label className="flex items-center gap-2 text-sm">
+                      <Checkbox
+                        checked={Boolean(otherSpec)}
+                        onCheckedChange={(checked) =>
+                          setOtherSpec(checked ? { originalName: "other", name: "All Other Plans", ram: "", cpu: "", disk: "" } : null)
+                        }
+                      />
+                      All other plans not listed above share the same specs
+                    </label>
+
+                    <div className="flex gap-2">
+                      <select
+                        className="h-9 flex-1 rounded-md border border-border bg-transparent px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                        value={selectedPlan}
+                        onChange={(e) => setSelectedPlan(e.target.value)}
+                      >
                         <option value="">Select a plan to add specs...</option>
-                        {availablePlans.map((p) => <option value={p} key={p}>{p}</option>)}
+                        {availablePlans.map((p) => (
+                          <option value={p} key={p}>
+                            {p}
+                          </option>
+                        ))}
                       </select>
-                      <Button type="button" variant="outline" size="xs" onClick={addPlan}><Plus size={14} aria-hidden="true" /> Add Plan</Button>
+                      <Button type="button" variant="outline" className="gap-1.5" onClick={addPlan}>
+                        <Plus className="size-3.5" />
+                        Add Plan
+                      </Button>
                     </div>
-                    <div className="spec-plans">
+
+                    <div className="flex flex-col gap-3">
                       {planSpecs.map((spec) => (
-                        <div className="spec-plan-card" key={spec.originalName}>
-                          <div className="spec-plan-header">
-                            <div className="spec-plan-name">{spec.originalName}</div>
-                            <Button type="button" variant="ghost" size="xs" onClick={() => removePlan(spec.originalName)}>Remove</Button>
+                        <div key={spec.originalName} className="flex flex-col gap-2 rounded-md border border-border p-3">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm font-medium">{spec.originalName}</span>
+                            <Button type="button" variant="ghost" size="sm" className="h-auto p-0 text-destructive hover:text-destructive" onClick={() => removePlan(spec.originalName)}>
+                              Remove
+                            </Button>
                           </div>
-                          <div className="form-group">
-                            <label className="form-label">Display Name</label>
-                            <input className="form-input" value={spec.name} onChange={(e) => updatePlanSpec(spec.originalName, { name: e.target.value })} />
+                          <div className="flex flex-col gap-1.5">
+                            <Label className="text-xs text-muted-foreground">Display Name</Label>
+                            <Input value={spec.name} onChange={(e) => updatePlanSpec(spec.originalName, { name: e.target.value })} />
                           </div>
                           {renderSpecInputs(spec, (p) => updatePlanSpec(spec.originalName, p))}
                         </div>
                       ))}
                       {otherSpec && (
-                        <div className="spec-plan-card other-plans-card">
-                          <div className="spec-plan-header">
-                            <div>
-                              <div className="spec-plan-name">All Other Plans</div>
-                              <div className="help-text">{otherPlans.length > 0 ? otherPlans.join(", ") : "No unlisted plans yet"}</div>
-                            </div>
+                        <div className="flex flex-col gap-2 rounded-md border border-accent/30 bg-accent/5 p-3">
+                          <div>
+                            <span className="text-sm font-medium">All Other Plans</span>
+                            <p className="text-xs text-muted-foreground">
+                              {otherPlans.length > 0 ? otherPlans.join(", ") : "No unlisted plans yet"}
+                            </p>
                           </div>
-                          {renderSpecInputs(otherSpec, (p) => setOtherSpec((c) => c ? { ...c, ...p } : c))}
+                          {renderSpecInputs(otherSpec, (p) => setOtherSpec((c) => (c ? { ...c, ...p } : c)))}
                         </div>
                       )}
                     </div>
                   </>
                 )}
-              </div>
+              </FormSection>
 
-              <div className="form-section">
-                <div className="section-label"><LinkIcon size={14} aria-hidden="true" /><span>Links</span></div>
-                <TInput id="tosLink" label="ToS Link" required value={form.tosLink} onChange={(v) => updateForm("tosLink", v)} placeholder="https://example.com/tos" />
-                <TInput id="privacyLink" label="Privacy Policy Link" required value={form.privacyLink} onChange={(v) => updateForm("privacyLink", v)} placeholder="https://example.com/privacy" />
-                <TInput id="planLink" label="Plan Link" value={form.planLink} onChange={(v) => updateForm("planLink", v)} placeholder="https://example.com/plan" />
-                <TInput id="websiteLink" label="Website Link" value={form.websiteLink} onChange={(v) => updateForm("websiteLink", v)} placeholder="https://example.com" required={!form.discordLink.trim()} />
-                <TInput id="discordLink" label="Discord Invite" value={form.discordLink} onChange={(v) => updateForm("discordLink", v)} placeholder="https://discord.gg/invite" required={!form.websiteLink.trim()} />
-                <div className="form-group">
-                  <label htmlFor="otherLinks" className="form-label">Other Links</label>
-                  <textarea id="otherLinks" className="form-textarea" value={form.otherLinks} placeholder={"One per line, e.g.:\nDocumentation: https://docs.example.com"} onChange={(e) => updateForm("otherLinks", e.target.value)} />
-                  <div className="help-text"><Info size={12} aria-hidden="true" /><span>Format: Label: URL, one per line</span></div>
+              {/* Links */}
+              <FormSection icon={<LinkIcon className="size-3.5" />} title="Links">
+                <TInput label="ToS Link" required value={form.tosLink} onChange={(v) => updateForm("tosLink", v)} placeholder="https://example.com/tos" />
+                <TInput label="Privacy Policy Link" required value={form.privacyLink} onChange={(v) => updateForm("privacyLink", v)} placeholder="https://example.com/privacy" />
+                <TInput label="Plan Link" value={form.planLink} onChange={(v) => updateForm("planLink", v)} placeholder="https://example.com/plan" />
+                <TInput label="Website Link" value={form.websiteLink} onChange={(v) => updateForm("websiteLink", v)} placeholder="https://example.com" required={!form.discordLink.trim()} />
+                <TInput label="Discord Invite" value={form.discordLink} onChange={(v) => updateForm("discordLink", v)} placeholder="https://discord.gg/invite" required={!form.websiteLink.trim()} />
+                <div className="flex flex-col gap-1.5">
+                  <Label>Other Links</Label>
+                  <Textarea
+                    value={form.otherLinks}
+                    placeholder={"One per line, e.g.:\nDocumentation: https://docs.example.com"}
+                    onChange={(e) => updateForm("otherLinks", e.target.value)}
+                  />
+                  <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <Info className="size-3" />
+                    Format: Label: URL, one per line
+                  </p>
                 </div>
-              </div>
+              </FormSection>
 
-              <div className="form-section">
-                <div className="section-label"><FileText size={14} aria-hidden="true" /><span>Information</span></div>
-                <div className="form-group">
-                  <label htmlFor="renewalStatus" className="form-label">Renewal Required <span className="required">*</span></label>
-                  <select id="renewalStatus" className="form-select" value={form.renewalStatus} onChange={(e) => updateForm("renewalStatus", e.target.value as RenewalStatus)}>
+              {/* Information */}
+              <FormSection icon={<FileText className="size-3.5" />} title="Information">
+                <div className="flex flex-col gap-1.5">
+                  <Label>
+                    Renewal Required <span className="text-destructive">*</span>
+                  </Label>
+                  <select
+                    className="h-9 rounded-md border border-border bg-transparent px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                    value={form.renewalStatus}
+                    onChange={(e) => updateForm("renewalStatus", e.target.value as RenewalStatus)}
+                  >
                     <option value="">Select an option</option>
                     <option value="yes">This host requires renewal</option>
                     <option value="no">This host does not require renewal</option>
                   </select>
                 </div>
                 {form.renewalStatus === "yes" && (
-                  <div className="conditional-fields">
-                    <TInput id="renewalDuration" label="Renewal Duration" required value={form.renewalDuration} onChange={(v) => updateForm("renewalDuration", v)} placeholder="e.g., 30 days" />
-                    <TInput id="coinsNeeded" label="Coins Needed" required value={form.coinsNeeded} onChange={(v) => updateForm("coinsNeeded", v)} placeholder="e.g., 300 coins" />
+                  <div className="flex flex-col gap-4 rounded-md border border-border p-3">
+                    <TInput label="Renewal Duration" required value={form.renewalDuration} onChange={(v) => updateForm("renewalDuration", v)} placeholder="e.g., 30 days" />
+                    <TInput label="Coins Needed" required value={form.coinsNeeded} onChange={(v) => updateForm("coinsNeeded", v)} placeholder="e.g., 300 coins" />
                   </div>
                 )}
-                <div className="form-group">
-                  <label htmlFor="notes" className="form-label">Notes</label>
-                  <textarea id="notes" className="form-textarea" value={form.notes} placeholder="Add any important notes about the host" onChange={(e) => updateForm("notes", e.target.value)} />
+                <div className="flex flex-col gap-1.5">
+                  <Label>Notes</Label>
+                  <Textarea value={form.notes} placeholder="Add any important notes about the host" onChange={(e) => updateForm("notes", e.target.value)} />
                 </div>
-              </div>
+              </FormSection>
 
-              <div className="form-section">
-                <div className="section-label"><SquareCheck size={14} aria-hidden="true" /><span>Verification</span></div>
-                <div className="checkbox-group">
-                  <label className="checkbox-option">
-                    <input type="checkbox" checked={form.checkToS} onChange={(e) => updateForm("checkToS", e.target.checked)} />
-                    <span>I have included the ToS</span>
-                  </label>
-                  <label className="checkbox-option">
-                    <input type="checkbox" checked={form.checkPrivacy} onChange={(e) => updateForm("checkPrivacy", e.target.checked)} />
-                    <span>I have included the Privacy Policy</span>
-                  </label>
-                  <label className="checkbox-option">
-                    <input type="checkbox" checked={form.checkRules} onChange={(e) => updateForm("checkRules", e.target.checked)} />
-                    <span>
-                      I have read and agree to the{" "}
-                      <a href="/submission-rules" target="_blank" rel="noopener noreferrer" className="step-link" style={{ display: "inline" }}>
-                        Submission Rules
-                      </a>
-                      {" "}<span className="required">*</span>
-                    </span>
-                  </label>
-                </div>
-              </div>
+              {/* Verification */}
+              <FormSection icon={<SquareCheck className="size-3.5" />} title="Verification">
+                <label className="flex items-center gap-2 text-sm">
+                  <Checkbox checked={form.checkToS} onCheckedChange={(c) => updateForm("checkToS", Boolean(c))} />
+                  I have included the ToS
+                </label>
+                <label className="flex items-center gap-2 text-sm">
+                  <Checkbox checked={form.checkPrivacy} onCheckedChange={(c) => updateForm("checkPrivacy", Boolean(c))} />
+                  I have included the Privacy Policy
+                </label>
+                <label className="flex items-center gap-2 text-sm">
+                  <Checkbox checked={form.checkRules} onCheckedChange={(c) => updateForm("checkRules", Boolean(c))} />
+                  <span>
+                    I have read and agree to the{" "}
+                    <a href="/submission-rules" target="_blank" rel="noopener noreferrer" className="underline">
+                      Submission Rules
+                    </a>{" "}
+                    <span className="text-destructive">*</span>
+                  </span>
+                </label>
+              </FormSection>
 
-              <div className="form-actions">
-                <Button type="reset" variant="outline"><RotateCcw size={14} aria-hidden="true" /> Reset Form</Button>
-                <Button type="button" disabled={!canCopy} onClick={copyMessage}>
-                  <Copy size={14} aria-hidden="true" /> Copy Message
+              <div className="flex gap-2">
+                <Button type="reset" variant="outline" className="flex-1 gap-1.5">
+                  <RotateCcw className="size-3.5" />
+                  Reset Form
+                </Button>
+                <Button type="button" className="flex-1 gap-1.5" disabled={!canCopy} onClick={copyMessage}>
+                  <Copy className="size-3.5" />
+                  Copy Message
                 </Button>
               </div>
 
-              <div className="preview-container">
-                <div className="message-preview">
-                  <div className="message-preview-title"><Code size={14} aria-hidden="true" /><span>Message Preview (Raw Text)</span></div>
-                  <div className="message-preview-content">{rawMessage.trim() ? rawMessage : emptyPreview}</div>
+              <div>
+                <div className="mb-2 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                  <Code className="size-3.5" />
+                  Message Preview (Raw Text)
                 </div>
+                <pre className="max-h-56 overflow-y-auto whitespace-pre-wrap rounded-md border border-border bg-secondary/30 p-3 font-mono text-xs text-muted-foreground">
+                  {rawMessage.trim() ? rawMessage : emptyPreview}
+                </pre>
               </div>
             </form>
-            </CardContent></Card>
+          </CardContent>
+        </Card>
 
-          <Card>
-            <CardContent className="p-6">
-            <div className="preview-header">
-              <h3 className="preview-title">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#5865F2" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0741.0741 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.1776-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189z"/></svg> Discord Message Preview
+        {/* ── Discord live preview ─────────────────────────────────── */}
+        <Card className="lg:sticky lg:top-20 lg:self-start">
+          <CardContent>
+            <div className="mb-4 flex items-center justify-between">
+              <h3 className="flex items-center gap-2 text-base">
+                <FontAwesomeIcon icon={faDiscord} className="size-4" />
+                Discord Message Preview
               </h3>
-              <span className="preview-badge">
-                <Circle size={8} aria-hidden="true" /> Live
-              </span>
+              <Badge variant="success" className="gap-1">
+                <Circle className="size-2 fill-current" strokeWidth={0} />
+                Live
+              </Badge>
             </div>
-            <DiscordPreview form={form} planSpecs={planSpecs} otherSpec={otherSpec} otherPlans={otherPlans} missingFields={missingFields} showRenewalDetails={showRenewalDetails} setShowRenewalDetails={setShowRenewalDetails} />
-            </CardContent></Card>
-        </div>
+            <DiscordPreview
+              form={form}
+              planSpecs={planSpecs}
+              otherSpec={otherSpec}
+              otherPlans={otherPlans}
+              missingFields={missingFields}
+              showRenewalDetails={showRenewalDetails}
+              setShowRenewalDetails={setShowRenewalDetails}
+            />
+          </CardContent>
+        </Card>
       </div>
 
       {notification && (
-        <div className={`copy-notification ${notification.error ? "error" : "success"}`}>
-          {notification.error ? <CircleAlert size={14} aria-hidden="true" /> : <CircleCheck size={14} aria-hidden="true" />}
-          <span>{notification.message}</span>
+        <div
+          className={cn(
+            "fixed bottom-6 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-md border px-4 py-2.5 text-sm shadow-lg",
+            notification.error
+              ? "border-destructive/30 bg-destructive/10 text-destructive-text"
+              : "border-accent/30 bg-accent/10 text-accent",
+          )}
+        >
+          {notification.error ? <CircleAlert className="size-4" /> : <CircleCheck className="size-4" />}
+          {notification.message}
         </div>
       )}
     </main>
   );
 }
 
-function TInput({ id, label, value, onChange, placeholder, required = false }: { id: string; label: string; value: string; onChange: (v: string) => void; placeholder?: string; required?: boolean }) {
+function FormSection({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
   return (
-    <div className="form-group">
-      <label htmlFor={id} className="form-label">{label} {required && <span className="required">*</span>}</label>
-      <input id={id} className="form-input" value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} />
+    <div className="flex flex-col gap-3 border-t border-border pt-5 first:border-t-0 first:pt-0">
+      <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground uppercase">
+        {icon}
+        {title}
+      </div>
+      {children}
     </div>
   );
 }
 
-function DiscordPreview({ form, planSpecs, otherSpec, otherPlans, missingFields, showRenewalDetails, setShowRenewalDetails }: { form: FormState; planSpecs: PlanSpec[]; otherSpec: PlanSpec | null; otherPlans: string[]; missingFields: string[]; showRenewalDetails: boolean; setShowRenewalDetails: (v: boolean) => void }) {
+function TInput({
+  label,
+  value,
+  onChange,
+  placeholder,
+  required = false,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+  required?: boolean;
+}) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      <Label>
+        {label} {required && <span className="text-destructive">*</span>}
+      </Label>
+      <Input value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} />
+    </div>
+  );
+}
+
+function DiscordPreview({
+  form,
+  planSpecs,
+  otherSpec,
+  otherPlans,
+  missingFields,
+  showRenewalDetails,
+  setShowRenewalDetails,
+}: {
+  form: FormState;
+  planSpecs: PlanSpec[];
+  otherSpec: PlanSpec | null;
+  otherPlans: string[];
+  missingFields: string[];
+  showRenewalDetails: boolean;
+  setShowRenewalDetails: (v: boolean) => void;
+}) {
   const [time, setTime] = useState("");
 
   useEffect(() => {
@@ -419,94 +556,239 @@ function DiscordPreview({ form, planSpecs, otherSpec, otherPlans, missingFields,
   }, []);
 
   return (
-    <div className="discord-preview">
-      <div className="discord-message">
-        <div className="discord-avatar">
-          <Image src="/Src/icons/icon.png" alt="FreeHosts" width={40} height={40} />
-        </div>
-        <div className="discord-message-content">
-          <div className="discord-message-header">
-            <span className="discord-username">FreeHosts Bot</span>
-            <span className="discord-timestamp">Today at {time}</span>
+    <div className="rounded-md border border-border bg-secondary/20 p-4">
+      <div className="flex gap-3">
+        <Image src="/Src/icons/icon.png" alt="FreeHosts" width={36} height={36} className="size-9 shrink-0 rounded-full" />
+        <div className="min-w-0 flex-1 text-sm leading-relaxed">
+          <div className="flex items-baseline gap-2">
+            <span className="font-medium">FreeHosts Bot</span>
+            <span className="text-xs text-muted-foreground">Today at {time}</span>
           </div>
-          <div className="discord-message-text">
-            <span className="discord-bold">Host Submission</span><br /><br />
-            <span className="discord-bold">Host Name</span>
-            <div className="discord-blockquote">{form.hostName || "[Host Name]"}</div>
-            <span className="discord-bold">Plans</span>
-            <div className="discord-blockquote">{form.plans || "[Plans]"}</div>
-            <span className="discord-bold">Targets</span>
-            <div className="discord-blockquote">{form.targets || "[Targets]"}</div>
-            <span className="discord-bold">Locales / Languages</span>
-            <div className="discord-blockquote">{form.locales || "[Locales]"}</div>
-            <div className="discord-divider" />
-            <span className="discord-bold">Specifications</span><br />
-            <SpecPreview form={form} planSpecs={planSpecs} otherSpec={otherSpec} otherPlans={otherPlans} />
-            <div className="discord-divider" /><br />
-            <span className="discord-bold">Links</span><br />
-            <span className="discord-bold">ToS:</span> {form.tosLink || "[ToS Link]"}<br />
-            <span className="discord-bold">Privacy Policy:</span> {form.privacyLink || "[Privacy Policy Link]"}<br />
-            {form.planLink && <><span className="discord-bold">Plan Link:</span> {form.planLink}<br /></>}
-            {form.websiteLink && <><span className="discord-bold">Website Link:</span> {form.websiteLink}<br /></>}
-            {form.discordLink && <><span className="discord-bold">Discord Invite:</span> {form.discordLink}<br /></>}
-            {form.otherLinks.split("\n").map((l) => l.trim()).filter(Boolean).map((l) => <span key={l}>{l}<br /></span>)}
-            <div className="discord-divider" />
-            <span className="discord-bold">Information</span><br />
-            - Renewal Required: {renewalDisplay(form.renewalStatus)}<br />
-            {form.renewalStatus === "yes" && (
-              <>
-                <button className="discord-renewal-toggle" type="button" onClick={() => setShowRenewalDetails(!showRenewalDetails)}>
-                  {showRenewalDetails ? "[Click to hide renewal details]" : "[Click to show renewal details]"}
-                </button>
-                {showRenewalDetails && (
-                  <div className="discord-renewal-content">
-                    This host requires renewal<br />
-                    {form.renewalDuration && <>- Renewal Duration: {form.renewalDuration}<br /></>}
-                    {form.coinsNeeded && <>- Coins Needed: {form.coinsNeeded}<br /></>}
-                  </div>
-                )}
-              </>
-            )}
-            {form.notes && <>- Notes: {form.notes}<br /></>}
-            <div className="discord-divider" />
-            <span className="discord-bold">Verification</span><br />
-            <span className={`discord-checkbox ${form.checkToS ? "checked" : ""}`}>{form.checkToS ? "x" : ""}</span> I have included the ToS<br />
-            <span className={`discord-checkbox ${form.checkPrivacy ? "checked" : ""}`}>{form.checkPrivacy ? "x" : ""}</span> I have included the Privacy Policy<br />
-            <span className={`discord-checkbox ${form.checkRules ? "checked" : ""}`}>{form.checkRules ? "x" : ""}</span> I have read the Submission Rules<br />
-            {missingFields.length > 0 && (
-              <div className="discord-blockquote" style={{ color: "#faa81a", marginTop: "16px" }}>
-                <span className="discord-bold">Missing required fields:</span> {missingFields.join(", ")}
-              </div>
-            )}
-          </div>
+
+          <p className="mt-1 font-semibold">Host Submission</p>
+          <br />
+          <span className="font-semibold">Host Name</span>
+          <BlockQuote>{form.hostName || "[Host Name]"}</BlockQuote>
+          <span className="font-semibold">Plans</span>
+          <BlockQuote>{form.plans || "[Plans]"}</BlockQuote>
+          <span className="font-semibold">Targets</span>
+          <BlockQuote>{form.targets || "[Targets]"}</BlockQuote>
+          <span className="font-semibold">Locales / Languages</span>
+          <BlockQuote>{form.locales || "[Locales]"}</BlockQuote>
+
+          <Divider />
+          <span className="font-semibold">Specifications</span>
+          <br />
+          <SpecPreview form={form} planSpecs={planSpecs} otherSpec={otherSpec} otherPlans={otherPlans} />
+
+          <Divider />
+          <br />
+          <span className="font-semibold">Links</span>
+          <br />
+          <span className="font-semibold">ToS:</span> {form.tosLink || "[ToS Link]"}
+          <br />
+          <span className="font-semibold">Privacy Policy:</span> {form.privacyLink || "[Privacy Policy Link]"}
+          <br />
+          {form.planLink && (
+            <>
+              <span className="font-semibold">Plan Link:</span> {form.planLink}
+              <br />
+            </>
+          )}
+          {form.websiteLink && (
+            <>
+              <span className="font-semibold">Website Link:</span> {form.websiteLink}
+              <br />
+            </>
+          )}
+          {form.discordLink && (
+            <>
+              <span className="font-semibold">Discord Invite:</span> {form.discordLink}
+              <br />
+            </>
+          )}
+          {form.otherLinks
+            .split("\n")
+            .map((l) => l.trim())
+            .filter(Boolean)
+            .map((l) => (
+              <span key={l}>
+                {l}
+                <br />
+              </span>
+            ))}
+
+          <Divider />
+          <span className="font-semibold">Information</span>
+          <br />- Renewal Required: {renewalDisplay(form.renewalStatus)}
+          <br />
+          {form.renewalStatus === "yes" && (
+            <>
+              <button
+                type="button"
+                className="text-xs text-muted-foreground underline"
+                onClick={() => setShowRenewalDetails(!showRenewalDetails)}
+              >
+                {showRenewalDetails ? "[Click to hide renewal details]" : "[Click to show renewal details]"}
+              </button>
+              {showRenewalDetails && (
+                <div className="mt-1 rounded border border-border bg-secondary/30 p-2 text-xs">
+                  This host requires renewal
+                  <br />
+                  {form.renewalDuration && (
+                    <>
+                      - Renewal Duration: {form.renewalDuration}
+                      <br />
+                    </>
+                  )}
+                  {form.coinsNeeded && <>- Coins Needed: {form.coinsNeeded}</>}
+                </div>
+              )}
+            </>
+          )}
+          {form.notes && (
+            <>
+              - Notes: {form.notes}
+              <br />
+            </>
+          )}
+
+          <Divider />
+          <span className="font-semibold">Verification</span>
+          <br />
+          <VerificationLine checked={form.checkToS} label="I have included the ToS" />
+          <VerificationLine checked={form.checkPrivacy} label="I have included the Privacy Policy" />
+          <VerificationLine checked={form.checkRules} label="I have read the Submission Rules" />
+
+          {missingFields.length > 0 && (
+            <div className="mt-4 rounded border-l-2 border-l-amber-500 bg-amber-500/10 py-1.5 pl-3 text-xs text-amber-500">
+              <span className="font-semibold">Missing required fields:</span> {missingFields.join(", ")}
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-function SpecPreview({ form, planSpecs, otherSpec, otherPlans }: { form: FormState; planSpecs: PlanSpec[]; otherSpec: PlanSpec | null; otherPlans: string[] }) {
+function BlockQuote({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="my-1 rounded-sm border-l-2 border-l-muted-foreground/40 bg-secondary/30 py-1 pl-2 text-muted-foreground">
+      {children}
+    </div>
+  );
+}
+
+function Divider() {
+  return <hr className="my-2 border-border" />;
+}
+
+function VerificationLine({ checked, label }: { checked: boolean; label: string }) {
+  return (
+    <>
+      <span className={cn("inline-block size-3.5 rounded-sm border border-border text-center text-[10px] leading-3.5", checked && "border-accent bg-accent/20 text-accent")}>
+        {checked ? "x" : ""}
+      </span>{" "}
+      {label}
+      <br />
+    </>
+  );
+}
+
+function SpecPreview({
+  form,
+  planSpecs,
+  otherSpec,
+  otherPlans,
+}: {
+  form: FormState;
+  planSpecs: PlanSpec[];
+  otherSpec: PlanSpec | null;
+  otherPlans: string[];
+}) {
   if (form.specType === "same") {
-    if (!form.sameRam && !form.sameCpu && !form.sameDisk) return <>- [Specs will appear here]<br /></>;
-    return <>{form.sameRam && <>- RAM: {form.sameRam}<br /></>}{form.sameCpu && <>- CPU: {form.sameCpu}<br /></>}{form.sameDisk && <>- Disk: {form.sameDisk}<br /></>}</>;
+    if (!form.sameRam && !form.sameCpu && !form.sameDisk)
+      return (
+        <>
+          - [Specs will appear here]
+          <br />
+        </>
+      );
+    return (
+      <>
+        {form.sameRam && (
+          <>
+            - RAM: {form.sameRam}
+            <br />
+          </>
+        )}
+        {form.sameCpu && (
+          <>
+            - CPU: {form.sameCpu}
+            <br />
+          </>
+        )}
+        {form.sameDisk && (
+          <>
+            - Disk: {form.sameDisk}
+            <br />
+          </>
+        )}
+      </>
+    );
   }
-  if (!planSpecs.length && !otherSpec) return <>- [Add plans using the Add Plan button above]<br /></>;
+  if (!planSpecs.length && !otherSpec)
+    return (
+      <>
+        - [Add plans using the Add Plan button above]
+        <br />
+      </>
+    );
   return (
     <>
       {planSpecs.map((spec) => (
         <span key={spec.originalName}>
-          <span className="discord-bold">{spec.name || spec.originalName}:</span><br />
-          {spec.ram && <>- RAM: {spec.ram}<br /></>}
-          {spec.cpu && <>- CPU: {spec.cpu}<br /></>}
-          {spec.disk && <>- Disk: {spec.disk}<br /></>}
+          <span className="font-semibold">{spec.name || spec.originalName}:</span>
+          <br />
+          {spec.ram && (
+            <>
+              - RAM: {spec.ram}
+              <br />
+            </>
+          )}
+          {spec.cpu && (
+            <>
+              - CPU: {spec.cpu}
+              <br />
+            </>
+          )}
+          {spec.disk && (
+            <>
+              - Disk: {spec.disk}
+              <br />
+            </>
+          )}
         </span>
       ))}
       {otherSpec && (
         <span>
-          <span className="discord-bold">All Other Plans{otherPlans.length > 0 ? ` (${otherPlans.join(", ")})` : ""}:</span><br />
-          {otherSpec.ram && <>- RAM: {otherSpec.ram}<br /></>}
-          {otherSpec.cpu && <>- CPU: {otherSpec.cpu}<br /></>}
-          {otherSpec.disk && <>- Disk: {otherSpec.disk}<br /></>}
+          <span className="font-semibold">
+            All Other Plans{otherPlans.length > 0 ? ` (${otherPlans.join(", ")})` : ""}:
+          </span>
+          <br />
+          {otherSpec.ram && (
+            <>
+              - RAM: {otherSpec.ram}
+              <br />
+            </>
+          )}
+          {otherSpec.cpu && (
+            <>
+              - CPU: {otherSpec.cpu}
+              <br />
+            </>
+          )}
+          {otherSpec.disk && <>- Disk: {otherSpec.disk}</>}
         </span>
       )}
     </>

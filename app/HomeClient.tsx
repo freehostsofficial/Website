@@ -20,9 +20,11 @@ import {
 } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 const inviteCode = "QbeZ3b5CQd";
 const inviteUrl = `https://discord.gg/${inviteCode}`;
@@ -68,10 +70,10 @@ const commands = [
 ];
 
 const hostingCategories = [
-  { icon: <Globe size={20} aria-hidden="true" />, title: "Website Hosting", text: "Deploy static sites, portfolios, blogs, and landing pages with providers optimized for frontend performance and easy publishing." },
-  { icon: <GitBranch size={20} aria-hidden="true" />, title: "Application Hosting", text: "Run Node.js, Python, PHP, Ruby, and other backend apps for APIs, dashboards, and full-stack projects that need server-side logic." },
-  { icon: <Bot size={20} aria-hidden="true" />, title: "Bot Hosting", text: "Keep Discord, Telegram, and automation bots online with enough uptime and resources for small to medium community projects." },
-  { icon: <Database size={20} aria-hidden="true" />, title: "Database Hosting", text: "Use free PostgreSQL, MongoDB, MySQL, or Redis services for apps that need storage, auth, content, and structured data." },
+  { icon: <Globe className="size-5" />, title: "Website Hosting", text: "Deploy static sites, portfolios, blogs, and landing pages with providers optimized for frontend performance and easy publishing." },
+  { icon: <GitBranch className="size-5" />, title: "Application Hosting", text: "Run Node.js, Python, PHP, Ruby, and other backend apps for APIs, dashboards, and full-stack projects that need server-side logic." },
+  { icon: <Bot className="size-5" />, title: "Bot Hosting", text: "Keep Discord, Telegram, and automation bots online with enough uptime and resources for small to medium community projects." },
+  { icon: <Database className="size-5" />, title: "Database Hosting", text: "Use free PostgreSQL, MongoDB, MySQL, or Redis services for apps that need storage, auth, content, and structured data." },
 ];
 
 const choiceChecklist = [
@@ -79,6 +81,12 @@ const choiceChecklist = [
   "Check uptime, cold starts, and deployment complexity for your stack.",
   "Read community reviews to spot hidden limits and real-world reliability.",
   "Pick a host with an upgrade path if your project may grow quickly.",
+];
+
+const features = [
+  { icon: <Rocket className="size-6" />, title: "Fast discovery", text: "Find hosts by use-case quickly - deploy a demo in minutes." },
+  { icon: <HandHeart className="size-6" />, title: "Community tips", text: "User-contributed reviews and sample setups to get you started." },
+  { icon: <Filter className="size-6" />, title: "Curated lists", text: "Hand-curated, up-to-date listings so you do not waste time." },
 ];
 
 type TerminalLine = { type: string; text: string; status?: string };
@@ -243,103 +251,126 @@ export default function HomeClient() {
 
   return (
     <main>
-      <section className="hero" id="home" aria-labelledby="hero-title">
-        <div className="blobs" aria-hidden="true">
-          <div className="blob b1" />
-          <div className="blob b2" />
-          <div className="blob b3" />
-        </div>
-
-        <div className="wrap hero-inner">
-          <div className="hero-left">
-            <h1 id="hero-title" className="hero-title">
-              Discover free hosting that <span className="gradient-text">just works</span>.
-              <span className="typed-wrap" aria-hidden="true">
-                <span className="typed" id="typedText">{typedText}</span>
-                <span className="cursor" id="typedCursor">|</span>
+      {/* ---------------------------------------------------------------- */}
+      {/* Hero — the signature element: a live terminal demo instead of a  */}
+      {/* stock gradient/illustration hero.                                */}
+      {/* ---------------------------------------------------------------- */}
+      <section className="border-b border-border" id="home" aria-labelledby="hero-title">
+        <div className="mx-auto grid max-w-[1200px] gap-10 px-4 py-16 sm:px-6 md:grid-cols-2 md:items-center md:py-24">
+          <div className="flex flex-col gap-6">
+            <h1 id="hero-title" className="text-balance">
+              Discover free hosting that just works.
+              <span className="mt-2 block font-mono text-xl text-muted-foreground sm:text-2xl" aria-hidden="true">
+                <span>{typedText}</span>
+                <span className="animate-pulse">|</span>
               </span>
             </h1>
-            <p className="lead">
-              Community-curated directory - find reliable, zero-cost hosting for
+            <p className="max-w-md text-muted-foreground">
+              Community-curated directory — find reliable, zero-cost hosting for
               experiments, learning, or small projects.
             </p>
 
-            <div className="hero-cta">
-              <Link href="/about">
-                <Button variant="default" size="lg">
-                  <Info size={16} aria-hidden="true" /> About FreeHosts
-                </Button>
-              </Link>
-              <Button variant="ghost" size="lg" id="joinCommunity" render={<a href={inviteUrl} />}>
-                <FontAwesomeIcon icon={faDiscord} aria-hidden="true" /> Join the community
+            <div className="flex flex-wrap gap-3">
+              <Button asChild size="lg">
+                <Link href="/about">
+                  <Info className="size-4" />
+                  About FreeHosts
+                </Link>
+              </Button>
+              <Button asChild size="lg" variant="outline">
+                <a href={inviteUrl} target="_blank" rel="noopener noreferrer">
+                  <FontAwesomeIcon icon={faDiscord} className="size-4" />
+                  Join the community
+                </a>
               </Button>
             </div>
 
-            <div className="hero-stats" aria-hidden="true">
-              <div className="stat">
-                <div className="num" id="hostsCount">100+</div>
-                <div className="label">Hosts listed</div>
+            <dl className="flex flex-wrap gap-8" aria-hidden="true">
+              <div>
+                <dt className="sr-only">Hosts listed</dt>
+                <dd className="font-mono text-2xl font-semibold">100+</dd>
+                <dt className="text-sm text-muted-foreground">Hosts listed</dt>
               </div>
-              <div className="stat">
-                <div className="num">400+</div>
-                <div className="label">Community members</div>
+              <div>
+                <dd className="font-mono text-2xl font-semibold">400+</dd>
+                <dt className="text-sm text-muted-foreground">Community members</dt>
               </div>
-              <div className="stat">
-                <div className="num">100+</div>
-                <div className="label">Reviews</div>
+              <div>
+                <dd className="font-mono text-2xl font-semibold">100+</dd>
+                <dt className="text-sm text-muted-foreground">Reviews</dt>
               </div>
-            </div>
+            </dl>
 
-            <div className="discord-widget" id="discordWidget" aria-live="polite">
-              <div className="dw-row">
-                <div className="dw-left">
-                  <div className="dw-title" id="discordName">
-                    <FontAwesomeIcon icon={faDiscord} aria-hidden="true" /> {discord.name}
+            <Card className="gap-0 py-0" aria-live="polite">
+              <CardContent className="flex items-center justify-between gap-4 px-4 py-3">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 text-sm font-medium">
+                    <FontAwesomeIcon icon={faDiscord} className="size-4 text-muted-foreground" />
+                    {discord.name}
                   </div>
-                  <div className="dw-sub" id="discordStatus">{discord.status}</div>
+                  <p className="truncate text-xs text-muted-foreground">{discord.status}</p>
                 </div>
-                <div className="dw-right">
-                  <div className="dw-count" id="discordCount">{discord.count}</div>
+                <div className="flex shrink-0 items-center gap-3">
+                  <span className="font-mono text-sm text-muted-foreground">{discord.count}</span>
                   {discord.showInvite ? (
                     <Button
-                      variant="outline"
-                      size="xs"
-                      id="discordInvite"
+                      size="sm"
+                      variant="secondary"
                       onClick={() => window.open(inviteUrl, "_blank", "noopener")}
                     >
-                      <DoorOpen size={14} aria-hidden="true" /> Join
+                      <DoorOpen className="size-3.5" />
+                      Join
                     </Button>
                   ) : null}
                 </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           </div>
 
-          <div className="hero-right" aria-hidden="true">
-            <div className="terminal-3d" aria-hidden="true">
-              <div className="terminal-header">
-                <span className="term-dot red" />
-                <span className="term-dot yellow" />
-                <span className="term-dot green" />
-                <div className="terminal-title">terminal@freehosts:~</div>
+          {/* Terminal demo */}
+          <div aria-hidden="true">
+            <div className="overflow-hidden rounded-lg border border-border bg-card shadow-lg">
+              <div className="flex items-center gap-2 border-b border-border px-4 py-2.5">
+                <span className="size-2.5 rounded-full bg-destructive/70" />
+                <span className="size-2.5 rounded-full bg-muted-foreground/40" />
+                <span className="size-2.5 rounded-full bg-accent/70" />
+                <span className="ml-2 truncate text-xs text-muted-foreground">
+                  terminal@freehosts:~
+                </span>
               </div>
-              <div className="terminal-body" id="terminalBody">
-                <div className="terminal-line">
-                  <span className="terminal-prompt">user@freehosts:~$</span>
-                  <span className="terminal-command" id="terminalCommand">
-                    {terminalCommand}
-                  </span>
-                  <span className="terminal-cursor">_</span>
+              <div className="min-h-64 space-y-1.5 p-4 font-mono text-sm leading-relaxed">
+                <div className="flex flex-wrap items-center gap-1">
+                  <span className="text-muted-foreground">user@freehosts:~$</span>
+                  <span>{terminalCommand}</span>
+                  <span className="animate-pulse text-muted-foreground">_</span>
                 </div>
-                <div
-                  className="terminal-output"
-                  id="terminalOutput"
-                >
+                <div>
                   {terminalOutput.map((line, i) => {
-                    if (line.type === "success") return <div key={i}><span className="success">✓</span> {line.text}</div>;
-                    if (line.type === "info") return <div key={i}><span className="info">{line.text}</span></div>;
-                    if (line.type === "info-block") return <div key={i}><span className="info" style={{ whiteSpace: "pre" }}>{line.text}</span></div>;
-                    if (line.type === "status") return <div key={i} className="terminal-status">{line.text}<span className="status-online">{line.status}</span><span className="status-cursor">▮</span></div>;
+                    if (line.type === "success")
+                      return (
+                        <div key={i}>
+                          <span className="text-accent">✓</span> {line.text}
+                        </div>
+                      );
+                    if (line.type === "info")
+                      return (
+                        <div key={i} className="text-muted-foreground">
+                          {line.text}
+                        </div>
+                      );
+                    if (line.type === "info-block")
+                      return (
+                        <div key={i} className="whitespace-pre text-muted-foreground">
+                          {line.text}
+                        </div>
+                      );
+                    if (line.type === "status")
+                      return (
+                        <div key={i} className="flex items-center gap-1.5">
+                          {line.text}
+                          <Badge variant="success">{line.status}</Badge>
+                        </div>
+                      );
                     return <div key={i}>{line.text}</div>;
                   })}
                 </div>
@@ -349,49 +380,39 @@ export default function HomeClient() {
         </div>
       </section>
 
-      <section id="features" className="section wrap">
-        <h2 className="section-title">Why people use FreeHosts</h2>
-        <p className="section-sub">Quick highlights - no fluff.</p>
-        <div className="grid gap-4 sm:grid-cols-3" aria-hidden="true">
-          <Card>
-            <CardHeader>
-              <Rocket size={24} aria-hidden="true" className="text-accent mb-2" />
-              <CardTitle>Fast discovery</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">Find hosts by use-case quickly - deploy a demo in minutes.</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <HandHeart size={24} aria-hidden="true" className="text-accent mb-2" />
-              <CardTitle>Community tips</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">User-contributed reviews and sample setups to get you started.</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <Filter size={24} aria-hidden="true" className="text-accent mb-2" />
-              <CardTitle>Curated lists</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">Hand-curated, up-to-date listings so you do not waste time.</p>
-            </CardContent>
-          </Card>
+      {/* ---------------------------------------------------------------- */}
+      {/* Features                                                         */}
+      {/* ---------------------------------------------------------------- */}
+      <section id="features" className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6">
+        <h2>Why people use FreeHosts</h2>
+        <p className="mt-2 text-muted-foreground">Quick highlights — no fluff.</p>
+        <div className="mt-8 grid gap-4 sm:grid-cols-3" aria-hidden="true">
+          {features.map((feature) => (
+            <Card key={feature.title}>
+              <CardContent className="flex flex-col gap-3">
+                <div className="flex size-10 items-center justify-center rounded-md bg-secondary text-foreground">
+                  {feature.icon}
+                </div>
+                <h3>{feature.title}</h3>
+                <p className="text-sm text-muted-foreground">{feature.text}</p>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       </section>
 
-      <section id="what-is-free-hosting" className="section wrap">
-        <div className="max-w-5xl mx-auto space-y-8">
-          <div className="space-y-4">
-            <Badge variant="outline" className="inline-flex items-center gap-1.5">
-              <Sparkles size={14} aria-hidden="true" />
+      {/* ---------------------------------------------------------------- */}
+      {/* What is free hosting                                             */}
+      {/* ---------------------------------------------------------------- */}
+      <section id="what-is-free-hosting" className="border-t border-border">
+        <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6">
+          <div className="max-w-2xl">
+            <Badge variant="outline" className="gap-1.5">
+              <Sparkles className="size-3.5" />
               Learn the Basics
             </Badge>
-            <h2 className="section-title">What is Free Hosting?</h2>
-            <p className="text-lg text-muted-foreground max-w-3xl leading-relaxed">
+            <h2 className="mt-4">What is Free Hosting?</h2>
+            <p className="mt-4 text-muted-foreground">
               Free hosting gives developers, students, and hobbyists a way to deploy
               websites, apps, bots, and community projects without paying for server
               infrastructure upfront. It is ideal for learning, experiments, prototypes,
@@ -399,50 +420,47 @@ export default function HomeClient() {
             </p>
           </div>
 
-          <Card className="border-accent/20">
-            <CardHeader className="flex-row items-start gap-4">
-              <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-accent/10 text-accent">
-                <Compass size={20} aria-hidden="true" />
+          <Card className="mt-8 flex-row items-start gap-4 py-5">
+            <CardContent className="flex items-start gap-4 px-5">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-md bg-secondary">
+                <Compass className="size-5" />
               </div>
               <div>
-                <CardTitle>Why FreeHosts helps</CardTitle>
-                <p className="text-sm text-muted-foreground mt-1">
+                <h3>Why FreeHosts helps</h3>
+                <p className="mt-1 text-sm text-muted-foreground">
                   FreeHosts curates verified providers, community reviews, staff picks,
                   and feature breakdowns so you can find the right option faster instead
                   of comparing random services blind.
                 </p>
               </div>
-            </CardHeader>
+            </CardContent>
           </Card>
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {hostingCategories.map((category) => (
               <Card key={category.title}>
-                <CardHeader>
-                  <div className="flex size-10 items-center justify-center rounded-lg bg-accent/10 text-accent mb-2">
+                <CardContent className="flex flex-col gap-3">
+                  <div className="flex size-10 items-center justify-center rounded-md bg-secondary text-foreground">
                     {category.icon}
                   </div>
-                  <CardTitle className="text-base">{category.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
+                  <h3>{category.title}</h3>
                   <p className="text-sm text-muted-foreground">{category.text}</p>
                 </CardContent>
               </Card>
             ))}
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="mt-6 grid gap-4 md:grid-cols-2">
             <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <ListChecks size={16} aria-hidden="true" /> How to Choose Free Hosting
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-3">
+              <CardContent className="flex flex-col gap-4">
+                <h3 className="flex items-center gap-2">
+                  <ListChecks className="size-4" />
+                  How to Choose Free Hosting
+                </h3>
+                <ul className="flex flex-col gap-3">
                   {choiceChecklist.map((item) => (
-                    <li key={item} className="flex gap-2 text-sm text-muted-foreground">
-                      <Check size={14} className="mt-0.5 shrink-0 text-accent" aria-hidden="true" />
+                    <li key={item} className="flex items-start gap-2 text-sm text-muted-foreground">
+                      <Check className="mt-0.5 size-4 shrink-0 text-accent" />
                       <span>{item}</span>
                     </li>
                   ))}
@@ -450,19 +468,18 @@ export default function HomeClient() {
               </CardContent>
             </Card>
 
-            <Card className="border-accent/20">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Users size={16} aria-hidden="true" /> Join Our Community
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3 text-sm text-muted-foreground">
-                <p>
+            <Card className={cn("border-accent/30")}>
+              <CardContent className="flex flex-col gap-3">
+                <h3 className="flex items-center gap-2">
+                  <Users className="size-4" />
+                  Join Our Community
+                </h3>
+                <p className="text-sm text-muted-foreground">
                   Our staff and community regularly update hosting lists, publish answers,
                   and share real deployment experience. It is the quickest way to avoid
                   weak providers and find something that actually fits your project.
                 </p>
-                <p>
+                <p className="text-sm text-muted-foreground">
                   Most free hosting plans have limits, but they are often generous enough
                   for portfolios, bots, MVPs, and learning projects. And when your app
                   starts growing, many providers offer an easy path to paid upgrades.
@@ -473,17 +490,23 @@ export default function HomeClient() {
         </div>
       </section>
 
-      <section id="about-teaser" className="section wrap">
-        <h2 className="section-title">About FreeHosts</h2>
-        <p className="section-sub">
-          Built by people who love the web - a friendly place to discover hosting
-          options at zero cost.
-        </p>
-        <Link href="/about">
-          <Button variant="outline" size="sm">
-            <Info size={14} aria-hidden="true" /> Read more
+      {/* ---------------------------------------------------------------- */}
+      {/* About teaser                                                     */}
+      {/* ---------------------------------------------------------------- */}
+      <section id="about-teaser" className="border-t border-border">
+        <div className="mx-auto max-w-[1200px] px-4 py-16 text-center sm:px-6">
+          <h2>About FreeHosts</h2>
+          <p className="mx-auto mt-2 max-w-md text-muted-foreground">
+            Built by people who love the web — a friendly place to discover hosting
+            options at zero cost.
+          </p>
+          <Button asChild variant="outline" className="mt-6">
+            <Link href="/about">
+              <Info className="size-4" />
+              Read more
+            </Link>
           </Button>
-        </Link>
+        </div>
       </section>
     </main>
   );

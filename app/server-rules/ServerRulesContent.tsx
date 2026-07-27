@@ -5,6 +5,8 @@ import {
   EyeOff, Flag, Gavel, IdCard, Languages, Lock, MessageCircle,
   Shield, ShieldAlert, UserRoundX, UserX, Users, Zap,
 } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 type Severity = "low" | "medium" | "high" | "critical";
 
@@ -205,71 +207,77 @@ export default function ServerRulesContent() {
   const totalRules = categories.reduce((sum, c) => sum + c.rules.length, 0);
 
   return (
-    <div className="rules-page-container">
-      <section className="rules-header-section">
-        <div className="rules-icon-main">
-          <Shield size={48} aria-hidden="true" />
+    <main className="mx-auto max-w-[1200px] px-4 py-12 sm:px-6">
+      <section className="flex flex-col items-center gap-3 text-center">
+        <div className="flex size-14 items-center justify-center rounded-full bg-secondary" aria-hidden="true">
+          <Shield className="size-7" />
         </div>
-        <h1 className="rules-page-title">Discord Server Rules</h1>
-        <p className="rules-page-subtitle">
+        <h1>Discord Server Rules</h1>
+        <p className="max-w-lg text-muted-foreground">
           To maintain a safe, welcoming, and productive community, all members must follow these rules. Ignorance of the rules is not an excuse.
         </p>
-        <div className="rules-meta">
-          <span className="rules-meta-item"><Shield size={13} aria-hidden="true" /> {totalRules} rules across {categories.length} categories</span>
-          <span className="rules-meta-item"><Clock size={13} aria-hidden="true" /> Last updated: April 26, 2026</span>
+        <div className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground">
+          <span className="flex items-center gap-1.5">
+            <Shield className="size-3.5" /> {totalRules} rules across {categories.length} categories
+          </span>
+          <span className="flex items-center gap-1.5">
+            <Clock className="size-3.5" /> Last updated: April 26, 2026
+          </span>
         </div>
       </section>
 
       {/* Severity legend */}
-      <div className="severity-legend">
+      <div className="mt-8 flex flex-wrap justify-center gap-4 rounded-lg border border-border bg-card p-4">
         {(Object.entries(severityLabel) as [Severity, string][]).map(([key, label]) => (
-          <div key={key} className="severity-legend-item">
-            <span className="severity-dot" style={{ background: severityColor[key] }} />
-            <span className="severity-legend-label">{label}</span>
+          <div key={key} className="flex items-center gap-2 text-sm text-muted-foreground">
+            <span className="size-2.5 rounded-full" style={{ background: severityColor[key] }} />
+            {label}
           </div>
         ))}
       </div>
 
       {categories.map((category) => (
-        <section key={category.title} className="rules-category-section">
-          <h2 className="rules-category-title">{category.title}</h2>
-          <div className="rules-grid-layout">
+        <section key={category.title} className="mt-10">
+          <h2 className="text-lg">{category.title}</h2>
+          <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {category.rules.map((rule, index) => (
-              <article className="rule-item-card" key={index}>
-                <div className="rule-card-header">
-                  <div className="rule-icon-box">
-                    {React.createElement(rule.icon, { size: 20, "aria-hidden": "true" })}
+              <Card key={index} className="gap-3 py-4">
+                <CardContent className="flex flex-col gap-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex size-9 items-center justify-center rounded-md bg-secondary">
+                      <rule.icon className="size-4" />
+                    </div>
+                    <Badge
+                      variant="outline"
+                      style={{
+                        background: `${severityColor[rule.severity]}18`,
+                        color: severityColor[rule.severity],
+                        borderColor: `${severityColor[rule.severity]}40`,
+                      }}
+                    >
+                      {severityLabel[rule.severity]}
+                    </Badge>
                   </div>
-                  <span
-                    className="rule-severity-badge"
-                    style={{
-                      background: `${severityColor[rule.severity]}18`,
-                      color: severityColor[rule.severity],
-                      borderColor: `${severityColor[rule.severity]}40`,
-                    }}
-                  >
-                    {severityLabel[rule.severity]}
-                  </span>
-                </div>
-                <div className="rule-card-body">
-                  <h3 className="rule-card-title">{rule.title}</h3>
-                  <p className="rule-card-text">{rule.description}</p>
-                  <div className="rule-consequence">
-                    <Gavel size={12} aria-hidden="true" />
-                    <span>{rule.consequence}</span>
+                  <div>
+                    <h3 className="text-sm font-semibold">{rule.title}</h3>
+                    <p className="mt-1 text-sm text-muted-foreground">{rule.description}</p>
                   </div>
-                </div>
-              </article>
+                  <div className="flex items-center gap-1.5 border-t border-border pt-3 text-xs text-muted-foreground">
+                    <Gavel className="size-3" />
+                    {rule.consequence}
+                  </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </section>
       ))}
 
-      <footer className="rules-footer-info">
+      <footer className="mt-12 text-center text-sm text-muted-foreground">
         <p>
           Staff reserve the right to update these rules at any time. Continued participation in the server constitutes acceptance of the current rules.
         </p>
       </footer>
-    </div>
+    </main>
   );
 }

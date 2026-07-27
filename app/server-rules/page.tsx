@@ -66,9 +66,7 @@ export default function ServerRulesPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
-      <main className="wrap section">
-        <ServerRulesContent />
-      </main>
+      <ServerRulesContent />
     </>
   );
 }

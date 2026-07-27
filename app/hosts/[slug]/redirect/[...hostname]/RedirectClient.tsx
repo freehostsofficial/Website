@@ -1,8 +1,11 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { AlertTriangle, ArrowLeft, ArrowRight, X } from 'lucide-react';
+import { AlertTriangle, ArrowLeft, ArrowRight, X, Check } from 'lucide-react';
 import { push } from '@socialgouv/matomo-next';
+
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface RedirectClientProps {
   targetUrl: string;
@@ -50,98 +53,96 @@ export default function RedirectClient({ targetUrl, hostnameOrPath, backUrl, inv
   // ── Invalid redirect warning ───────────────────────────────────────────────
   if (invalid) {
     return (
-      <main id="main-content">
-        <div className="redirect-container">
-          <div className="redirect-box">
-            <div className="redirect-icon" style={{ color: '#ef4444' }}>
-              <AlertTriangle size={24} aria-hidden="true" />
+      <main id="main-content" className="mx-auto flex min-h-[70vh] max-w-[560px] items-center px-4 py-12 sm:px-6">
+        <Card className="w-full">
+          <CardContent className="flex flex-col items-center gap-4 text-center">
+            <div className="flex size-12 items-center justify-center rounded-full bg-destructive/15">
+              <AlertTriangle className="size-6 text-destructive-text" />
             </div>
-            <h2 className="redirect-title" style={{ color: '#ef4444' }}>Invalid Redirect</h2>
-            <p className="redirect-text">
-              This link is <strong>not associated</strong> with this host and has been blocked.
+            <h2 className="text-destructive-text">Invalid Redirect</h2>
+            <p className="text-sm text-muted-foreground">
+              This link is <strong className="text-foreground">not associated</strong> with this host and has been blocked.
             </p>
-            <div className="redirect-url" style={{ borderColor: '#ef4444', color: '#ef4444', wordBreak: 'break-all' }}>
+            <div className="w-full break-all rounded-md border border-destructive/40 px-3 py-2 font-mono text-sm text-destructive-text">
               {hostnameOrPath}
             </div>
-            <div style={{
-              margin: 'var(--space-md) 0',
-              padding: 'var(--space-md)',
-              background: 'rgba(239,68,68,0.08)',
-              border: '1px solid rgba(239,68,68,0.25)',
-              borderRadius: 'var(--radius)',
-              fontSize: 'var(--font-size-sm)',
-              color: 'var(--muted)',
-              textAlign: 'left',
-              lineHeight: 1.6,
-            }}>
-              <strong style={{ color: '#ef4444', display: 'block', marginBottom: '6px' }}>
-                ⚠ Security Warning
-              </strong>
+            <div className="w-full rounded-md border border-destructive/25 bg-destructive/10 p-4 text-left text-sm leading-relaxed text-muted-foreground">
+              <strong className="mb-1.5 block text-destructive-text">⚠ Security Warning</strong>
               This URL was not registered with this host. Visiting it could expose you to:
-              <ul style={{ margin: '8px 0 0 0', paddingLeft: '1.2em' }}>
+              <ul className="mt-2 list-disc space-y-1 pl-5">
                 <li>Phishing — a fake site designed to steal your credentials</li>
                 <li>Malware — software that can harm your device</li>
                 <li>Scams — fraudulent services impersonating legitimate ones</li>
               </ul>
             </div>
-            <div className="redirect-actions">
-              <button
-                className="redirect-cancel-btn"
-                onClick={() => { window.location.href = backUrl; }}
-                autoFocus
-              >
-                <ArrowLeft size={14} aria-hidden="true" /> Go Back to Safety
-              </button>
-            </div>
-          </div>
-        </div>
+            <Button
+              className="gap-1.5"
+              onClick={() => { window.location.href = backUrl; }}
+              autoFocus
+            >
+              <ArrowLeft className="size-4" />
+              Go Back to Safety
+            </Button>
+          </CardContent>
+        </Card>
       </main>
     );
   }
 
   // ── Valid redirect countdown ───────────────────────────────────────────────
   return (
-    <main id="main-content">
-      <div className="redirect-container">
-        <div className="redirect-box">
-          <div className="redirect-icon">
-            <ArrowRight size={24} aria-hidden="true" />
+    <main id="main-content" className="mx-auto flex min-h-[70vh] max-w-[480px] items-center px-4 py-12 sm:px-6">
+      <Card className="w-full">
+        <CardContent className="flex flex-col items-center gap-4 text-center">
+          <div className="flex size-12 items-center justify-center rounded-full bg-secondary">
+            <ArrowRight className="size-6" />
           </div>
-          <h2 className="redirect-title">Redirecting...</h2>
-          <p className="redirect-text">You are being redirected to</p>
-          <div className="redirect-url">{hostnameOrPath}</div>
-          <div className="redirect-timer">
-            <span className="redirect-timer-number" style={{ opacity: isCancelled ? 0.6 : 1 }}>
-              {isCancelled ? '✓ Stopped' : countdown}
-            </span>
+          <h2>Redirecting...</h2>
+          <p className="text-sm text-muted-foreground">You are being redirected to</p>
+          <div className="w-full break-all rounded-md border border-border px-3 py-2 font-mono text-sm">
+            {hostnameOrPath}
           </div>
-          <div className="redirect-progress">
-            <div className="redirect-progress-bar" style={{ width: `${progress}%` }} />
+          <div className="font-mono text-3xl font-semibold" style={{ opacity: isCancelled ? 0.6 : 1 }}>
+            {isCancelled ? (
+              <span className="flex items-center gap-1.5 text-lg text-accent">
+                <Check className="size-5" />
+                Stopped
+              </span>
+            ) : (
+              countdown
+            )}
           </div>
-          <div className="redirect-actions">
-            <button className="redirect-cancel-btn" onClick={() => { window.location.href = backUrl; }} ref={backBtnRef}>
-              <ArrowLeft size={14} aria-hidden="true" /> Back
-            </button>
-            <button
-              className="redirect-cancel-btn"
+          <div className="h-1.5 w-full overflow-hidden rounded-full bg-secondary">
+            <div className="h-full rounded-full bg-accent transition-all" style={{ width: `${progress}%` }} />
+          </div>
+          <div className="flex gap-2">
+            <Button variant="outline" className="gap-1.5" onClick={() => { window.location.href = backUrl; }} ref={backBtnRef}>
+              <ArrowLeft className="size-4" />
+              Back
+            </Button>
+            <Button
+              variant="outline"
+              className="gap-1.5"
               onClick={() => { setIsCancelled(true); setTimeout(() => backBtnRef.current?.focus(), 50); }}
               disabled={isCancelled}
             >
-              <X size={14} aria-hidden="true" /> Cancel
-            </button>
+              <X className="size-4" />
+              Cancel
+            </Button>
           </div>
           {isCancelled && (
-            <div id="redirect-focus-error">
-              <div style={{ color: '#ef4444', fontWeight: 600, marginBottom: 'var(--space-sm)' }}>
-                <X size={14} aria-hidden="true" /> Redirect Cancelled
+            <div id="redirect-focus-error" role="status">
+              <div className="flex items-center justify-center gap-1.5 font-semibold text-destructive-text">
+                <X className="size-3.5" />
+                Redirect Cancelled
               </div>
-              <p style={{ color: 'var(--muted)', fontSize: 'var(--font-size-sm)', margin: 0 }}>
+              <p className="mt-1 text-sm text-muted-foreground">
                 The automatic redirect has been stopped.
               </p>
             </div>
           )}
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </main>
   );
 }
