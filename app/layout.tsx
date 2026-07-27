@@ -17,6 +17,7 @@ import RevealProvider from "../components/RevealProvider";
 import SiteHeader from "../components/SiteHeader";
 import SiteFooter from "../components/SiteFooter";
 import PageBreadcrumbs from "../components/PageBreadcrumbs";
+import { fetchHosts } from "../lib/cache";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 
@@ -95,11 +96,13 @@ export const viewport: Viewport = {
   themeColor: "#0a0a0a",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const hosts = await fetchHosts();
+
   return (
     <html lang="en" className="dark" style={{ colorScheme: "dark" }} suppressHydrationWarning>
       <head>
@@ -129,7 +132,7 @@ export default function RootLayout({
           <ComparisonProvider>
             <FavoritesProvider>
 
-              <SiteHeader trustpilotUrl={process.env.TRUST_PILOT} />
+              <SiteHeader trustpilotUrl={process.env.TRUST_PILOT} hosts={hosts} />
 
               <ComparisonPanel />
 

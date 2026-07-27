@@ -6,6 +6,7 @@ import {
   CircleHelp,
   FileText,
   GitCompare,
+  Globe,
   Info,
   Link as LinkIcon,
   ListChecks,
@@ -18,6 +19,9 @@ import {
   Star,
   Users,
 } from "lucide-react";
+
+import { slugify } from "@/lib/slugify";
+import type { Host } from "@/lib/cache";
 
 import {
   CommandDialog,
@@ -51,7 +55,7 @@ const pages: PageItem[] = [
   { href: "/privacy-policy", label: "Privacy Policy", icon: <Lock className="size-4" />, group: "Legal" },
 ];
 
-export default function CommandPalette() {
+export default function CommandPalette({ initialHosts }: { initialHosts: Host[] }) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
@@ -89,7 +93,7 @@ export default function CommandPalette() {
       </button>
 
       <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput placeholder="Search pages..." />
+        <CommandInput placeholder="Search pages and hosts..." />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
 
@@ -106,15 +110,25 @@ export default function CommandPalette() {
             ))}
           </CommandGroup>
 
-          <CommandGroup heading="Hosts">
-            <CommandItem
-              value="search browse all hosts"
-              onSelect={() => runCommand("/hosts")}
-            >
-              <Search className="size-4" />
-              <span>Search all hosts...</span>
-            </CommandItem>
-          </CommandGroup>
+          {initialHosts.length > 0 && (
+            <CommandGroup heading={`Hosts (${initialHosts.length})`}>
+              {initialHosts.map((host) => (
+                <CommandItem
+                  key={host.id}
+                  value={`${host.name} ${host.description ?? ""} ${(host.targets ?? []).join(" ")}`}
+                  onSelect={() => runCommand(`/hosts/${slugify(host.name)}`)}
+                >
+                  <Globe className="size-4" />
+                  <span>{host.name}</span>
+                  {host.description && (
+                    <span className="ml-2 truncate text-xs text-muted-foreground max-w-[200px]">
+                      {host.description}
+                    </span>
+                  )}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          )}
         </CommandList>
       </CommandDialog>
     </>

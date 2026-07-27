@@ -48,6 +48,7 @@ import {
 } from "@/components/ui/accordion";
 import { Separator } from "@/components/ui/separator";
 import CommandPalette from "@/components/CommandPalette";
+import type { Host } from "@/lib/cache";
 import { cn } from "@/lib/utils";
 
 type NavLink = { href: string; icon: React.ReactNode; label: string };
@@ -178,7 +179,7 @@ function AccordionGroup({
   );
 }
 
-export default function SiteHeader({ trustpilotUrl }: { trustpilotUrl?: string }) {
+export default function SiteHeader({ trustpilotUrl, hosts }: { trustpilotUrl?: string; hosts?: Host[] }) {
   const pathname = usePathname();
 
   return (
@@ -267,7 +268,7 @@ export default function SiteHeader({ trustpilotUrl }: { trustpilotUrl?: string }
         </nav>
 
         <div className="ml-auto flex items-center gap-0.5">
-          <CommandPalette />
+          <CommandPalette initialHosts={hosts ?? []} />
 
           <Button asChild variant="ghost" size="icon" className="hidden sm:inline-flex" title="Trustpilot">
             <a
