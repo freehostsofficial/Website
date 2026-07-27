@@ -13,6 +13,7 @@ import GdprConsentBanner from "../components/GdprConsentBanner";
 import CookieConsentBanner from "../components/CookieConsentBanner";
 import ComparisonPanel from "../components/ComparisonPanel";
 import ConsentGate from "../components/ConsentGate";
+import RevealProvider from "../components/RevealProvider";
 import SiteHeader from "../components/SiteHeader";
 import SiteFooter from "../components/SiteFooter";
 import { config } from "@fortawesome/fontawesome-svg-core";
@@ -121,6 +122,7 @@ export default function RootLayout({
         <PreviewCard />
         <RouteInitializer />
         <GlobalStructuredData />
+        <RevealProvider />
 
         <ConsentProvider>
           <ComparisonProvider>

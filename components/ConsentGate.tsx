@@ -32,44 +32,19 @@ export default function ConsentGate({ children }: { children: React.ReactNode })
   // can actually read the ToS/Privacy Policy before deciding.
   const skippable = !accepted && (pathname === '/tos' || pathname === '/privacy-policy' || pathname === '/cookies');
 
-  const displayChildren = React.Children.toArray(children).filter((child) => {
-    if (!React.isValidElement<{ className?: string }>(child)) {
-      return accepted;
-    }
-
+  // Show only the content wrapper on skippable (legal) pages so users can
+  // read ToS/Privacy/Cookies without the consent overlay blocking them.
+  // Filter out nothing on every other page — text must never be hidden.
+  // The GdprConsentBanner handles its own visibility (returns null when
+  // legalConsent === 'agreed') and its backdrop sits on top of content.
+  return <>{React.Children.toArray(children).filter((child) => {
+    if (!React.isValidElement<{ className?: string }>(child)) return true;
     const className = child.props.className ?? "";
-
-    if (accepted) {
-      return !className.includes("consent-banner");
-    }
-
-    if (skippable) {
-      return className.includes("skippable");
-    }
-
-    return className.includes("consent-banner");
-  });
-
-  // Fake background page for human visitors
-  return (
-    <>
-    {displayChildren}
-
-    {!accepted ? 
-      <div style={{ 
-        position: 'fixed',
-        inset: 0,
-        width: '100vw',
-        height: '100vh',
-        backgroundImage: 'url(/Src/Images/preview-bg.jpg)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        filter: 'blur(12px) saturate(0.8)',
-        transform: 'scale(1.1)',
-        opacity: 0.7,
-        pointerEvents: 'none'
-      }} />
-    : ''}
-    </>
-  );
+    // Keep the content wrapper (skippable) when on skippable pages.
+    if (skippable) return className.includes("skippable");
+    // When accepted, hide the consent banner (it returns null anyway).
+    if (accepted) return !className.includes("consent-banner");
+    // Not accepted: show everything — content behind the consent overlay.
+    return true;
+  })}</>;
 }
