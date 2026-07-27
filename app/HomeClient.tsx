@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "@/components/NoPrefetchLink";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   Bot,
   Check,
@@ -98,10 +98,29 @@ type DiscordState = {
   showInvite: boolean;
 };
 
+function useReveal<T extends HTMLElement = HTMLDivElement>() {
+  const ref = useRef<T>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.classList.add("visible");
+          observer.unobserve(el);
+        }
+      },
+      { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+  return ref;
+}
+
 function fetchWithTimeout(url: string, timeout = 7000) {
   const controller = new AbortController();
   const timer = window.setTimeout(() => controller.abort(), timeout);
-
   return fetch(url, { cache: "no-cache", signal: controller.signal }).finally(() => {
     window.clearTimeout(timer);
   });
@@ -118,7 +137,8 @@ export default function HomeClient() {
     showInvite: false,
   });
 
-  // Hero typing effect
+  const heroRef = useReveal<HTMLDivElement>();
+
   useEffect(() => {
     const words = ["for demos", "for students", "for hobby projects", "for experiments"];
     let i = 0;
@@ -251,15 +271,17 @@ export default function HomeClient() {
 
   return (
     <main>
-      {/* ---------------------------------------------------------------- */}
-      {/* Hero — the signature element: a live terminal demo instead of a  */}
-      {/* stock gradient/illustration hero.                                */}
-      {/* ---------------------------------------------------------------- */}
-      <section className="border-b border-border" id="home" aria-labelledby="hero-title">
-        <div className="mx-auto grid max-w-[1200px] gap-10 px-4 py-16 sm:px-6 md:grid-cols-2 md:items-center md:py-24">
-          <div className="flex flex-col gap-6">
+      <section className="relative border-b border-border overflow-hidden" id="home" aria-labelledby="hero-title">
+        <div className="dot-grid absolute inset-0 opacity-40" />
+        <div
+          ref={heroRef}
+          className="mx-auto grid max-w-[1200px] gap-10 px-4 py-16 sm:px-6 md:grid-cols-2 md:items-center md:py-24"
+        >
+          <div className="flex flex-col gap-6 reveal visible">
             <h1 id="hero-title" className="text-balance">
-              Discover free hosting that just works.
+              <span className="gradient-text-subtle">Discover free hosting</span>
+              <br />
+              <span>that just works.</span>
               <span className="mt-2 block font-mono text-xl text-muted-foreground sm:text-2xl" aria-hidden="true">
                 <span>{typedText}</span>
                 <span className="animate-pulse">|</span>
@@ -271,13 +293,13 @@ export default function HomeClient() {
             </p>
 
             <div className="flex flex-wrap gap-3">
-              <Button asChild size="lg">
+              <Button asChild size="lg" className="transition-all duration-300 hover:scale-105 active:scale-95">
                 <Link href="/about">
                   <Info className="size-4" />
                   About FreeHosts
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline">
+              <Button asChild size="lg" variant="outline" className="transition-all duration-300 hover:scale-105 active:scale-95">
                 <a href={inviteUrl} target="_blank" rel="noopener noreferrer">
                   <FontAwesomeIcon icon={faDiscord} className="size-4" />
                   Join the community
@@ -286,22 +308,22 @@ export default function HomeClient() {
             </div>
 
             <dl className="flex flex-wrap gap-8" aria-hidden="true">
-              <div>
+              <div className="reveal reveal-delay-1">
                 <dt className="sr-only">Hosts listed</dt>
                 <dd className="font-mono text-2xl font-semibold">100+</dd>
                 <dt className="text-sm text-muted-foreground">Hosts listed</dt>
               </div>
-              <div>
+              <div className="reveal reveal-delay-2">
                 <dd className="font-mono text-2xl font-semibold">400+</dd>
                 <dt className="text-sm text-muted-foreground">Community members</dt>
               </div>
-              <div>
+              <div className="reveal reveal-delay-3">
                 <dd className="font-mono text-2xl font-semibold">100+</dd>
                 <dt className="text-sm text-muted-foreground">Reviews</dt>
               </div>
             </dl>
 
-            <Card className="gap-0 py-0" aria-live="polite">
+            <Card className="gap-0 py-0 card-hover card-glow" aria-live="polite">
               <CardContent className="flex items-center justify-between gap-4 px-4 py-3">
                 <div className="min-w-0">
                   <div className="flex items-center gap-2 text-sm font-medium">
@@ -317,6 +339,7 @@ export default function HomeClient() {
                       size="sm"
                       variant="secondary"
                       onClick={() => window.open(inviteUrl, "_blank", "noopener")}
+                      className="transition-all duration-300 hover:scale-105 active:scale-95"
                     >
                       <DoorOpen className="size-3.5" />
                       Join
@@ -327,9 +350,8 @@ export default function HomeClient() {
             </Card>
           </div>
 
-          {/* Terminal demo */}
-          <div aria-hidden="true">
-            <div className="overflow-hidden rounded-lg border border-border bg-card shadow-lg">
+          <div aria-hidden="true" className="reveal reveal-delay-4">
+            <div className="overflow-hidden rounded-lg border border-border bg-card shadow-lg transition-shadow duration-300 hover:shadow-xl">
               <div className="flex items-center gap-2 border-b border-border px-4 py-2.5">
                 <span className="size-2.5 rounded-full bg-destructive/70" />
                 <span className="size-2.5 rounded-full bg-muted-foreground/40" />
@@ -380,34 +402,32 @@ export default function HomeClient() {
         </div>
       </section>
 
-      {/* ---------------------------------------------------------------- */}
-      {/* Features                                                         */}
-      {/* ---------------------------------------------------------------- */}
       <section id="features" className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6">
-        <h2>Why people use FreeHosts</h2>
-        <p className="mt-2 text-muted-foreground">Quick highlights — no fluff.</p>
+        <div className="reveal">
+          <h2>Why people use FreeHosts</h2>
+          <p className="mt-2 text-muted-foreground">Quick highlights — no fluff.</p>
+        </div>
         <div className="mt-8 grid gap-4 sm:grid-cols-3" aria-hidden="true">
-          {features.map((feature) => (
-            <Card key={feature.title}>
-              <CardContent className="flex flex-col gap-3">
-                <div className="flex size-10 items-center justify-center rounded-md bg-secondary text-foreground">
-                  {feature.icon}
-                </div>
-                <h3>{feature.title}</h3>
-                <p className="text-sm text-muted-foreground">{feature.text}</p>
-              </CardContent>
-            </Card>
+          {features.map((feature, i) => (
+            <div key={feature.title} className={cn("reveal", `reveal-delay-${i + 1}`)}>
+              <Card className="card-hover card-glow h-full transition-all duration-300">
+                <CardContent className="flex flex-col gap-3">
+                  <div className="flex size-10 items-center justify-center rounded-md bg-secondary text-foreground transition-transform duration-300 group-hover:scale-110">
+                    {feature.icon}
+                  </div>
+                  <h3>{feature.title}</h3>
+                  <p className="text-sm text-muted-foreground">{feature.text}</p>
+                </CardContent>
+              </Card>
+            </div>
           ))}
         </div>
       </section>
 
-      {/* ---------------------------------------------------------------- */}
-      {/* What is free hosting                                             */}
-      {/* ---------------------------------------------------------------- */}
       <section id="what-is-free-hosting" className="border-t border-border">
         <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6">
-          <div className="max-w-2xl">
-            <Badge variant="outline" className="gap-1.5">
+          <div className="max-w-2xl reveal">
+            <Badge variant="outline" className="gap-1.5 border-glow">
               <Sparkles className="size-3.5" />
               Learn the Basics
             </Badge>
@@ -420,7 +440,7 @@ export default function HomeClient() {
             </p>
           </div>
 
-          <Card className="mt-8 flex-row items-start gap-4 py-5">
+          <Card className="mt-8 flex-row items-start gap-4 py-5 card-hover card-glow reveal reveal-delay-1">
             <CardContent className="flex items-start gap-4 px-5">
               <div className="flex size-10 shrink-0 items-center justify-center rounded-md bg-secondary">
                 <Compass className="size-5" />
@@ -437,70 +457,73 @@ export default function HomeClient() {
           </Card>
 
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {hostingCategories.map((category) => (
-              <Card key={category.title}>
-                <CardContent className="flex flex-col gap-3">
-                  <div className="flex size-10 items-center justify-center rounded-md bg-secondary text-foreground">
-                    {category.icon}
-                  </div>
-                  <h3>{category.title}</h3>
-                  <p className="text-sm text-muted-foreground">{category.text}</p>
-                </CardContent>
-              </Card>
+            {hostingCategories.map((category, i) => (
+              <div key={category.title} className={cn("reveal", `reveal-delay-${i + 1}`)}>
+                <Card className="card-hover card-glow h-full transition-all duration-300">
+                  <CardContent className="flex flex-col gap-3">
+                    <div className="flex size-10 items-center justify-center rounded-md bg-secondary text-foreground">
+                      {category.icon}
+                    </div>
+                    <h3>{category.title}</h3>
+                    <p className="text-sm text-muted-foreground">{category.text}</p>
+                  </CardContent>
+                </Card>
+              </div>
             ))}
           </div>
 
           <div className="mt-6 grid gap-4 md:grid-cols-2">
-            <Card>
-              <CardContent className="flex flex-col gap-4">
-                <h3 className="flex items-center gap-2">
-                  <ListChecks className="size-4" />
-                  How to Choose Free Hosting
-                </h3>
-                <ul className="flex flex-col gap-3">
-                  {choiceChecklist.map((item) => (
-                    <li key={item} className="flex items-start gap-2 text-sm text-muted-foreground">
-                      <Check className="mt-0.5 size-4 shrink-0 text-accent" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
+            <div className="reveal reveal-delay-1">
+              <Card className="card-hover h-full transition-all duration-300">
+                <CardContent className="flex flex-col gap-4">
+                  <h3 className="flex items-center gap-2">
+                    <ListChecks className="size-4" />
+                    How to Choose Free Hosting
+                  </h3>
+                  <ul className="flex flex-col gap-3">
+                    {choiceChecklist.map((item) => (
+                      <li key={item} className="flex items-start gap-2 text-sm text-muted-foreground transition-all duration-200 hover:translate-x-0.5">
+                        <Check className="mt-0.5 size-4 shrink-0 text-accent" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            </div>
 
-            <Card className={cn("border-accent/30")}>
-              <CardContent className="flex flex-col gap-3">
-                <h3 className="flex items-center gap-2">
-                  <Users className="size-4" />
-                  Join Our Community
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  Our staff and community regularly update hosting lists, publish answers,
-                  and share real deployment experience. It is the quickest way to avoid
-                  weak providers and find something that actually fits your project.
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Most free hosting plans have limits, but they are often generous enough
-                  for portfolios, bots, MVPs, and learning projects. And when your app
-                  starts growing, many providers offer an easy path to paid upgrades.
-                </p>
-              </CardContent>
-            </Card>
+            <div className="reveal reveal-delay-2">
+              <Card className={cn("card-hover card-glow h-full transition-all duration-300 border-accent/30")}>
+                <CardContent className="flex flex-col gap-3">
+                  <h3 className="flex items-center gap-2">
+                    <Users className="size-4" />
+                    Join Our Community
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Our staff and community regularly update hosting lists, publish answers,
+                    and share real deployment experience. It is the quickest way to avoid
+                    weak providers and find something that actually fits your project.
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Most free hosting plans have limits, but they are often generous enough
+                    for portfolios, bots, MVPs, and learning projects. And when your app
+                    starts growing, many providers offer an easy path to paid upgrades.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ---------------------------------------------------------------- */}
-      {/* About teaser                                                     */}
-      {/* ---------------------------------------------------------------- */}
       <section id="about-teaser" className="border-t border-border">
-        <div className="mx-auto max-w-[1200px] px-4 py-16 text-center sm:px-6">
+        <div className="mx-auto max-w-[1200px] px-4 py-16 text-center sm:px-6 reveal">
           <h2>About FreeHosts</h2>
           <p className="mx-auto mt-2 max-w-md text-muted-foreground">
             Built by people who love the web — a friendly place to discover hosting
             options at zero cost.
           </p>
-          <Button asChild variant="outline" className="mt-6">
+          <Button asChild variant="outline" className="mt-6 transition-all duration-300 hover:scale-105 active:scale-95">
             <Link href="/about">
               <Info className="size-4" />
               Read more

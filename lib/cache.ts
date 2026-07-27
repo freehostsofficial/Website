@@ -59,6 +59,10 @@ export async function fetchHosts(): Promise<Host[]> {
     return hostsCache
   }
 
+  if (process.env.NEXT_PHASE === 'phase-production-build') {
+    return hostsCache || []
+  }
+
   try {
     const response = await fetch(`${process.env.API_URL}/api/hosts?limit=1000`, {
       next: { revalidate: 300 }, // Revalidate every 5 minutes

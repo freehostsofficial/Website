@@ -63,7 +63,7 @@ export default function SiteFooter({
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Discord"
-              className="hover:text-foreground"
+              className="transition-all duration-200 hover:text-foreground hover:scale-110"
             >
               <FontAwesomeIcon icon={faDiscord} className="size-4" />
             </a>
@@ -72,7 +72,7 @@ export default function SiteFooter({
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Twitter"
-              className="hover:text-foreground"
+              className="transition-all duration-200 hover:text-foreground hover:scale-110"
             >
               <FontAwesomeIcon icon={faTwitter} className="size-4" />
             </a>
@@ -81,7 +81,7 @@ export default function SiteFooter({
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
-              className="hover:text-foreground"
+              className="transition-all duration-200 hover:text-foreground hover:scale-110"
             >
               <FontAwesomeIcon icon={faInstagram} className="size-4" />
             </a>
@@ -90,7 +90,7 @@ export default function SiteFooter({
               target="_blank"
               rel="noopener noreferrer"
               aria-label="GitHub"
-              className="hover:text-foreground"
+              className="transition-all duration-200 hover:text-foreground hover:scale-110"
             >
               <FontAwesomeIcon icon={faGithub} className="size-4" />
             </a>
@@ -100,10 +100,10 @@ export default function SiteFooter({
         {columns.map((column) => (
           <div key={column.title} className="flex flex-col gap-3">
             <h3 className="text-sm font-medium text-foreground">{column.title}</h3>
-            <ul className="flex flex-col gap-2 text-sm text-muted-foreground">
-              {column.links.map((link) => (
-                <li key={link.href}>
-                  <Link href={link.href} className="hover:text-foreground">
+              <ul className="flex flex-col gap-2 text-sm text-muted-foreground">
+                {column.links.map((link) => (
+                  <li key={link.href}>
+                    <Link href={link.href} className="transition-colors duration-200 hover:text-foreground">
                     {link.label}
                   </Link>
                 </li>
@@ -135,7 +135,7 @@ export default function SiteFooter({
             <li>
               <a
                 href={`mailto:support@${emailDomain}`}
-                className="flex items-center gap-2 hover:text-foreground"
+                className="flex items-center gap-2 transition-colors duration-200 hover:text-foreground"
               >
                 <Mail className="size-4" />
                 support@{emailDomain}
@@ -146,7 +146,7 @@ export default function SiteFooter({
                 href="https://discord.gg/QbeZ3b5CQd"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 hover:text-foreground"
+                className="flex items-center gap-2 transition-colors duration-200 hover:text-foreground"
               >
                 <FontAwesomeIcon icon={faDiscord} className="size-4" />
                 Join Discord

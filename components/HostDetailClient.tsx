@@ -277,18 +277,18 @@ export default function HostDetailClient({ host, related = [] }: HostDetailClien
 
           {/* ── Sidebar: sticky on desktop ───────────────────────────── */}
           <div className="lg:order-2">
-            <Card className="lg:sticky lg:top-20">
+            <Card className="lg:sticky lg:top-20 card-hover card-glow transition-all duration-300">
               <CardContent className="flex flex-col items-center gap-4 text-center">
                 <div>
                   <div className="font-mono text-4xl font-bold">{rating}%</div>
                   <p className="text-xs text-muted-foreground">Based on {totalReviews} reviews</p>
                 </div>
                 <div className="grid w-full grid-cols-2 gap-3">
-                  <div className="rounded-md border border-border py-3">
+                  <div className="rounded-md border border-border py-3 transition-all duration-200 hover:border-accent/30">
                     <div className="font-mono text-lg font-semibold text-accent">{host.approvals || 0}</div>
                     <div className="text-xs text-muted-foreground">Upvotes</div>
                   </div>
-                  <div className="rounded-md border border-border py-3">
+                  <div className="rounded-md border border-border py-3 transition-all duration-200 hover:border-destructive/30">
                     <div className="font-mono text-lg font-semibold text-destructive">{host.disapprovals || 0}</div>
                     <div className="text-xs text-muted-foreground">Downvotes</div>
                   </div>
@@ -344,7 +344,7 @@ export default function HostDetailClient({ host, related = [] }: HostDetailClien
 
                 return (
                   <Link key={r.id} href={`/hosts/${slugify(r.name)}`} className="block">
-                    <Card className="h-full gap-3 py-4 transition-colors hover:border-foreground/30">
+                    <Card className="h-full gap-3 py-4 card-hover card-glow transition-all duration-300">
                       <CardContent className="flex flex-col gap-2">
                         <div className="flex items-center gap-2.5">
                           <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-secondary text-sm font-semibold">
@@ -432,7 +432,7 @@ export default function HostDetailClient({ host, related = [] }: HostDetailClien
 
 function SpecBox({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
-    <div className="flex flex-col items-center gap-1.5 rounded-lg border border-border bg-card py-4 text-center">
+    <div className="flex flex-col items-center gap-1.5 rounded-lg border border-border bg-card py-4 text-center transition-all duration-200 hover:border-accent/30 hover:bg-accent/5">
       <span className="text-muted-foreground">{icon}</span>
       <span className="text-xs text-muted-foreground">{label}</span>
       <span className="text-sm font-medium">{value}</span>

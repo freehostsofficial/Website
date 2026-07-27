@@ -207,7 +207,7 @@ export default function SubmitLayoutClient() {
 
   return (
     <main className="mx-auto max-w-[1200px] px-4 py-10 sm:px-6">
-      <section className="text-center">
+      <section className="text-center reveal">
         <h1 className="flex items-center justify-center gap-2">
           <Wand className="size-5" />
           Discord Layout Builder

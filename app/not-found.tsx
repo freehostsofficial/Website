@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 export default function NotFound() {
   return (
     <main className="mx-auto flex min-h-[60vh] max-w-[900px] items-center px-4 py-12 sm:px-6">
-      <Card className="mx-auto w-full">
+      <Card className="mx-auto w-full card-hover transition-all duration-300">
         <CardContent className="flex flex-col items-center gap-4 py-6 text-center">
           <div className="flex size-14 items-center justify-center rounded-full bg-secondary">
             <Compass className="size-7" />

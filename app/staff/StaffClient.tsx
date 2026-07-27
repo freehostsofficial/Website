@@ -162,7 +162,7 @@ export default function StaffClient() {
 
   return (
     <main className="mx-auto max-w-[1200px] px-4 py-12 sm:px-6">
-      <section className="flex flex-col items-center gap-3 text-center">
+      <section className="flex flex-col items-center gap-3 text-center reveal">
         <div className="flex size-12 items-center justify-center rounded-full bg-secondary">
           <Users className="size-6" />
         </div>
@@ -172,7 +172,7 @@ export default function StaffClient() {
         </p>
       </section>
 
-      <div className="mt-8 flex flex-wrap justify-center gap-2">
+      <div className="mt-8 flex flex-wrap justify-center gap-2 reveal reveal-delay-1">
         {filters.map((filter) => (
           <Button
             key={filter.key}
@@ -180,7 +180,7 @@ export default function StaffClient() {
             size="sm"
             variant={activeFilter === filter.key ? "default" : "outline"}
             onClick={() => setActiveFilter(filter.key)}
-            className="gap-1.5"
+            className="gap-1.5 transition-all duration-200 active:scale-90"
           >
             <filter.icon className="size-3.5" />
             {filter.label}
@@ -190,7 +190,7 @@ export default function StaffClient() {
 
       <StaffSections grouped={grouped} onSelect={setSelectedMember} />
 
-      <section className="mt-16 flex flex-col items-center gap-4 rounded-lg border border-border bg-card p-10 text-center">
+      <section className="mt-16 flex flex-col items-center gap-4 rounded-lg border border-border bg-card p-10 text-center card-hover">
         <div className="flex size-12 items-center justify-center rounded-full bg-secondary">
           <HandMetal className="size-6" />
         </div>
@@ -208,7 +208,7 @@ export default function StaffClient() {
           <Benefit icon={Award} title="Recognition" text="Get credited for your work" />
         </div>
 
-        <Button asChild className="mt-2 gap-2">
+        <Button asChild className="mt-2 gap-2 transition-all duration-200 hover:scale-105 active:scale-95">
           <a href="https://discord.gg/QbeZ3b5CQd" target="_blank" rel="noopener noreferrer">
             <FontAwesomeIcon icon={faDiscord} className="size-4" />
             Join Our Discord
@@ -244,7 +244,7 @@ function StaffSections({
         const members = grouped[key as Exclude<FilterKey, "all">];
         return (
           <section className="mt-12" key={key}>
-            <div className="mb-4 flex items-center gap-3">
+            <div className="mb-4 flex items-center gap-3 reveal">
               <div className="flex size-9 items-center justify-center rounded-md bg-secondary">
                 <section.icon className="size-4" />
               </div>
@@ -254,22 +254,23 @@ function StaffSections({
               </div>
             </div>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {members.map((member) => (
-                <Card
-                  key={member.username}
-                  className="cursor-pointer p-0 transition-colors hover:border-foreground/30"
-                  onClick={() => onSelect(member)}
-                >
-                  <CardContent className="flex items-center gap-3 p-4">
-                    <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-secondary">
-                      <member.primaryRole.icon className="size-4" />
-                    </div>
-                    <div className="min-w-0 text-left">
-                      <h3 className="truncate text-sm font-medium">{member.name}</h3>
-                      <RoleBadges roles={member.roles} />
-                    </div>
-                  </CardContent>
-                </Card>
+              {members.map((member, i) => (
+                <div key={member.username} className={`reveal reveal-delay-${Math.min(i + 1, 8)}`}>
+                  <Card
+                    className="cursor-pointer p-0 card-hover card-glow transition-all duration-300"
+                    onClick={() => onSelect(member)}
+                  >
+                    <CardContent className="flex items-center gap-3 p-4">
+                      <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-secondary">
+                        <member.primaryRole.icon className="size-4" />
+                      </div>
+                      <div className="min-w-0 text-left">
+                        <h3 className="truncate text-sm font-medium">{member.name}</h3>
+                        <RoleBadges roles={member.roles} />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
               ))}
             </div>
           </section>
@@ -335,7 +336,7 @@ function StaffModal({ member, onClose }: { member: StaffMember | null; onClose: 
                         href={value}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-3 rounded-md border border-border p-3 text-sm hover:bg-secondary"
+                        className="flex items-center gap-3 rounded-md border border-border p-3 text-sm transition-all duration-200 hover:bg-secondary hover:border-accent/30"
                       >
                         <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-secondary">
                           {info.isBrand ? (

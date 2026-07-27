@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CheckCircle, AlertCircle } from "lucide-react";
+import { CheckCircle, AlertCircle, X } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export type ToastType = "success" | "error";
 
@@ -26,6 +27,11 @@ export function showToast(message: string, type: ToastType = "success") {
   }, 3000);
 }
 
+function removeToast(id: number) {
+  toasts = toasts.filter((t) => t.id !== id);
+  listeners.forEach((l) => l(toasts));
+}
+
 export default function ToastContainer() {
   const [items, setItems] = useState<ToastMessage[]>([]);
 
@@ -38,13 +44,29 @@ export default function ToastContainer() {
   if (items.length === 0) return null;
 
   return (
-    <div className="toast-container" aria-live="polite" aria-atomic="false">
+    <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2" aria-live="polite" aria-atomic="false">
       {items.map((toast) => (
-        <div key={toast.id} className={`toast toast-${toast.type}`}>
+        <div
+          key={toast.id}
+          className={cn(
+            "flex items-start gap-3 rounded-lg border px-4 py-3 shadow-lg backdrop-blur-sm animate-in slide-in-from-right",
+            toast.type === "success"
+              ? "border-accent/30 bg-card text-foreground"
+              : "border-destructive/30 bg-card text-foreground"
+          )}
+        >
           {toast.type === "success"
-            ? <CheckCircle size={16} aria-hidden="true" />
-            : <AlertCircle size={16} aria-hidden="true" />}
-          <span>{toast.message}</span>
+            ? <CheckCircle className="mt-0.5 size-4 shrink-0 text-accent" />
+            : <AlertCircle className="mt-0.5 size-4 shrink-0 text-destructive" />}
+          <span className="text-sm">{toast.message}</span>
+          <button
+            type="button"
+            onClick={() => removeToast(toast.id)}
+            className="ml-auto shrink-0 rounded-sm p-0.5 text-muted-foreground hover:text-foreground"
+            aria-label="Dismiss"
+          >
+            <X className="size-3.5" />
+          </button>
         </div>
       ))}
     </div>

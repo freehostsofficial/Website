@@ -53,7 +53,7 @@ const teaser = [
 export default function SubmitHostClient() {
   return (
     <main className="mx-auto max-w-[1200px] px-4 py-12 sm:px-6">
-      <section className="text-center">
+      <section className="text-center reveal">
         <h1>Join the FreeHosts Directory</h1>
         <p className="mx-auto mt-2 max-w-md text-muted-foreground">
           Help the community discover reliable, zero-cost hosting by submitting a provider.

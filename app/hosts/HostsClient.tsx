@@ -474,7 +474,7 @@ function HostsContent({ initialHosts }: { initialHosts: Host[] }) {
   return (
     <main className="mx-auto max-w-[1200px] px-4 py-10 sm:px-6">
       {/* Hero */}
-      <section className="text-center">
+      <section className="text-center reveal">
         <h1>Free Hosting Directory</h1>
         <p className="mt-2 text-muted-foreground">
           Discover and compare the best free hosting providers for your projects.

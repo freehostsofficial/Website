@@ -61,7 +61,7 @@ export default function OtherFreeHostsPage() {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
       <main className="mx-auto max-w-[1200px] px-4 py-12 sm:px-6">
-        <div className="text-center">
+        <div className="text-center reveal">
           <h1>Other Free Hosting Platforms</h1>
           <p className="mx-auto mt-2 max-w-md text-muted-foreground">
             Explore a curated collection of reliable platforms offering free hosting
@@ -69,7 +69,7 @@ export default function OtherFreeHostsPage() {
           </p>
         </div>
 
-        <div className="mt-8 flex gap-3 rounded-lg border border-border bg-card p-4">
+        <div className="mt-8 flex gap-3 rounded-lg border border-border bg-card p-4 card-hover transition-all duration-300">
           <Info className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
           <div>
             <h3 className="text-sm font-semibold">Important Information</h3>

@@ -54,7 +54,7 @@ export default function RedirectClient({ targetUrl, hostnameOrPath, backUrl, inv
   if (invalid) {
     return (
       <main id="main-content" className="mx-auto flex min-h-[70vh] max-w-[560px] items-center px-4 py-12 sm:px-6">
-        <Card className="w-full">
+        <Card className="w-full card-hover transition-all duration-300">
           <CardContent className="flex flex-col items-center gap-4 text-center">
             <div className="flex size-12 items-center justify-center rounded-full bg-destructive/15">
               <AlertTriangle className="size-6 text-destructive-text" />
@@ -92,12 +92,12 @@ export default function RedirectClient({ targetUrl, hostnameOrPath, backUrl, inv
   // ── Valid redirect countdown ───────────────────────────────────────────────
   return (
     <main id="main-content" className="mx-auto flex min-h-[70vh] max-w-[480px] items-center px-4 py-12 sm:px-6">
-      <Card className="w-full">
-        <CardContent className="flex flex-col items-center gap-4 text-center">
-          <div className="flex size-12 items-center justify-center rounded-full bg-secondary">
-            <ArrowRight className="size-6" />
-          </div>
-          <h2>Redirecting...</h2>
+        <Card className="w-full card-hover transition-all duration-300">
+          <CardContent className="flex flex-col items-center gap-4 text-center">
+            <div className="flex size-12 items-center justify-center rounded-full bg-secondary">
+              <ArrowRight className="size-6" />
+            </div>
+            <h2>Redirecting...</h2>
           <p className="text-sm text-muted-foreground">You are being redirected to</p>
           <div className="w-full break-all rounded-md border border-border px-3 py-2 font-mono text-sm">
             {hostnameOrPath}

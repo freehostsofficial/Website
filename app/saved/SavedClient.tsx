@@ -36,7 +36,7 @@ export default function SavedClient({ allHosts }: SavedClientProps) {
 
   return (
     <main className="mx-auto max-w-[1200px] px-4 py-12 sm:px-6">
-      <section className="text-center">
+      <section className="text-center reveal">
         <h1>Saved Hosts</h1>
         <p className="mt-2 text-muted-foreground">{heroSubtitle}</p>
       </section>
@@ -48,7 +48,7 @@ export default function SavedClient({ allHosts }: SavedClientProps) {
           ))}
         </div>
       ) : savedHosts.length === 0 ? (
-        <div className="mx-auto mt-10 flex max-w-md flex-col items-center gap-4 rounded-lg border border-border bg-card p-10 text-center">
+        <div className="mx-auto mt-10 flex max-w-md flex-col items-center gap-4 rounded-lg border border-border bg-card p-10 text-center card-hover transition-all duration-300">
           <Star className="size-10 text-muted-foreground" />
           <h2 className="text-lg">No saved hosts yet</h2>
           <p className="text-sm text-muted-foreground">

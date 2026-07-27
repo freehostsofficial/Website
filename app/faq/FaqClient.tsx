@@ -51,7 +51,7 @@ export default function FaqClient() {
 
   return (
     <main className="mx-auto max-w-[900px] px-4 py-12 sm:px-6">
-      <section className="flex flex-col items-center gap-3 text-center">
+      <section className="flex flex-col items-center gap-3 text-center reveal">
         <div className="flex size-14 items-center justify-center rounded-full bg-secondary">
           <CircleHelp className="size-7" />
         </div>
@@ -119,7 +119,7 @@ export default function FaqClient() {
         </div>
       )}
 
-      <div className="mt-16 flex flex-col items-center gap-3 rounded-lg border border-border bg-card p-10 text-center">
+      <div className="mt-16 flex flex-col items-center gap-3 rounded-lg border border-border bg-card p-10 text-center card-hover transition-all duration-300 reveal">
         <h2>Still have questions?</h2>
         <p className="text-muted-foreground">
           Join our community and get help from our team and fellow users.

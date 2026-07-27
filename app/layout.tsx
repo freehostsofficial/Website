@@ -22,8 +22,7 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 config.autoAddCss = false;
 
 import "./src/css/globals.css";
-import "./src/css/styles.css";
-import "./src/css/hosts.css";
+import "./src/css/animations.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.APP_URL ?? "https://freehosts.space"),

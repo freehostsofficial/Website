@@ -126,7 +126,7 @@ export default function AboutPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
       <main className="mx-auto max-w-[900px] px-4 py-12 sm:px-6">
-        <section className="flex flex-col items-center gap-3 text-center">
+        <section className="flex flex-col items-center gap-3 text-center reveal">
           <div className="flex size-14 items-center justify-center rounded-full bg-secondary">
             <Heart className="size-7" />
           </div>
@@ -138,9 +138,9 @@ export default function AboutPage() {
         </section>
 
         <div className="mt-8 grid grid-cols-3 gap-4">
-          <StatCard number="100+" label="Hosting Providers" />
-          <StatCard number="400+" label="Community Members" />
-          <StatCard number="40+" label="User Reviews" />
+          <div className="reveal reveal-delay-1"><StatCard number="100+" label="Hosting Providers" /></div>
+          <div className="reveal reveal-delay-2"><StatCard number="400+" label="Community Members" /></div>
+          <div className="reveal reveal-delay-3"><StatCard number="40+" label="User Reviews" /></div>
         </div>
 
         <div className="mt-12 flex flex-col gap-10">
@@ -244,7 +244,7 @@ export default function AboutPage() {
               hear from you!
             </p>
             <div className="mt-2 grid gap-4 sm:grid-cols-2">
-              <Card>
+              <Card className="card-hover card-glow transition-all duration-300">
                 <CardContent className="flex flex-col items-center gap-2 text-center">
                   <FontAwesomeIcon icon={faDiscord} className="size-6" />
                   <h3>Join Discord</h3>
@@ -260,7 +260,7 @@ export default function AboutPage() {
                   </Button>
                 </CardContent>
               </Card>
-              <Card>
+              <Card className="card-hover card-glow transition-all duration-300">
                 <CardContent className="flex flex-col items-center gap-2 text-center">
                   <Mail className="size-6" />
                   <h3>Email Us</h3>
@@ -280,13 +280,13 @@ export default function AboutPage() {
           </ContentSection>
         </div>
 
-        <div className="mt-16 flex flex-col items-center gap-3 rounded-lg border border-border bg-card p-10 text-center">
+        <div className="mt-16 flex flex-col items-center gap-3 rounded-lg border border-border bg-card p-10 text-center card-hover transition-all duration-300 reveal">
           <h2>Meet Our Team</h2>
           <p className="max-w-md text-muted-foreground">
             Learn more about the volunteers who keep FreeHosts running and discover
             opportunities to join us.
           </p>
-          <Button asChild className="gap-1.5">
+          <Button asChild className="gap-1.5 transition-all duration-200 hover:scale-105 active:scale-95">
             <Link href="/staff">
               <Users className="size-4" />
               View Team
@@ -300,7 +300,7 @@ export default function AboutPage() {
 
 function StatCard({ number, label }: { number: string; label: string }) {
   return (
-    <div className="rounded-lg border border-border bg-card py-5 text-center">
+    <div className="rounded-lg border border-border bg-card py-5 text-center card-hover card-glow transition-all duration-300">
       <div className="font-mono text-2xl font-semibold">{number}</div>
       <div className="mt-1 text-xs text-muted-foreground">{label}</div>
     </div>
@@ -329,7 +329,7 @@ function ContentSection({
 
 function ValueCard({ icon, title, text }: { icon: React.ReactNode; title: string; text: string }) {
   return (
-    <Card className="gap-2 py-4">
+    <Card className="gap-2 py-4 card-hover card-glow transition-all duration-300">
       <CardContent className="flex flex-col gap-2">
         <div className="flex size-8 items-center justify-center rounded-md bg-secondary">{icon}</div>
         <h3 className="text-sm font-semibold text-foreground">{title}</h3>

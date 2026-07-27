@@ -48,7 +48,7 @@ export function HostCard({ host, isNew = false }: { host: Host; isNew?: boolean 
   const hasMoreDomains = allExtractedDomains.length > 10;
 
   return (
-    <Card className="relative gap-3 py-4">
+    <Card className="relative gap-3 py-4 card-hover card-glow transition-all duration-300">
       {isNew && (
         <Badge className="absolute top-3 right-3" variant="success">
           NEW
@@ -56,7 +56,7 @@ export function HostCard({ host, isNew = false }: { host: Host; isNew?: boolean 
       )}
 
       <div className="flex items-start gap-3 px-4">
-        <div className="flex size-11 shrink-0 items-center justify-center rounded-md bg-secondary text-base font-semibold">
+        <div className="flex size-11 shrink-0 items-center justify-center rounded-md bg-secondary text-base font-semibold transition-transform duration-300 group-hover:scale-110">
           {iconLetter}
         </div>
         <div className="min-w-0 flex-1">
@@ -128,14 +128,14 @@ export function HostCard({ host, isNew = false }: { host: Host; isNew?: boolean 
             <span className="text-xs text-muted-foreground">{totalReviews} reviews</span>
           </div>
           <div className="mt-1 h-1 w-full max-w-24 overflow-hidden rounded-full bg-secondary">
-            <div className="h-full rounded-full bg-accent" style={{ width: `${rating}%` }} />
+            <div className="h-full rounded-full bg-accent transition-all duration-500" style={{ width: `${rating}%` }} />
           </div>
         </div>
         <div className="flex shrink-0 items-center gap-1.5">
           <Button
             variant={isSelected(host.id) ? "default" : "outline"}
             size="icon"
-            className="size-8"
+            className="size-8 transition-all duration-200 active:scale-90"
             onClick={() => (isSelected(host.id) ? removeHost(host.id) : addHost(host))}
             disabled={isFull && !isSelected(host.id)}
             aria-pressed={isSelected(host.id)}
@@ -146,14 +146,14 @@ export function HostCard({ host, isNew = false }: { host: Host; isNew?: boolean 
           <Button
             variant={isFavorite(host.id) ? "default" : "outline"}
             size="icon"
-            className="size-8"
+            className="size-8 transition-all duration-200 active:scale-90"
             onClick={() => toggleFavorite(host.id)}
             aria-pressed={isFavorite(host.id)}
             aria-label={isFavorite(host.id) ? `Remove ${host.name} from favorites` : `Add ${host.name} to favorites`}
           >
             <Star className="size-3.5" fill={isFavorite(host.id) ? "currentColor" : "none"} />
           </Button>
-          <Button asChild size="sm">
+          <Button asChild size="sm" className="transition-all duration-200 active:scale-90">
             <Link href={`/hosts/${slugify(host.name)}`}>View</Link>
           </Button>
         </div>
@@ -164,8 +164,8 @@ export function HostCard({ host, isNew = false }: { host: Host; isNew?: boolean 
 
 function SpecBox({ icon, value, label }: { icon: React.ReactNode; value: string; label: string }) {
   return (
-    <div className="flex flex-col items-center gap-1 rounded-md border border-border bg-secondary/30 py-2.5 text-center">
-      <span className="text-muted-foreground">{icon}</span>
+    <div className="flex flex-col items-center gap-1 rounded-md border border-border bg-secondary/30 py-2.5 text-center transition-all duration-200 hover:border-accent/30 hover:bg-accent/5">
+      <span className="text-muted-foreground transition-colors duration-200 group-hover:text-accent">{icon}</span>
       <span className="truncate text-sm font-medium">{value}</span>
       <span className="text-[11px] text-muted-foreground">{label}</span>
     </div>

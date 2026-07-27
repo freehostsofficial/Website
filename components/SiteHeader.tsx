@@ -83,12 +83,12 @@ function NavDropdown({
         <Button
           variant="ghost"
           size="sm"
-          className="gap-1.5 text-muted-foreground hover:text-foreground"
-        >
-          {icon}
-          {label}
-          <ChevronDown className="size-3.5" />
-        </Button>
+              className="gap-1.5 text-muted-foreground transition-all duration-200 hover:text-foreground"
+            >
+              {icon}
+              {label}
+              <ChevronDown className="size-3.5 transition-transform duration-200 group-data-[state=open]:rotate-180" />
+            </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start">
         {links.map((link) => (

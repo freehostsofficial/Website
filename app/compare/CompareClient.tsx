@@ -34,12 +34,14 @@ export default function CompareClient() {
   if (selection.length < 2) {
     return (
       <main className="mx-auto max-w-[1200px] px-4 py-16 text-center sm:px-6">
-        <h1>Compare Hosts</h1>
-        <p className="mt-2 text-muted-foreground">
-          Select at least two hosts to compare them side by side.
-        </p>
+        <div className="reveal">
+          <h1>Compare Hosts</h1>
+          <p className="mt-2 text-muted-foreground">
+            Select at least two hosts to compare them side by side.
+          </p>
+        </div>
 
-        <div className="mx-auto mt-10 flex max-w-md flex-col items-center gap-4 rounded-lg border border-border bg-card p-10">
+          <div className="mx-auto mt-10 flex max-w-md flex-col items-center gap-4 rounded-lg border border-border bg-card p-10 card-hover transition-all duration-300">
           <GitCompare className="size-10 text-muted-foreground" />
           <h2 className="text-lg">No hosts selected yet</h2>
           <p className="text-sm text-muted-foreground">
@@ -87,7 +89,7 @@ export default function CompareClient() {
 
   return (
     <main className="mx-auto max-w-[1200px] px-4 py-10 sm:px-6">
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 reveal">
         <h1>Compare Hosts</h1>
         <p className="text-muted-foreground">
           Comparing <strong className="text-foreground">{selection.length} hosts</strong> side by side.
