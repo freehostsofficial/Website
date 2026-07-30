@@ -29,6 +29,8 @@ import { faDiscord, faGithub, faLinkedin, faTwitter } from "@fortawesome/free-br
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
+import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import {
   Dialog,
   DialogContent,
@@ -36,6 +38,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { staffData, type StaffJsonMember } from "./data";
+import { cn } from "@/lib/utils";
 
 type FilterKey =
   | "all"
@@ -108,6 +111,16 @@ const linkIcons: Record<string, { icon: LucideIcon | IconDefinition; label: stri
   linkedin: { icon: faLinkedin, label: "LinkedIn", isBrand: true },
 };
 
+const roleBorderColors: Record<string, string> = {
+  owner: "border-l-amber-500",
+  admin: "border-l-blue-500",
+  developer: "border-l-green-500",
+  moderator: "border-l-purple-500",
+  helper: "border-l-teal-500",
+  publisher: "border-l-orange-500",
+  "hosting-provider": "border-l-rose-500",
+};
+
 function categorizeRole(role: string) {
   const lower = role.trim().toLowerCase();
   const hit = Object.entries(roleConfig).find(([key]) => lower.includes(key));
@@ -122,9 +135,7 @@ function processStaff(data: Record<string, StaffJsonMember>) {
         .map((role: string) => categorizeRole(String(role)))
         .filter((role): role is RoleInfo => Boolean(role))
         .sort((a: RoleInfo, b: RoleInfo) => a.priority - b.priority);
-
       if (roles.length === 0) return null;
-
       return {
         username,
         name: member.name || username,
@@ -148,7 +159,6 @@ export default function StaffClient() {
       (acc, key) => ({ ...acc, [key]: [] }),
       {} as Record<Exclude<FilterKey, "all">, StaffMember[]>,
     );
-
     members.forEach((member) => {
       if (activeFilter === "all") {
         result[member.primaryRole.filterKey].push(member);
@@ -156,73 +166,81 @@ export default function StaffClient() {
         result[activeFilter].push(member);
       }
     });
-
     return result;
   }, [activeFilter, members]);
 
   return (
     <main>
-      <section className="border-b border-border">
-        <div className="mx-auto max-w-[1200px] px-4 py-12 sm:px-6">
-          <div className="flex flex-col items-center gap-3 text-center reveal">
-            <div className="flex size-12 items-center justify-center rounded-full bg-accent/10 text-accent">
-              <Users className="size-6" />
+      <section className="relative overflow-hidden noise-overlay border-b border-border">
+        <div className="dot-grid relative">
+          <div className="pointer-events-none absolute -top-40 left-1/4 size-96 opacity-20 blob-morph" />
+          <div className="pointer-events-none absolute -bottom-40 right-1/4 size-80 opacity-15 blob-morph" style={{ animationDelay: "4s" }} />
+          <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
+            <div className="flex flex-col items-center gap-3 text-center reveal">
+              <div className="flex size-14 items-center justify-center rounded-full bg-accent/10 text-accent">
+                <Users className="size-7" />
+              </div>
+              <h1>Our Team</h1>
+              <p className="max-w-2xl text-muted-foreground body-large">
+                Dedicated volunteers who help run, maintain, and grow the FreeHosts community.
+              </p>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <AnimatedCounter to={members.length} suffix=" team members" className="font-semibold text-foreground" />
+              </div>
             </div>
-            <h1>Our Team</h1>
-            <p className="max-w-2xl text-muted-foreground body-large">
-              Dedicated volunteers who help run, maintain, and grow the FreeHosts community.
-            </p>
           </div>
         </div>
       </section>
 
-      <div className="mx-auto max-w-[1200px] px-4 mt-8 sm:px-6">
-        <div className="flex flex-wrap justify-center gap-2">
-          {filters.map((filter) => (
-            <Button
-              key={filter.key}
-              type="button"
-              size="sm"
-              variant={activeFilter === filter.key ? "default" : "outline"}
-              onClick={() => setActiveFilter(filter.key)}
-              className="gap-1.5 transition-all duration-200 active:scale-95"
-            >
-            <filter.icon className="size-3.5" />
-            {filter.label}
-          </Button>
-        ))}
+      <section className="border-t border-border">
+        <div className="mx-auto max-w-[1200px] px-4 py-8 sm:px-6">
+          <div className="flex flex-wrap justify-center gap-2">
+            {filters.map((filter) => (
+              <Button
+                key={filter.key}
+                type="button"
+                size="sm"
+                variant={activeFilter === filter.key ? "default" : "outline"}
+                onClick={() => setActiveFilter(filter.key)}
+                className="gap-1.5 transition-all duration-200 active:scale-95"
+              >
+                <filter.icon className="size-3.5" />
+                {filter.label}
+              </Button>
+            ))}
+          </div>
         </div>
-      </div>
+      </section>
 
       <StaffSections grouped={grouped} onSelect={setSelectedMember} />
 
       <section className="border-b border-border">
-        <div className="mx-auto max-w-[1200px] px-4 py-12 sm:px-6">
-          <div className="flex flex-col items-center gap-4 rounded-lg border border-border bg-card p-10 text-center">
-            <div className="flex size-12 items-center justify-center rounded-full bg-accent/10 text-accent">
-              <Sparkles className="size-6" />
+        <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6">
+          <SpotlightCard className="flex flex-col items-center gap-6 p-10 text-center reveal">
+            <div className="flex size-14 items-center justify-center rounded-full bg-accent/10 text-accent">
+              <Sparkles className="size-7" />
             </div>
-            <h2>Want to Join the Team?</h2>
-            <p className="max-w-md text-muted-foreground">
-              We&apos;re always looking for passionate volunteers to help grow and improve
-              FreeHosts. Whether you&apos;re interested in curation, moderation,
-              development, or community support, there&apos;s a place for you here.
-            </p>
-
-            <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div>
+              <h2>Want to Join the Team?</h2>
+              <p className="mt-2 max-w-md text-muted-foreground">
+                We&apos;re always looking for passionate volunteers to help grow and improve
+                FreeHosts. Whether you&apos;re interested in curation, moderation,
+                development, or community support, there&apos;s a place for you here.
+              </p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <Benefit icon={Heart} title="Make an Impact" text="Help thousands find the right hosting" />
               <Benefit icon={Users} title="Join Community" text="Work with passionate volunteers" />
               <Benefit icon={GraduationCap} title="Learn & Grow" text="Gain experience and skills" />
               <Benefit icon={Award} title="Recognition" text="Get credited for your work" />
             </div>
-
-            <Button asChild className="mt-2 gap-2 transition-all duration-200 hover:scale-105 active:scale-95">
+            <Button asChild className="gap-2 transition-all duration-200 hover:scale-105 active:scale-95">
               <a href="https://discord.gg/QbeZ3b5CQd" target="_blank" rel="noopener noreferrer">
                 <FontAwesomeIcon icon={faDiscord} className="size-4" />
                 Join Our Discord
               </a>
             </Button>
-          </div>
+          </SpotlightCard>
         </div>
       </section>
 
@@ -242,9 +260,11 @@ function StaffSections({
 
   if (visible.length === 0) {
     return (
-      <p className="mt-12 text-center text-muted-foreground">
-        No staff members found in this category.
-      </p>
+      <section className="border-b border-border">
+        <div className="mx-auto max-w-[1200px] px-4 py-16 text-center sm:px-6">
+          <p className="text-muted-foreground">No staff members found in this category.</p>
+        </div>
+      </section>
     );
   }
 
@@ -260,11 +280,14 @@ function StaffSections({
                 {section.title}
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">{section.desc}</p>
-              <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 stagger-children">
                 {members.map((member) => (
                   <Card
                     key={member.username}
-                    className="cursor-pointer p-0 card-hover card-glow transition-all duration-300"
+                    className={cn(
+                      "cursor-pointer p-0 card-hover card-glow transition-all duration-300 border-l-2",
+                      roleBorderColors[member.primaryRole.className] || "border-l-border",
+                    )}
                     onClick={() => onSelect(member)}
                   >
                     <CardContent className="flex items-center gap-3 p-4">
@@ -274,6 +297,9 @@ function StaffSections({
                       <div className="min-w-0 text-left">
                         <h3 className="truncate text-sm font-medium">{member.name}</h3>
                         <RoleBadges roles={member.roles} />
+                        {member.about && (
+                          <p className="mt-1 line-clamp-1 text-xs text-muted-foreground">{member.about}</p>
+                        )}
                       </div>
                     </CardContent>
                   </Card>
@@ -309,31 +335,31 @@ function StaffModal({ member, onClose }: { member: StaffMember | null; onClose: 
 
   return (
     <Dialog open={Boolean(member)} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent>
+      <DialogContent className="sm:max-w-md">
         {member && (
           <>
             <DialogHeader>
-              <div className="flex items-center gap-3">
-                <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-secondary">
-                  <member.primaryRole.icon className="size-5" />
+              <div className="flex items-center gap-4">
+                <div className="flex size-14 shrink-0 items-center justify-center rounded-full bg-secondary">
+                  <member.primaryRole.icon className="size-6" />
                 </div>
                 <div>
-                  <DialogTitle>{member.name}</DialogTitle>
+                  <DialogTitle className="text-lg">{member.name}</DialogTitle>
                   <RoleBadges roles={member.roles} />
                 </div>
               </div>
             </DialogHeader>
 
-            {member.about ? (
+            {member.about && (
               <div>
-                <h3 className="text-sm font-medium">About</h3>
-                <p className="mt-1 text-sm text-muted-foreground">{member.about}</p>
+                <h3 className="text-sm font-medium text-foreground">About</h3>
+                <p className="mt-1 text-sm text-muted-foreground leading-relaxed">{member.about}</p>
               </div>
-            ) : null}
+            )}
 
-            {links.length > 0 ? (
+            {links.length > 0 && (
               <div>
-                <h3 className="text-sm font-medium">Links</h3>
+                <h3 className="text-sm font-medium text-foreground">Links</h3>
                 <div className="mt-2 flex flex-col gap-2">
                   {links.map(([key, value]) => {
                     const info = linkIcons[key] || { icon: Globe, label: key };
@@ -362,7 +388,7 @@ function StaffModal({ member, onClose }: { member: StaffMember | null; onClose: 
                   })}
                 </div>
               </div>
-            ) : null}
+            )}
           </>
         )}
       </DialogContent>

@@ -37,6 +37,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { cn } from "@/lib/utils";
 import { TiltCard } from "@/components/ui/TiltCard";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { LiquidGlassCard } from "@/components/ui/LiquidGlassCard";
 
 interface HostDetailClientProps {
   host: Host;
@@ -131,8 +132,11 @@ export default function HostDetailClient({ host, related = [] }: HostDetailClien
 
   return (
     <>
-      <section className="border-b border-border">
-        <div className="mx-auto max-w-[1200px] px-4 py-12 sm:px-6">
+      <section className="relative overflow-hidden noise-overlay border-b border-border">
+        <div className="dot-grid relative">
+          <div className="pointer-events-none absolute -top-40 left-1/4 size-96 opacity-20 blob-morph" />
+          <div className="pointer-events-none absolute -bottom-40 right-1/4 size-80 opacity-15 blob-morph" style={{ animationDelay: "4s" }} />
+          <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
           <div className="reveal">
             <Button asChild variant="ghost" size="sm" className="gap-1.5 text-muted-foreground">
               <Link href="/hosts">
@@ -178,6 +182,7 @@ export default function HostDetailClient({ host, related = [] }: HostDetailClien
               </div>
             </div>
           </div>
+        </div>
       </section>
 
       <section className="border-t border-border">
@@ -190,8 +195,12 @@ export default function HostDetailClient({ host, related = [] }: HostDetailClien
                     <Info className="size-4" />
                     Information
                   </h3>
-                  <div className="mt-2 rounded-lg border border-border bg-card p-4 text-sm text-muted-foreground">
-                    {formatInfoLines(host.info)}
+                  <div className="mt-2">
+                    <LiquidGlassCard glassSize="sm">
+                      <div className="text-sm text-muted-foreground">
+                        {formatInfoLines(host.info)}
+                      </div>
+                    </LiquidGlassCard>
                   </div>
                 </section>
               )}
@@ -202,8 +211,12 @@ export default function HostDetailClient({ host, related = [] }: HostDetailClien
                     <Gift className="size-4" />
                     Free Plan
                   </h3>
-                  <div className="mt-2 rounded-lg border border-border bg-card p-4 text-sm text-muted-foreground">
-                    {formatInfoLines(host.free_plan)}
+                  <div className="mt-2">
+                    <LiquidGlassCard glassSize="sm">
+                      <div className="text-sm text-muted-foreground">
+                        {formatInfoLines(host.free_plan)}
+                      </div>
+                    </LiquidGlassCard>
                   </div>
                 </section>
               )}

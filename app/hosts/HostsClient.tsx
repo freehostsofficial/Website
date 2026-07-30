@@ -480,32 +480,28 @@ function HostsContent({ initialHosts }: { initialHosts: Host[] }) {
   return (
     <main>
       {/* Hero */}
-      <section className="border-b border-border">
-        <div className="mx-auto max-w-[1200px] px-4 py-12 sm:px-6">
-          <div className="flex flex-col items-center gap-3 text-center reveal">
-            <div className="flex size-12 items-center justify-center rounded-full bg-accent/10 text-accent">
-              <Compass className="size-6" />
+      <section className="relative overflow-hidden noise-overlay border-b border-border">
+        <div className="dot-grid relative">
+          <div className="pointer-events-none absolute -top-40 left-1/4 size-96 opacity-20 blob-morph" />
+          <div className="pointer-events-none absolute -bottom-40 right-1/4 size-80 opacity-15 blob-morph" style={{ animationDelay: "4s" }} />
+          <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
+            <div className="flex flex-col items-center gap-3 text-center reveal">
+              <div className="flex size-14 items-center justify-center rounded-full bg-accent/10 text-accent">
+                <Compass className="size-7" />
+              </div>
+              <h1>Free Hosting Directory</h1>
+              <p className="max-w-2xl text-muted-foreground body-large">
+                Browse 100+ free hosting providers for websites, Discord bots, and apps. Filter by CPU, RAM, storage, language, and target.
+              </p>
             </div>
-            <h1>Free Hosting Directory</h1>
-            <p className="max-w-2xl text-muted-foreground body-large">
-              Browse 100+ free hosting providers for websites, Discord bots, and apps. Filter by CPU, RAM, storage, language, and target.
-            </p>
           </div>
         </div>
       </section>
 
       {/* Search + filters */}
-      <section className="border-t border-border">
-        <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6">
+      <section className="border-t border-border sticky top-0 z-10 bg-background/80 backdrop-blur-lg">
+        <div className="mx-auto max-w-[1200px] px-4 py-6 sm:px-6">
           <div className="reveal">
-            <Badge variant="outline" className="gap-1.5 border-accent/50 text-accent border-rotate">
-              <Sparkles className="size-3.5" />
-              Filters
-            </Badge>
-            <h2 className="mt-4">Find the right host</h2>
-            <p className="mt-2 text-muted-foreground body-large">Search, sort, and filter to narrow down your options.</p>
-          </div>
-          <div className="mt-6 reveal reveal-delay-1">
             <div className="grid gap-3 sm:grid-cols-[1fr_220px_220px]">
               <div className="relative">
                 <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -536,6 +532,30 @@ function HostsContent({ initialHosts }: { initialHosts: Host[] }) {
                 onChange={(val) => handleFilterChange("target", val)}
               />
             </div>
+
+            {/* Active filter chips */}
+            {(currentFilters.search || currentFilters.locale || currentFilters.target) && (
+              <div className="mt-3 flex flex-wrap gap-1.5 reveal reveal-delay-2">
+                {currentFilters.search && (
+                  <Badge variant="secondary" className="gap-1.5 text-xs">
+                    Search: &ldquo;{currentFilters.search}&rdquo;
+                    <button onClick={() => handleFilterChange("search", "")} className="ml-0.5 hover:text-foreground" aria-label="Clear search">&times;</button>
+                  </Badge>
+                )}
+                {currentFilters.locale && (
+                  <Badge variant="secondary" className="gap-1.5 text-xs">
+                    Language: {getLanguageName(currentFilters.locale)}
+                    <button onClick={() => handleFilterChange("locale", "")} className="ml-0.5 hover:text-foreground" aria-label="Clear language filter">&times;</button>
+                  </Badge>
+                )}
+                {currentFilters.target && (
+                  <Badge variant="secondary" className="gap-1.5 text-xs">
+                    Target: {currentFilters.target}
+                    <button onClick={() => handleFilterChange("target", "")} className="ml-0.5 hover:text-foreground" aria-label="Clear target filter">&times;</button>
+                  </Badge>
+                )}
+              </div>
+            )}
 
             {/* Sort bar */}
             <div className="mt-4 flex flex-col gap-3 border-b border-border pb-4 sm:flex-row sm:items-center sm:justify-between">

@@ -64,17 +64,21 @@ export default function OtherFreeHostsPage() {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
 
-      <section className="border-b border-border">
-        <div className="mx-auto max-w-[1200px] px-4 py-12 sm:px-6">
-          <div className="flex flex-col items-center gap-3 text-center reveal">
-            <div className="flex size-12 items-center justify-center rounded-full bg-accent/10 text-accent">
-              <Globe className="size-6" />
+      <section className="relative overflow-hidden noise-overlay border-b border-border">
+        <div className="dot-grid relative">
+          <div className="pointer-events-none absolute -top-40 left-1/4 size-96 opacity-20 blob-morph" />
+          <div className="pointer-events-none absolute -bottom-40 right-1/4 size-80 opacity-15 blob-morph" style={{ animationDelay: "4s" }} />
+          <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
+            <div className="flex flex-col items-center gap-3 text-center reveal">
+              <div className="flex size-14 items-center justify-center rounded-full bg-accent/10 text-accent">
+                <Globe className="size-7" />
+              </div>
+              <h1>Other Free Hosts</h1>
+              <p className="max-w-2xl text-muted-foreground body-large">
+                Explore a curated collection of reliable platforms offering free hosting
+                services for your websites, applications, and projects.
+              </p>
             </div>
-            <h1>Other Free Hosts</h1>
-            <p className="max-w-2xl text-muted-foreground body-large">
-              Explore a curated collection of reliable platforms offering free hosting
-              services for your websites, applications, and projects.
-            </p>
           </div>
         </div>
       </section>

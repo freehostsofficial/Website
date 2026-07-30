@@ -20,6 +20,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { TiltCard } from "@/components/ui/TiltCard";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { LiquidGlassCard } from "@/components/ui/LiquidGlassCard";
+import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 
 export const metadata: Metadata = {
   title: "About FreeHosts - Our Mission, Team & Community",
@@ -132,17 +134,21 @@ export default function AboutPage() {
       />
 
       {/* ── Hero ────────────────────────────────────────────────────── */}
-      <section className="border-b border-border">
-        <div className="mx-auto max-w-[1200px] px-4 py-12 sm:px-6">
-          <div className="flex flex-col items-center gap-3 text-center reveal">
-            <div className="flex size-12 items-center justify-center rounded-full bg-accent/10 text-accent">
-              <Heart className="size-6" />
+      <section className="relative overflow-hidden noise-overlay border-b border-border">
+        <div className="dot-grid relative">
+          <div className="pointer-events-none absolute -top-40 left-1/4 size-96 opacity-20 blob-morph" />
+          <div className="pointer-events-none absolute -bottom-40 right-1/4 size-80 opacity-15 blob-morph" style={{ animationDelay: "4s" }} />
+          <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
+            <div className="flex flex-col items-center gap-3 text-center reveal">
+              <div className="flex size-14 items-center justify-center rounded-full bg-accent/10 text-accent">
+                <Heart className="size-7" />
+              </div>
+              <h1>About FreeHosts</h1>
+              <p className="max-w-md text-muted-foreground body-large">
+                A community-driven directory helping developers, students, and makers
+                discover reliable free hosting for their projects.
+              </p>
             </div>
-            <h1>About FreeHosts</h1>
-            <p className="max-w-md text-muted-foreground body-large">
-              A community-driven directory helping developers, students, and makers
-              discover reliable free hosting for their projects.
-            </p>
           </div>
         </div>
       </section>
@@ -152,13 +158,13 @@ export default function AboutPage() {
         <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6">
           <div className="grid grid-cols-3 gap-4 stagger-children">
             <TiltCard maxTilt={6} glare={false} className="h-full">
-              <StatCard number="100+" label="Hosting Providers" />
+              <StatCard value={100} label="Hosting Providers" suffix="+" />
             </TiltCard>
             <TiltCard maxTilt={6} glare={false} className="h-full">
-              <StatCard number="400+" label="Community Members" />
+              <StatCard value={400} label="Community Members" suffix="+" />
             </TiltCard>
             <TiltCard maxTilt={6} glare={false} className="h-full">
-              <StatCard number="40+" label="User Reviews" />
+              <StatCard value={40} label="User Reviews" suffix="+" />
             </TiltCard>
           </div>
         </div>
@@ -209,26 +215,10 @@ export default function AboutPage() {
             </p>
           </div>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 stagger-children">
-            <ValueCard
-              icon={<Users className="size-5" />}
-              title="Community First"
-              text="Built by the community, for the community. Every contribution matters and helps others succeed."
-            />
-            <ValueCard
-              icon={<ShieldCheck className="size-5" />}
-              title="Transparency"
-              text="Honest reviews, clear information, and open communication about our processes and decisions."
-            />
-            <ValueCard
-              icon={<Zap className="size-5" />}
-              title="Quality Over Quantity"
-              text="We carefully curate listings to ensure every host meets our standards for reliability and usefulness."
-            />
-            <ValueCard
-              icon={<HandHeart className="size-5" />}
-              title="Free & Accessible"
-              text="Our directory will always be free. No paywalls, no premium tiers, just helpful resources for everyone."
-            />
+            <ValueCard icon={<Users className="size-5" />} title="Community First" text="Built by the community, for the community. Every contribution matters and helps others succeed." />
+            <ValueCard icon={<ShieldCheck className="size-5" />} title="Transparency" text="Honest reviews, clear information, and open communication about our processes and decisions." />
+            <ValueCard icon={<Zap className="size-5" />} title="Quality Over Quantity" text="We carefully curate listings to ensure every host meets our standards for reliability and usefulness." />
+            <ValueCard icon={<HandHeart className="size-5" />} title="Free & Accessible" text="Our directory will always be free. No paywalls, no premium tiers, just helpful resources for everyone." />
           </div>
         </div>
       </section>
@@ -284,7 +274,7 @@ export default function AboutPage() {
               FreeHosts started as a simple idea: make it easier for people to find reliable free hosting without endless searching and comparing.
             </p>
           </div>
-          <div className="mt-6 flex flex-col gap-4 border-l border-border pl-5 reveal reveal-delay-1">
+          <div className="mt-6 flex flex-col gap-4 border-l-2 border-l-accent/30 pl-5 reveal reveal-delay-1">
             <TimelineItem
               title="The Beginning"
               text="Started as a small list shared among friends to help each other find free hosting for hobby projects."
@@ -381,54 +371,34 @@ export default function AboutPage() {
   );
 }
 
-function StatCard({ number, label }: { number: string; label: string }) {
+function StatCard({ value, label, suffix = "" }: { value: number; label: string; suffix?: string }) {
   return (
     <Card variant="elevated" className="h-full py-5 text-center card-hover card-glow transition-all duration-300">
       <CardContent>
-        <div className="font-mono text-2xl font-semibold gradient-text">{number}</div>
+        <AnimatedCounter to={value} suffix={suffix} className="font-mono text-2xl font-semibold gradient-text" />
         <div className="mt-1 text-xs text-muted-foreground">{label}</div>
       </CardContent>
     </Card>
   );
 }
 
-function ContentSection({
-  icon,
-  title,
-  children,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <section>
-      <div className="mb-3 flex items-center gap-2.5">
-        <div className="flex size-9 items-center justify-center rounded-md bg-secondary">{icon}</div>
-        <h2 className="text-lg">{title}</h2>
-      </div>
-      <div className="flex flex-col gap-3 text-sm leading-relaxed text-muted-foreground">{children}</div>
-    </section>
-  );
-}
-
 function ValueCard({ icon, title, text }: { icon: React.ReactNode; title: string; text: string }) {
   return (
     <TiltCard maxTilt={6} glare={false} className="h-full">
-      <Card variant="elevated" hover className="h-full transition-all duration-300 card-glow">
-        <CardContent className="flex flex-col gap-2">
+      <LiquidGlassCard glassSize="sm" className="h-full">
+        <div className="flex flex-col gap-2">
           <div className="flex size-8 items-center justify-center rounded-md bg-accent/10 text-accent">{icon}</div>
           <h3 className="text-sm font-semibold text-foreground">{title}</h3>
           <p className="text-sm text-muted-foreground">{text}</p>
-        </CardContent>
-      </Card>
+        </div>
+      </LiquidGlassCard>
     </TiltCard>
   );
 }
 
 function TimelineItem({ title, text }: { title: string; text: string }) {
   return (
-    <div>
+    <div className="relative pl-4 before:absolute before:left-0 before:top-2 before:size-2 before:rounded-full before:bg-accent before:shadow-[0_0_8px] before:shadow-accent/50">
       <h4 className="text-sm font-semibold text-foreground">{title}</h4>
       <p className="mt-1 text-sm text-muted-foreground">{text}</p>
     </div>

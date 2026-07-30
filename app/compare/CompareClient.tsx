@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { GitCompare, Trash2, ArrowLeft, Star, CheckCircle2, XCircle, Sparkles, Crosshair, Compass } from "lucide-react";
+import { GitCompare, Trash2, ArrowLeft, Star, CheckCircle2, XCircle, Sparkles, Crosshair, Compass, Share2 } from "lucide-react";
 import { useComparison } from "../../contexts/ComparisonContext";
 import { ROWS, findBestIndex, computeRating } from "../../lib/comparisonRows";
 import { slugify } from "../../lib/slugify";
@@ -93,16 +93,20 @@ export default function CompareClient() {
 
   return (
     <main>
-      <section className="border-b border-border">
-        <div className="mx-auto max-w-[1200px] px-4 py-12 sm:px-6">
-          <div className="flex flex-col items-center gap-3 text-center reveal">
-            <div className="flex size-12 items-center justify-center rounded-full bg-accent/10 text-accent">
-              <Compass className="size-6" />
+      <section className="relative overflow-hidden noise-overlay border-b border-border">
+        <div className="dot-grid relative">
+          <div className="pointer-events-none absolute -top-40 left-1/4 size-96 opacity-20 blob-morph" />
+          <div className="pointer-events-none absolute -bottom-40 right-1/4 size-80 opacity-15 blob-morph" style={{ animationDelay: "4s" }} />
+          <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
+            <div className="flex flex-col items-center gap-3 text-center reveal">
+              <div className="flex size-14 items-center justify-center rounded-full bg-accent/10 text-accent">
+                <Compass className="size-7" />
+              </div>
+              <h1>Compare Hosts</h1>
+              <p className="max-w-2xl text-muted-foreground body-large">
+                Add hosting providers to compare their features side by side.
+              </p>
             </div>
-            <h1>Compare Hosts</h1>
-            <p className="max-w-2xl text-muted-foreground body-large">
-              Add hosting providers to compare their features side by side.
-            </p>
           </div>
         </div>
       </section>
@@ -127,6 +131,10 @@ export default function CompareClient() {
               <Button variant="ghost" size="sm" className="gap-1.5 text-destructive hover:text-destructive" onClick={clearAll}>
                 <Trash2 className="size-3.5" />
                 Clear All
+              </Button>
+              <Button variant="outline" size="sm" className="gap-1.5" onClick={() => navigator.clipboard.writeText(window.location.href).then(() => alert("Link copied!"))}>
+                <Share2 className="size-3.5" />
+                Share
               </Button>
             </div>
           </div>
@@ -237,8 +245,8 @@ export default function CompareClient() {
                 </TableRow>
               </TableHeader>
                 <TableBody>
-                {ROWS.map((row) => (
-                  <TableRow key={row.label} className="card-hover">
+                {ROWS.map((row, rowIdx) => (
+                  <TableRow key={row.label} className={cn("card-hover", rowIdx % 2 === 1 && "bg-secondary/20")}>
                     <TableCell className="sticky left-0 bg-card font-medium text-foreground">
                       {row.label}
                     </TableCell>
@@ -246,7 +254,7 @@ export default function CompareClient() {
                       const isBest = row.getNumeric !== undefined && bestIndices[row.label] === colIdx;
                       return (
                         <TableCell key={host.id} className={cn(isBest && "text-accent")}>
-                          <span className="flex items-center gap-1.5">
+                          <span className={cn("flex items-center gap-1.5", isBest && "animate-pulse")}>
                             {isBest && <Star className="size-3.5 fill-current" />}
                             {row.getValue(host)}
                           </span>

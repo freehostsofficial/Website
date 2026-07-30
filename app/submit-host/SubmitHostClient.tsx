@@ -56,16 +56,20 @@ const teaser = [
 export default function SubmitHostClient() {
   return (
     <main>
-      <section className="border-b border-border">
-        <div className="mx-auto max-w-[1200px] px-4 py-12 sm:px-6">
-          <div className="flex flex-col items-center gap-3 text-center reveal">
-            <div className="flex size-12 items-center justify-center rounded-full bg-accent/10 text-accent">
-              <Plus className="size-6" />
+      <section className="relative overflow-hidden noise-overlay border-b border-border">
+        <div className="dot-grid relative">
+          <div className="pointer-events-none absolute -top-40 left-1/4 size-96 opacity-20 blob-morph" />
+          <div className="pointer-events-none absolute -bottom-40 right-1/4 size-80 opacity-15 blob-morph" style={{ animationDelay: "4s" }} />
+          <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
+            <div className="flex flex-col items-center gap-3 text-center reveal">
+              <div className="flex size-14 items-center justify-center rounded-full bg-accent/10 text-accent">
+                <Plus className="size-7" />
+              </div>
+              <h1>Submit a Host</h1>
+              <p className="max-w-2xl text-muted-foreground body-large">
+                Help the community discover reliable, zero-cost hosting by submitting a provider.
+              </p>
             </div>
-            <h1>Submit a Host</h1>
-            <p className="max-w-2xl text-muted-foreground body-large">
-              Help the community discover reliable, zero-cost hosting by submitting a provider.
-            </p>
           </div>
         </div>
       </section>
@@ -73,13 +77,16 @@ export default function SubmitHostClient() {
       <section className="border-t border-border">
         <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6">
           <div className="grid gap-6 lg:grid-cols-3">
-            <div className="lg:col-span-2 space-y-6 stagger-children">
+            <div className="lg:col-span-2 stagger-children">
               {steps.map((step, i) => (
-                <div key={i} className="h-full">
+                <div key={i} className="relative">
+                  {i < steps.length - 1 && (
+                    <div className="pointer-events-none absolute left-4 top-14 bottom-0 w-px bg-gradient-to-b from-accent/40 to-transparent" aria-hidden="true" />
+                  )}
                   <TiltCard maxTilt={6} glare={false} className="h-full">
                     <Card variant="elevated" hover padding="none" className="h-full transition-all duration-300 card-glow">
                       <CardContent className="flex items-start gap-4 p-5">
-                        <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-secondary font-mono text-sm font-semibold">
+                        <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-secondary font-mono text-sm font-semibold shadow-[0_0_8px] shadow-accent/20">
                           {step.num}
                         </div>
                         <div>
