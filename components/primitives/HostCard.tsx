@@ -48,7 +48,7 @@ export function HostCard({ host, isNew = false }: { host: Host; isNew?: boolean 
   const hasMoreDomains = allExtractedDomains.length > 10;
 
   return (
-    <Card className="relative gap-3 py-4 card-hover card-glow transition-all duration-300">
+    <Card className="relative gap-3 py-4 card-hover card-glow transition-all duration-300 group h-full">
       {isNew && (
         <Badge className="absolute top-3 right-3" variant="success">
           NEW

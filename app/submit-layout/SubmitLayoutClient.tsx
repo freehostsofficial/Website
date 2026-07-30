@@ -229,7 +229,7 @@ export default function SubmitLayoutClient() {
 
       <div className="mt-10 grid gap-6 lg:grid-cols-2">
         {/* ── Form ─────────────────────────────────────────────────── */}
-        <Card>
+        <Card className="h-full">
           <CardContent className="flex flex-col gap-6">
             <div className="flex items-center gap-3">
               <div className="flex size-10 items-center justify-center rounded-md bg-secondary">
@@ -449,7 +449,7 @@ export default function SubmitLayoutClient() {
         </Card>
 
         {/* ── Discord live preview ─────────────────────────────────── */}
-        <Card className="lg:sticky lg:top-20 lg:self-start">
+        <Card className="lg:sticky lg:top-20 lg:self-start h-full">
           <CardContent>
             <div className="mb-4 flex items-center justify-between">
               <h3 className="flex items-center gap-2 text-base">

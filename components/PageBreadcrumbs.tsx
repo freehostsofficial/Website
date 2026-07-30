@@ -37,7 +37,7 @@ export default function PageBreadcrumbs() {
   if (segments.length === 0) return null;
 
   return (
-    <Breadcrumb className="mb-4">
+    <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
           <BreadcrumbLink asChild>
@@ -59,7 +59,7 @@ export default function PageBreadcrumbs() {
             <BreadcrumbItem key={href}>
               {isLast ? (
                 <BreadcrumbPage>
-                  {isSlug ? segment.replace(/-/g, " ") : label}
+                  {isSlug ? segment.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) : label}
                 </BreadcrumbPage>
               ) : (
                 <>

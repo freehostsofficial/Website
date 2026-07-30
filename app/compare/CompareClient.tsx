@@ -131,7 +131,7 @@ export default function CompareClient() {
           <Card
             key={host.id}
             className={cn(
-              "relative gap-3 py-5",
+              "relative gap-3 py-5 h-full",
               bestRatingIdx === idx && "border-accent/40"
             )}
           >

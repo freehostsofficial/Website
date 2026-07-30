@@ -255,9 +255,9 @@ function StaffSections({
             </div>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {members.map((member, i) => (
-                <div key={member.username} className={`reveal reveal-delay-${Math.min(i + 1, 8)}`}>
+                <div key={member.username} className={`reveal reveal-delay-${Math.min(i + 1, 8)} h-full`}>
                   <Card
-                    className="cursor-pointer p-0 card-hover card-glow transition-all duration-300"
+                    className="cursor-pointer p-0 card-hover card-glow transition-all duration-300 h-full"
                     onClick={() => onSelect(member)}
                   >
                     <CardContent className="flex items-center gap-3 p-4">
