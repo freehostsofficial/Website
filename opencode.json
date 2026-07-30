@@ -1,4 +1,12 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugin": ["@dietrichgebert/ponytail"]
+  "plugin": ["@dietrichgebert/ponytail"],
+  "mcp": {
+    "exa": {
+      "type": "remote",
+      "url": "https://mcp.exa.ai/mcp",
+      "enabled": true,
+      "headers": { "x-api-key": "{env:EXA_API_KEY}" }
+    }
+  }
 }

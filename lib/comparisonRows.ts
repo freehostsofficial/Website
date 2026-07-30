@@ -10,9 +10,8 @@ export function computeRating(host: Host): number {
 }
 
 export function formatRating(host: Host): string {
-  const total = (host.approvals || 0) + (host.disapprovals || 0);
-  if (total === 0) return 'N/A';
-  return `${Math.round(((host.approvals || 0) / total) * 100)}%`;
+  const r = computeRating(host);
+  return r === -1 ? 'N/A' : `${Math.round(r)}%`;
 }
 
 export function findBestIndex(values: number[]): number {
