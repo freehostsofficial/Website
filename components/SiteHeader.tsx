@@ -27,7 +27,6 @@ import {
   Users,
 } from "lucide-react";
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -294,18 +293,15 @@ export default function SiteHeader({ trustpilotUrl, hosts }: { trustpilotUrl?: s
             aria-label={`Switch to ${resolvedTheme === "dark" ? "light" : "dark"} mode`}
             title={`Switch to ${resolvedTheme === "dark" ? "light" : "dark"} mode`}
           >
-            <motion.div
+            <span
               key={resolvedTheme}
-              initial={{ rotate: -90, opacity: 0, scale: 0.5 }}
-              animate={{ rotate: 0, opacity: 1, scale: 1 }}
-              exit={{ rotate: 90, opacity: 0, scale: 0.5 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className="inline-flex animate-scale-in"
             >
               <FontAwesomeIcon
                 icon={resolvedTheme === "dark" ? faMoon : faSun}
                 className="size-4"
               />
-            </motion.div>
+            </span>
           </Button>
 
           <CommandPalette initialHosts={hosts ?? []} />
