@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { ExternalLink, Info, List } from "lucide-react";
+import { ExternalLink, Globe, Info, List, Sparkles } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import type { LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { TiltCard } from "@/components/ui/TiltCard";
+import { GlitchText } from "@/components/ui/GlitchText";
+import { SpotlightCard } from "@/components/ui/SpotlightCard";
 
 export const metadata: Metadata = {
   title: "Other Free Hosting Platforms & Directories - FreeHosts",
@@ -60,77 +64,97 @@ export default function OtherFreeHostsPage() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
-      <main className="mx-auto max-w-[1200px] px-4 py-12 sm:px-6">
-        <div className="text-center reveal">
-          <h1>Other Free Hosting Platforms</h1>
-          <p className="mx-auto mt-2 max-w-md text-muted-foreground">
-            Explore a curated collection of reliable platforms offering free hosting
-            services for your websites, applications, and projects.
-          </p>
-        </div>
 
-        <div className="mt-8 flex gap-3 rounded-lg border border-border bg-card p-4 card-hover transition-all duration-300">
-          <Info className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
-          <div>
-            <h3 className="text-sm font-semibold">Important Information</h3>
-            <p className="mt-1 text-sm text-muted-foreground">
-              The platforms listed below are independent services not managed by
-              FreeHosts. We have included them as a helpful resource for our
-              community. While we have carefully selected these options, we cannot
-              guarantee their availability, quality, or reliability. Always review
-              each platform terms of service before use.
-            </p>
+      <section className="relative overflow-hidden noise-overlay border-b border-border">
+        <div className="dot-grid relative">
+          <div className="pointer-events-none absolute -top-40 left-1/4 size-96 opacity-20 blob-morph" />
+          <div className="pointer-events-none absolute -bottom-40 right-1/4 size-80 opacity-15 blob-morph" style={{ animationDelay: "4s" }} />
+          <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
+            <div className="flex flex-col items-center gap-3 text-center reveal">
+              <div className="flex size-14 items-center justify-center rounded-full bg-accent/10 text-accent">
+                <Globe className="size-7" />
+              </div>
+              <GlitchText variant="chromatic" as="h1" text="Other Free Hosts" />
+              <p className="max-w-2xl text-muted-foreground body-large">
+                Explore a curated collection of reliable platforms offering free hosting
+                services for your websites, applications, and projects.
+              </p>
+            </div>
           </div>
         </div>
+      </section>
 
-        <section className="mt-10">
-          <h2 className="flex items-center gap-2 text-lg">
-            <List className="size-4" />
-            Specialized Hosting Directories
-          </h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Comprehensive directories focused on specific types of hosting services.
-          </p>
+      <section className="border-t border-border">
+        <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6">
+          <SpotlightCard className="reveal">
+            <div className="flex gap-3 rounded-lg border border-border bg-card p-4 card-hover transition-all duration-300">
+              <Info className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
+              <div>
+                <h3 className="text-sm font-semibold">Important Information</h3>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  The platforms listed below are independent services not managed by
+                  FreeHosts. We have included them as a helpful resource for our
+                  community. While we have carefully selected these options, we cannot
+                  guarantee their availability, quality, or reliability. Always review
+                  each platform terms of service before use.
+                </p>
+              </div>
+            </div>
+          </SpotlightCard>
+        </div>
+      </section>
 
-          <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <section className="border-t border-border">
+        <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6">
+          <div className="reveal">
+            <Badge variant="outline" className="gap-1.5 border-accent/50 text-accent border-rotate">
+              <List className="size-3.5" />
+              Specialized Hosting Directories
+            </Badge>
+            <h2 className="mt-4">Specialized Hosting Directories</h2>
+            <p className="mt-2 text-muted-foreground body-large">Comprehensive directories focused on specific types of hosting services.</p>
+          </div>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 stagger-children">
             {externalHosts.map((host) => (
-              <Card key={host.name} className="h-full gap-3 py-4">
-                <CardContent className="flex flex-col gap-2">
-                  <div className="flex items-center gap-3">
-                    <div className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-md bg-secondary">
-                      {host.image ? (
-                        <Image src={host.image} alt={host.name} width={40} height={40} />
-                      ) : (
-                        host.initials
-                      )}
+              <TiltCard key={host.name} maxTilt={6} glare={false} className="h-full">
+                <Card className="h-full gap-3 py-4 card-hover card-glow transition-all duration-300">
+                  <CardContent className="flex flex-col gap-2">
+                    <div className="flex items-center gap-3">
+                      <div className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-md bg-secondary">
+                        {host.image ? (
+                          <Image src={host.image} alt={host.name} width={40} height={40} />
+                        ) : (
+                          host.initials
+                        )}
+                      </div>
+                      <h3 className="text-sm font-semibold">{host.name}</h3>
                     </div>
-                    <h3 className="text-sm font-semibold">{host.name}</h3>
-                  </div>
-                  <p className="text-sm text-muted-foreground">{host.description}</p>
-                  <div className="mt-1 flex gap-2">
-                    {host.links.map((link) => (
-                      <Button key={link.href} asChild variant="outline" size="icon">
-                        <a
-                          href={link.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          aria-label={`${host.name} ${link.label}`}
-                        >
-                          {link.lucideIcon ? (
-                            <link.lucideIcon className="size-4" />
-                          ) : link.faIcon ? (
-                            <FontAwesomeIcon icon={link.faIcon} className="size-4" />
-                          ) : null}
-                        </a>
-                      </Button>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+                    <p className="text-sm text-muted-foreground">{host.description}</p>
+                    <div className="mt-1 flex gap-2">
+                      {host.links.map((link) => (
+                        <Button key={link.href} asChild variant="outline" size="icon">
+                          <a
+                            href={link.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`${host.name} ${link.label}`}
+                          >
+                            {link.lucideIcon ? (
+                              <link.lucideIcon className="size-4" />
+                            ) : link.faIcon ? (
+                              <FontAwesomeIcon icon={link.faIcon} className="size-4" />
+                            ) : null}
+                          </a>
+                        </Button>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </TiltCard>
             ))}
           </div>
-        </section>
-      </main>
+        </div>
+      </section>
     </>
   );
 }

@@ -8,6 +8,7 @@ import {
   CircleAlert,
   CircleCheck,
   Code,
+  Compass,
   Copy,
   FileText,
   Info,
@@ -16,6 +17,7 @@ import {
   Pin,
   Plus,
   RotateCcw,
+  Sparkles,
   SquareCheck,
   Wand,
   Zap,
@@ -31,6 +33,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
+import { TiltCard } from "@/components/ui/TiltCard";
+import { GlitchText } from "@/components/ui/GlitchText";
+import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { cn } from "@/lib/utils";
 
 type SpecType = "same" | "different";
@@ -206,273 +211,286 @@ export default function SubmitLayoutClient() {
   );
 
   return (
-    <main className="mx-auto max-w-[1200px] px-4 py-10 sm:px-6">
-      <section className="text-center reveal">
-        <h1 className="flex items-center justify-center gap-2">
-          <Wand className="size-5" />
-          Discord Layout Builder
-        </h1>
-        <p className="mx-auto mt-2 max-w-md text-muted-foreground">
-          Create Discord-formatted hosting layouts instantly, with a live preview and one-click copy.
-        </p>
-        <div className="mt-3 flex justify-center gap-4 text-sm text-muted-foreground">
-          <span className="flex items-center gap-1.5">
-            <Zap className="size-3.5" />
-            Instant Generation
-          </span>
-          <span className="flex items-center gap-1.5">
-            <Copy className="size-3.5" />
-            One-Click Copy
-          </span>
+    <>
+      <section className="relative overflow-hidden noise-overlay border-b border-border">
+        <div className="dot-grid relative">
+          <div className="pointer-events-none absolute -top-40 left-1/4 size-96 opacity-20 blob-morph" />
+          <div className="pointer-events-none absolute -bottom-40 right-1/4 size-80 opacity-15 blob-morph" style={{ animationDelay: "4s" }} />
+          <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
+            <div className="flex flex-col items-center gap-3 text-center reveal">
+              <div className="flex size-14 items-center justify-center rounded-full bg-accent/10 text-accent">
+                <Wand className="size-7" />
+              </div>
+              <GlitchText variant="chromatic" as="h1" text="Submit Layout" />
+              <p className="max-w-2xl text-muted-foreground body-large">
+                Create Discord-formatted hosting layouts instantly, with a live preview and one-click copy.
+              </p>
+              <div className="mt-4 flex flex-wrap gap-3 justify-center">
+                <span className="flex items-center gap-1.5 border-accent/50 text-accent border-rotate">
+                  <Zap className="size-3.5" />
+                  Instant Generation
+                </span>
+                <span className="flex items-center gap-1.5 border-accent/50 text-accent border-rotate">
+                  <Copy className="size-3.5" />
+                  One-Click Copy
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      <div className="mt-10 grid gap-6 lg:grid-cols-2">
-        {/* ── Form ─────────────────────────────────────────────────── */}
-        <Card className="h-full">
-          <CardContent className="flex flex-col gap-6">
-            <div className="flex items-center gap-3">
-              <div className="flex size-10 items-center justify-center rounded-md bg-secondary">
-                <Pencil className="size-4" />
-              </div>
-              <div>
-                <h2 className="text-base">Build Your Layout</h2>
-                <p className="text-sm text-muted-foreground">Fill in the information below</p>
-              </div>
-            </div>
-
-            <form onReset={resetForm} className="flex flex-col gap-6">
-              {/* Basic Information */}
-              <FormSection icon={<Pin className="size-3.5" />} title="Basic Information">
-                <TInput label="Host Name" required value={form.hostName} onChange={(v) => updateForm("hostName", v)} placeholder="e.g., Example Host" />
-                <div className="flex flex-col gap-1.5">
-                  <Label>
-                    Plans <span className="text-destructive">*</span>
-                  </Label>
-                  <Input value={form.plans} placeholder="e.g., Nextjs, Javascript, Python, Node.js" onChange={(e) => updateForm("plans", e.target.value)} />
-                  <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                    <Info className="size-3" />
-                    Comma separated list of plan names
-                  </p>
-                </div>
-                <TInput label="Targets" required value={form.targets} onChange={(v) => updateForm("targets", v)} placeholder="e.g., Coding, Gaming" />
-                <TInput label="Locales / Languages" required value={form.locales} onChange={(v) => updateForm("locales", v)} placeholder="e.g., en, es" />
-              </FormSection>
-
-              {/* Specifications */}
-              <FormSection icon={<Boxes className="size-3.5" />} title="Specifications">
-                <div className="flex flex-col gap-2">
-                  <Label>
-                    Spec Type <span className="text-destructive">*</span>
-                  </Label>
-                  <RadioGroup
-                    value={form.specType}
-                    onValueChange={(v) => updateForm("specType", v as SpecType)}
-                    className="gap-2"
-                  >
-                    <label className="flex items-center gap-2 text-sm">
-                      <RadioGroupItem value="same" /> Same specs for all plans
-                    </label>
-                    <label className="flex items-center gap-2 text-sm">
-                      <RadioGroupItem value="different" /> Different specs per target/plan
-                    </label>
-                  </RadioGroup>
-                </div>
-
-                {form.specType === "same" ? (
-                  <div className="rounded-md border border-border p-3">
-                    {renderSpecInputs(
-                      { originalName: "", name: "", ram: form.sameRam, cpu: form.sameCpu, disk: form.sameDisk },
-                      (p) => {
-                        if (p.ram !== undefined) updateForm("sameRam", p.ram);
-                        if (p.cpu !== undefined) updateForm("sameCpu", p.cpu);
-                        if (p.disk !== undefined) updateForm("sameDisk", p.disk);
-                      },
-                    )}
+      <section className="border-t border-border">
+        <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6">
+          <div className="grid gap-6 lg:grid-cols-2 reveal">
+            <TiltCard maxTilt={4} glare={false} className="h-full">
+              <Card className="h-full card-hover card-glow transition-all duration-300">
+                <CardContent className="flex flex-col gap-6">
+                  <div className="flex items-center gap-3">
+                    <div className="flex size-10 items-center justify-center rounded-md bg-secondary">
+                      <Pencil className="size-4" />
+                    </div>
+                    <div>
+                      <h2 className="text-base">Build Your Layout</h2>
+                      <p className="text-sm text-muted-foreground">Fill in the information below</p>
+                    </div>
                   </div>
-                ) : (
-                  <>
-                    <label className="flex items-center gap-2 text-sm">
-                      <Checkbox
-                        checked={Boolean(otherSpec)}
-                        onCheckedChange={(checked) =>
-                          setOtherSpec(checked ? { originalName: "other", name: "All Other Plans", ram: "", cpu: "", disk: "" } : null)
-                        }
-                      />
-                      All other plans not listed above share the same specs
-                    </label>
+
+                  <form onReset={resetForm} className="flex flex-col gap-6">
+                    {/* Basic Information */}
+                    <FormSection icon={<Pin className="size-3.5" />} title="Basic Information">
+                      <TInput label="Host Name" required value={form.hostName} onChange={(v) => updateForm("hostName", v)} placeholder="e.g., Example Host" />
+                      <div className="flex flex-col gap-1.5">
+                        <Label>
+                          Plans <span className="text-destructive">*</span>
+                        </Label>
+                        <Input value={form.plans} placeholder="e.g., Nextjs, Javascript, Python, Node.js" onChange={(e) => updateForm("plans", e.target.value)} />
+                        <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                          <Info className="size-3" />
+                          Comma separated list of plan names
+                        </p>
+                      </div>
+                      <TInput label="Targets" required value={form.targets} onChange={(v) => updateForm("targets", v)} placeholder="e.g., Coding, Gaming" />
+                      <TInput label="Locales / Languages" required value={form.locales} onChange={(v) => updateForm("locales", v)} placeholder="e.g., en, es" />
+                    </FormSection>
+
+                    {/* Specifications */}
+                    <FormSection icon={<Boxes className="size-3.5" />} title="Specifications">
+                      <div className="flex flex-col gap-2">
+                        <Label>
+                          Spec Type <span className="text-destructive">*</span>
+                        </Label>
+                        <RadioGroup
+                          value={form.specType}
+                          onValueChange={(v) => updateForm("specType", v as SpecType)}
+                          className="gap-2"
+                        >
+                          <label className="flex items-center gap-2 text-sm">
+                            <RadioGroupItem value="same" /> Same specs for all plans
+                          </label>
+                          <label className="flex items-center gap-2 text-sm">
+                            <RadioGroupItem value="different" /> Different specs per target/plan
+                          </label>
+                        </RadioGroup>
+                      </div>
+
+                      {form.specType === "same" ? (
+                        <div className="rounded-md border border-border p-3">
+                          {renderSpecInputs(
+                            { originalName: "", name: "", ram: form.sameRam, cpu: form.sameCpu, disk: form.sameDisk },
+                            (p) => {
+                              if (p.ram !== undefined) updateForm("sameRam", p.ram);
+                              if (p.cpu !== undefined) updateForm("sameCpu", p.cpu);
+                              if (p.disk !== undefined) updateForm("sameDisk", p.disk);
+                            },
+                          )}
+                        </div>
+                      ) : (
+                        <>
+                          <label className="flex items-center gap-2 text-sm">
+                            <Checkbox
+                              checked={Boolean(otherSpec)}
+                              onCheckedChange={(checked) =>
+                                setOtherSpec(checked ? { originalName: "other", name: "All Other Plans", ram: "", cpu: "", disk: "" } : null)
+                              }
+                            />
+                            All other plans not listed above share the same specs
+                          </label>
+
+                          <div className="flex gap-2">
+                            <select
+                              className="h-9 flex-1 rounded-md border border-border bg-transparent px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                              value={selectedPlan}
+                              onChange={(e) => setSelectedPlan(e.target.value)}
+                            >
+                              <option value="">Select a plan to add specs...</option>
+                              {availablePlans.map((p) => (
+                                <option value={p} key={p}>
+                                  {p}
+                                </option>
+                              ))}
+                            </select>
+                            <Button type="button" variant="outline" className="gap-1.5" onClick={addPlan}>
+                              <Plus className="size-3.5" />
+                              Add Plan
+                            </Button>
+                          </div>
+
+                          <div className="flex flex-col gap-3">
+                            {planSpecs.map((spec) => (
+                              <div key={spec.originalName} className="flex flex-col gap-2 rounded-md border border-border p-3">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-sm font-medium">{spec.originalName}</span>
+                                  <Button type="button" variant="ghost" size="sm" className="h-auto p-0 text-destructive hover:text-destructive" onClick={() => removePlan(spec.originalName)}>
+                                    Remove
+                                  </Button>
+                                </div>
+                                <div className="flex flex-col gap-1.5">
+                                  <Label className="text-xs text-muted-foreground">Display Name</Label>
+                                  <Input value={spec.name} onChange={(e) => updatePlanSpec(spec.originalName, { name: e.target.value })} />
+                                </div>
+                                {renderSpecInputs(spec, (p) => updatePlanSpec(spec.originalName, p))}
+                              </div>
+                            ))}
+                            {otherSpec && (
+                              <div className="flex flex-col gap-2 rounded-md border border-accent/30 bg-accent/5 p-3">
+                                <div>
+                                  <span className="text-sm font-medium">All Other Plans</span>
+                                  <p className="text-xs text-muted-foreground">
+                                    {otherPlans.length > 0 ? otherPlans.join(", ") : "No unlisted plans yet"}
+                                  </p>
+                                </div>
+                                {renderSpecInputs(otherSpec, (p) => setOtherSpec((c) => (c ? { ...c, ...p } : c)))}
+                              </div>
+                            )}
+                          </div>
+                        </>
+                      )}
+                    </FormSection>
+
+                    {/* Links */}
+                    <FormSection icon={<LinkIcon className="size-3.5" />} title="Links">
+                      <TInput label="ToS Link" required value={form.tosLink} onChange={(v) => updateForm("tosLink", v)} placeholder="https://example.com/tos" />
+                      <TInput label="Privacy Policy Link" required value={form.privacyLink} onChange={(v) => updateForm("privacyLink", v)} placeholder="https://example.com/privacy" />
+                      <TInput label="Plan Link" value={form.planLink} onChange={(v) => updateForm("planLink", v)} placeholder="https://example.com/plan" />
+                      <TInput label="Website Link" value={form.websiteLink} onChange={(v) => updateForm("websiteLink", v)} placeholder="https://example.com" required={!form.discordLink.trim()} />
+                      <TInput label="Discord Invite" value={form.discordLink} onChange={(v) => updateForm("discordLink", v)} placeholder="https://discord.gg/invite" required={!form.websiteLink.trim()} />
+                      <div className="flex flex-col gap-1.5">
+                        <Label>Other Links</Label>
+                        <Textarea
+                          value={form.otherLinks}
+                          placeholder={"One per line, e.g.:\nDocumentation: https://docs.example.com"}
+                          onChange={(e) => updateForm("otherLinks", e.target.value)}
+                        />
+                        <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                          <Info className="size-3" />
+                          Format: Label: URL, one per line
+                        </p>
+                      </div>
+                    </FormSection>
+
+                    {/* Information */}
+                    <FormSection icon={<FileText className="size-3.5" />} title="Information">
+                      <div className="flex flex-col gap-1.5">
+                        <Label>
+                          Renewal Required <span className="text-destructive">*</span>
+                        </Label>
+                        <select
+                          className="h-9 rounded-md border border-border bg-transparent px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                          value={form.renewalStatus}
+                          onChange={(e) => updateForm("renewalStatus", e.target.value as RenewalStatus)}
+                        >
+                          <option value="">Select an option</option>
+                          <option value="yes">This host requires renewal</option>
+                          <option value="no">This host does not require renewal</option>
+                        </select>
+                      </div>
+                      {form.renewalStatus === "yes" && (
+                        <div className="flex flex-col gap-4 rounded-md border border-border p-3">
+                          <TInput label="Renewal Duration" required value={form.renewalDuration} onChange={(v) => updateForm("renewalDuration", v)} placeholder="e.g., 30 days" />
+                          <TInput label="Coins Needed" required value={form.coinsNeeded} onChange={(v) => updateForm("coinsNeeded", v)} placeholder="e.g., 300 coins" />
+                        </div>
+                      )}
+                      <div className="flex flex-col gap-1.5">
+                        <Label>Notes</Label>
+                        <Textarea value={form.notes} placeholder="Add any important notes about the host" onChange={(e) => updateForm("notes", e.target.value)} />
+                      </div>
+                    </FormSection>
+
+                    {/* Verification */}
+                    <FormSection icon={<SquareCheck className="size-3.5" />} title="Verification">
+                      <label className="flex items-center gap-2 text-sm">
+                        <Checkbox checked={form.checkToS} onCheckedChange={(c) => updateForm("checkToS", Boolean(c))} />
+                        I have included the ToS
+                      </label>
+                      <label className="flex items-center gap-2 text-sm">
+                        <Checkbox checked={form.checkPrivacy} onCheckedChange={(c) => updateForm("checkPrivacy", Boolean(c))} />
+                        I have included the Privacy Policy
+                      </label>
+                      <label className="flex items-center gap-2 text-sm">
+                        <Checkbox checked={form.checkRules} onCheckedChange={(c) => updateForm("checkRules", Boolean(c))} />
+                        <span>
+                          I have read and agree to the{" "}
+                          <a href="/submission-rules" target="_blank" rel="noopener noreferrer" className="underline">
+                            Submission Rules
+                          </a>{" "}
+                          <span className="text-destructive">*</span>
+                        </span>
+                      </label>
+                    </FormSection>
 
                     <div className="flex gap-2">
-                      <select
-                        className="h-9 flex-1 rounded-md border border-border bg-transparent px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
-                        value={selectedPlan}
-                        onChange={(e) => setSelectedPlan(e.target.value)}
-                      >
-                        <option value="">Select a plan to add specs...</option>
-                        {availablePlans.map((p) => (
-                          <option value={p} key={p}>
-                            {p}
-                          </option>
-                        ))}
-                      </select>
-                      <Button type="button" variant="outline" className="gap-1.5" onClick={addPlan}>
-                        <Plus className="size-3.5" />
-                        Add Plan
+                      <Button type="reset" variant="outline" className="flex-1 gap-1.5">
+                        <RotateCcw className="size-3.5" />
+                        Reset Form
+                      </Button>
+                      <Button type="button" className="flex-1 gap-1.5" disabled={!canCopy} onClick={copyMessage}>
+                        <Copy className="size-3.5" />
+                        Copy Message
                       </Button>
                     </div>
 
-                    <div className="flex flex-col gap-3">
-                      {planSpecs.map((spec) => (
-                        <div key={spec.originalName} className="flex flex-col gap-2 rounded-md border border-border p-3">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium">{spec.originalName}</span>
-                            <Button type="button" variant="ghost" size="sm" className="h-auto p-0 text-destructive hover:text-destructive" onClick={() => removePlan(spec.originalName)}>
-                              Remove
-                            </Button>
-                          </div>
-                          <div className="flex flex-col gap-1.5">
-                            <Label className="text-xs text-muted-foreground">Display Name</Label>
-                            <Input value={spec.name} onChange={(e) => updatePlanSpec(spec.originalName, { name: e.target.value })} />
-                          </div>
-                          {renderSpecInputs(spec, (p) => updatePlanSpec(spec.originalName, p))}
-                        </div>
-                      ))}
-                      {otherSpec && (
-                        <div className="flex flex-col gap-2 rounded-md border border-accent/30 bg-accent/5 p-3">
-                          <div>
-                            <span className="text-sm font-medium">All Other Plans</span>
-                            <p className="text-xs text-muted-foreground">
-                              {otherPlans.length > 0 ? otherPlans.join(", ") : "No unlisted plans yet"}
-                            </p>
-                          </div>
-                          {renderSpecInputs(otherSpec, (p) => setOtherSpec((c) => (c ? { ...c, ...p } : c)))}
-                        </div>
-                      )}
+                    <div>
+                      <div className="mb-2 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                        <Code className="size-3.5" />
+                        Message Preview (Raw Text)
+                      </div>
+                      <pre className="max-h-56 overflow-y-auto whitespace-pre-wrap rounded-md border border-border bg-secondary/30 p-3 font-mono text-xs text-muted-foreground">
+                        {rawMessage.trim() ? rawMessage : emptyPreview}
+                      </pre>
                     </div>
-                  </>
-                )}
-              </FormSection>
-
-              {/* Links */}
-              <FormSection icon={<LinkIcon className="size-3.5" />} title="Links">
-                <TInput label="ToS Link" required value={form.tosLink} onChange={(v) => updateForm("tosLink", v)} placeholder="https://example.com/tos" />
-                <TInput label="Privacy Policy Link" required value={form.privacyLink} onChange={(v) => updateForm("privacyLink", v)} placeholder="https://example.com/privacy" />
-                <TInput label="Plan Link" value={form.planLink} onChange={(v) => updateForm("planLink", v)} placeholder="https://example.com/plan" />
-                <TInput label="Website Link" value={form.websiteLink} onChange={(v) => updateForm("websiteLink", v)} placeholder="https://example.com" required={!form.discordLink.trim()} />
-                <TInput label="Discord Invite" value={form.discordLink} onChange={(v) => updateForm("discordLink", v)} placeholder="https://discord.gg/invite" required={!form.websiteLink.trim()} />
-                <div className="flex flex-col gap-1.5">
-                  <Label>Other Links</Label>
-                  <Textarea
-                    value={form.otherLinks}
-                    placeholder={"One per line, e.g.:\nDocumentation: https://docs.example.com"}
-                    onChange={(e) => updateForm("otherLinks", e.target.value)}
-                  />
-                  <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                    <Info className="size-3" />
-                    Format: Label: URL, one per line
-                  </p>
-                </div>
-              </FormSection>
-
-              {/* Information */}
-              <FormSection icon={<FileText className="size-3.5" />} title="Information">
-                <div className="flex flex-col gap-1.5">
-                  <Label>
-                    Renewal Required <span className="text-destructive">*</span>
-                  </Label>
-                  <select
-                    className="h-9 rounded-md border border-border bg-transparent px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
-                    value={form.renewalStatus}
-                    onChange={(e) => updateForm("renewalStatus", e.target.value as RenewalStatus)}
-                  >
-                    <option value="">Select an option</option>
-                    <option value="yes">This host requires renewal</option>
-                    <option value="no">This host does not require renewal</option>
-                  </select>
-                </div>
-                {form.renewalStatus === "yes" && (
-                  <div className="flex flex-col gap-4 rounded-md border border-border p-3">
-                    <TInput label="Renewal Duration" required value={form.renewalDuration} onChange={(v) => updateForm("renewalDuration", v)} placeholder="e.g., 30 days" />
-                    <TInput label="Coins Needed" required value={form.coinsNeeded} onChange={(v) => updateForm("coinsNeeded", v)} placeholder="e.g., 300 coins" />
+                  </form>
+                </CardContent>
+              </Card>
+            </TiltCard>
+            <TiltCard maxTilt={4} glare={false} className="h-full">
+              <Card className="lg:sticky lg:top-20 lg:self-start h-full card-hover card-glow transition-all duration-300">
+                <CardContent>
+                  <div className="mb-4 flex items-center justify-between">
+                    <h3 className="flex items-center gap-2 text-base">
+                      <FontAwesomeIcon icon={faDiscord} className="size-4" />
+                      Discord Message Preview
+                    </h3>
+                    <Badge variant="success" className="gap-1 animate-pulse">
+                      <Circle className="size-2 fill-current" strokeWidth={0} />
+                      Live
+                    </Badge>
                   </div>
-                )}
-                <div className="flex flex-col gap-1.5">
-                  <Label>Notes</Label>
-                  <Textarea value={form.notes} placeholder="Add any important notes about the host" onChange={(e) => updateForm("notes", e.target.value)} />
-                </div>
-              </FormSection>
-
-              {/* Verification */}
-              <FormSection icon={<SquareCheck className="size-3.5" />} title="Verification">
-                <label className="flex items-center gap-2 text-sm">
-                  <Checkbox checked={form.checkToS} onCheckedChange={(c) => updateForm("checkToS", Boolean(c))} />
-                  I have included the ToS
-                </label>
-                <label className="flex items-center gap-2 text-sm">
-                  <Checkbox checked={form.checkPrivacy} onCheckedChange={(c) => updateForm("checkPrivacy", Boolean(c))} />
-                  I have included the Privacy Policy
-                </label>
-                <label className="flex items-center gap-2 text-sm">
-                  <Checkbox checked={form.checkRules} onCheckedChange={(c) => updateForm("checkRules", Boolean(c))} />
-                  <span>
-                    I have read and agree to the{" "}
-                    <a href="/submission-rules" target="_blank" rel="noopener noreferrer" className="underline">
-                      Submission Rules
-                    </a>{" "}
-                    <span className="text-destructive">*</span>
-                  </span>
-                </label>
-              </FormSection>
-
-              <div className="flex gap-2">
-                <Button type="reset" variant="outline" className="flex-1 gap-1.5">
-                  <RotateCcw className="size-3.5" />
-                  Reset Form
-                </Button>
-                <Button type="button" className="flex-1 gap-1.5" disabled={!canCopy} onClick={copyMessage}>
-                  <Copy className="size-3.5" />
-                  Copy Message
-                </Button>
-              </div>
-
-              <div>
-                <div className="mb-2 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-                  <Code className="size-3.5" />
-                  Message Preview (Raw Text)
-                </div>
-                <pre className="max-h-56 overflow-y-auto whitespace-pre-wrap rounded-md border border-border bg-secondary/30 p-3 font-mono text-xs text-muted-foreground">
-                  {rawMessage.trim() ? rawMessage : emptyPreview}
-                </pre>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
-
-        {/* ── Discord live preview ─────────────────────────────────── */}
-        <Card className="lg:sticky lg:top-20 lg:self-start h-full">
-          <CardContent>
-            <div className="mb-4 flex items-center justify-between">
-              <h3 className="flex items-center gap-2 text-base">
-                <FontAwesomeIcon icon={faDiscord} className="size-4" />
-                Discord Message Preview
-              </h3>
-              <Badge variant="success" className="gap-1">
-                <Circle className="size-2 fill-current" strokeWidth={0} />
-                Live
-              </Badge>
-            </div>
-            <DiscordPreview
-              form={form}
-              planSpecs={planSpecs}
-              otherSpec={otherSpec}
-              otherPlans={otherPlans}
-              missingFields={missingFields}
-              showRenewalDetails={showRenewalDetails}
-              setShowRenewalDetails={setShowRenewalDetails}
-            />
-          </CardContent>
-        </Card>
-      </div>
+                  <DiscordPreview
+                    form={form}
+                    planSpecs={planSpecs}
+                    otherSpec={otherSpec}
+                    otherPlans={otherPlans}
+                    missingFields={missingFields}
+                    showRenewalDetails={showRenewalDetails}
+                    setShowRenewalDetails={setShowRenewalDetails}
+                  />
+                </CardContent>
+              </Card>
+            </TiltCard>
+          </div>
+        </div>
+      </section>
 
       {notification && (
         <div
@@ -487,7 +505,7 @@ export default function SubmitLayoutClient() {
           {notification.message}
         </div>
       )}
-    </main>
+    </>
   );
 }
 

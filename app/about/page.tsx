@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import Link from "@/components/NoPrefetchLink";
 import {
   BookOpen,
+  Compass,
   Crosshair,
   HandHeart,
   Heart,
   Mail,
   ShieldCheck,
+  Sparkles,
   Star,
   Users,
   Zap,
@@ -14,7 +16,11 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { TiltCard } from "@/components/ui/TiltCard";
+import { GlitchText } from "@/components/ui/GlitchText";
+import { SpotlightCard } from "@/components/ui/SpotlightCard";
 
 export const metadata: Metadata = {
   title: "About FreeHosts - Our Mission, Team & Community",
@@ -125,125 +131,200 @@ export default function AboutPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
-      <main className="mx-auto max-w-[900px] px-4 py-12 sm:px-6">
-        <section className="flex flex-col items-center gap-3 text-center reveal">
-          <div className="flex size-14 items-center justify-center rounded-full bg-secondary">
-            <Heart className="size-7" />
+
+      {/* ── Hero ────────────────────────────────────────────────────── */}
+      <section className="relative overflow-hidden noise-overlay border-b border-border">
+        <div className="dot-grid relative">
+          <div className="pointer-events-none absolute -top-40 left-1/4 size-96 opacity-20 blob-morph" />
+          <div className="pointer-events-none absolute -bottom-40 right-1/4 size-80 opacity-15 blob-morph" style={{ animationDelay: "4s" }} />
+          <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
+            <div className="flex flex-col items-center gap-3 text-center reveal">
+              <div className="flex size-14 items-center justify-center rounded-full bg-accent/10 text-accent">
+                <Heart className="size-7" />
+              </div>
+              <GlitchText variant="chromatic" as="h1" text="About FreeHosts" />
+              <p className="max-w-md text-muted-foreground body-large">
+                A community-driven directory helping developers, students, and makers
+                discover reliable free hosting for their projects.
+              </p>
+            </div>
           </div>
-          <h1>About FreeHosts</h1>
-          <p className="max-w-md text-muted-foreground">
-            A community-driven directory helping developers, students, and makers
-            discover reliable free hosting for their projects.
-          </p>
-        </section>
-
-        <div className="mt-8 grid grid-cols-3 gap-4">
-          <div className="reveal reveal-delay-1"><StatCard number="100+" label="Hosting Providers" /></div>
-          <div className="reveal reveal-delay-2"><StatCard number="400+" label="Community Members" /></div>
-          <div className="reveal reveal-delay-3"><StatCard number="40+" label="User Reviews" /></div>
         </div>
+      </section>
 
-        <div className="mt-12 flex flex-col gap-10">
-          <ContentSection icon={<Crosshair className="size-5" />} title="Our Mission">
-            <p>
+      {/* ── Stats ────────────────────────────────────────────────────── */}
+      <section className="border-t border-border">
+        <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6">
+          <div className="grid grid-cols-3 gap-4 stagger-children">
+            <TiltCard maxTilt={6} glare={false} className="h-full">
+              <StatCard number="100+" label="Hosting Providers" />
+            </TiltCard>
+            <TiltCard maxTilt={6} glare={false} className="h-full">
+              <StatCard number="400+" label="Community Members" />
+            </TiltCard>
+            <TiltCard maxTilt={6} glare={false} className="h-full">
+              <StatCard number="40+" label="User Reviews" />
+            </TiltCard>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Our Mission ──────────────────────────────────────────────── */}
+      <section className="border-t border-border">
+        <div className="mx-auto max-w-[900px] px-4 py-16 sm:px-6">
+          <div className="reveal">
+            <Badge variant="outline" className="gap-1.5 border-accent/50 text-accent border-rotate">
+              <Crosshair className="size-3.5" />
+              Our Mission
+            </Badge>
+            <h2 className="mt-4">Help developers find free hosting</h2>
+            <p className="mt-4 text-muted-foreground body-large">
               FreeHosts was created to help hobbyists, students, and makers quickly
-              find free hosting options for small projects and learning. We believe
-              everyone should have access to the tools they need to bring their ideas
-              to life without financial barriers.
+              find free hosting options for small projects and learning.
             </p>
-            <p>
-              Our focus is on providing clear, accurate listings and
-              community-contributed insights so people can make informed decisions
-              and get their projects online fast. We are committed to maintaining a
-              trustworthy, up-to-date directory that serves the community.
-            </p>
-          </ContentSection>
-
-          <ContentSection icon={<Star className="size-5" />} title="Our Values">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <ValueCard
-                icon={<Users className="size-4" />}
-                title="Community First"
-                text="Built by the community, for the community. Every contribution matters and helps others succeed."
-              />
-              <ValueCard
-                icon={<ShieldCheck className="size-4" />}
-                title="Transparency"
-                text="Honest reviews, clear information, and open communication about our processes and decisions."
-              />
-              <ValueCard
-                icon={<Zap className="size-4" />}
-                title="Quality Over Quantity"
-                text="We carefully curate listings to ensure every host meets our standards for reliability and usefulness."
-              />
-              <ValueCard
-                icon={<HandHeart className="size-4" />}
-                title="Free & Accessible"
-                text="Our directory will always be free. No paywalls, no premium tiers, just helpful resources for everyone."
-              />
+            <div className="mt-6 flex flex-col gap-3 text-sm leading-relaxed text-muted-foreground">
+              <p>
+                FreeHosts was created to help hobbyists, students, and makers quickly
+                find free hosting options for small projects and learning. We believe
+                everyone should have access to the tools they need to bring their ideas
+                to life without financial barriers.
+              </p>
+              <p>
+                Our focus is on providing clear, accurate listings and
+                community-contributed insights so people can make informed decisions
+                and get their projects online fast. We are committed to maintaining a
+                trustworthy, up-to-date directory that serves the community.
+              </p>
             </div>
-          </ContentSection>
+          </div>
+        </div>
+      </section>
 
-          <ContentSection icon={<HandHeart className="size-5" />} title="How You Can Help">
-            <p>
-              FreeHosts thrives because of community contributions. Here is how you can
-              make a difference:
+      {/* ── Our Values ──────────────────────────────────────────────── */}
+      <section className="border-t border-border">
+        <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6">
+          <div className="reveal">
+            <Badge variant="outline" className="gap-1.5 border-accent/50 text-accent border-rotate">
+              <Star className="size-3.5" />
+              Our Values
+            </Badge>
+            <h2 className="mt-4">What we stand for</h2>
+            <p className="mt-2 text-muted-foreground body-large">
+              The principles that guide every decision we make.
             </p>
-            <ul className="flex flex-col gap-2.5">
-              <li>
-                <strong className="text-foreground">Suggest Hosts:</strong> Join our Discord and post in the
-                &quot;add-host&quot; channel with provider details, features, and links.
-              </li>
-              <li>
-                <strong className="text-foreground">Share Reviews:</strong> Help others by sharing your experiences
-                with different hosting providers.
-              </li>
-              <li>
-                <strong className="text-foreground">Report Issues:</strong> Let us know if you find outdated
-                information or broken links so we can keep listings accurate.
-              </li>
-              <li>
-                <strong className="text-foreground">Share Tips:</strong> Post your setup guides, tips, and best
-                practices to help newcomers get started.
-              </li>
-              <li>
-                <strong className="text-foreground">Spread the Word:</strong> Tell others about FreeHosts to help
-                grow our community.
-              </li>
-            </ul>
-          </ContentSection>
+          </div>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 stagger-children">
+            <ValueCard
+              icon={<Users className="size-5" />}
+              title="Community First"
+              text="Built by the community, for the community. Every contribution matters and helps others succeed."
+            />
+            <ValueCard
+              icon={<ShieldCheck className="size-5" />}
+              title="Transparency"
+              text="Honest reviews, clear information, and open communication about our processes and decisions."
+            />
+            <ValueCard
+              icon={<Zap className="size-5" />}
+              title="Quality Over Quantity"
+              text="We carefully curate listings to ensure every host meets our standards for reliability and usefulness."
+            />
+            <ValueCard
+              icon={<HandHeart className="size-5" />}
+              title="Free & Accessible"
+              text="Our directory will always be free. No paywalls, no premium tiers, just helpful resources for everyone."
+            />
+          </div>
+        </div>
+      </section>
 
-          <ContentSection icon={<BookOpen className="size-5" />} title="Our Story">
-            <p>
-              FreeHosts started as a simple idea: make it easier for people to find
-              reliable free hosting without endless searching and comparing.
+      {/* ── How You Can Help ──────────────────────────────────────────── */}
+      <section className="border-t border-border">
+        <div className="mx-auto max-w-[900px] px-4 py-16 sm:px-6">
+          <div className="reveal">
+            <Badge variant="outline" className="gap-1.5 border-accent/50 text-accent border-rotate">
+              <HandHeart className="size-3.5" />
+              Get Involved
+            </Badge>
+            <h2 className="mt-4">How You Can Help</h2>
+            <p className="mt-2 text-muted-foreground body-large">
+              FreeHosts thrives because of community contributions. Here is how you can make a difference:
             </p>
-            <div className="mt-2 flex flex-col gap-4 border-l border-border pl-5">
-              <TimelineItem
-                title="The Beginning"
-                text="Started as a small list shared among friends to help each other find free hosting for hobby projects."
-              />
-              <TimelineItem
-                title="Growing Community"
-                text="Word spread, and more people joined to share their experiences and suggestions, forming the foundation of our community."
-              />
-              <TimelineItem
-                title="Launch of Directory"
-                text="Built a proper directory website with reviews, ratings, and detailed information to serve the growing community better."
-              />
-              <TimelineItem
-                title="Today"
-                text="A thriving community of 400+ members with 100+ curated hosting providers, helping thousands find the right hosting solution."
-              />
-            </div>
-          </ContentSection>
+          </div>
+          <ul className="mt-6 flex flex-col gap-3 reveal reveal-delay-1">
+            <li className="flex items-start gap-2 text-sm text-muted-foreground transition-all duration-200 hover:translate-x-0.5">
+              <Users className="mt-0.5 size-4 shrink-0 text-accent" />
+              <span><strong className="text-foreground">Suggest Hosts:</strong> Join our Discord and post in the &quot;add-host&quot; channel with provider details, features, and links.</span>
+            </li>
+            <li className="flex items-start gap-2 text-sm text-muted-foreground transition-all duration-200 hover:translate-x-0.5">
+              <Star className="mt-0.5 size-4 shrink-0 text-accent" />
+              <span><strong className="text-foreground">Share Reviews:</strong> Help others by sharing your experiences with different hosting providers.</span>
+            </li>
+            <li className="flex items-start gap-2 text-sm text-muted-foreground transition-all duration-200 hover:translate-x-0.5">
+              <ShieldCheck className="mt-0.5 size-4 shrink-0 text-accent" />
+              <span><strong className="text-foreground">Report Issues:</strong> Let us know if you find outdated information or broken links so we can keep listings accurate.</span>
+            </li>
+            <li className="flex items-start gap-2 text-sm text-muted-foreground transition-all duration-200 hover:translate-x-0.5">
+              <BookOpen className="mt-0.5 size-4 shrink-0 text-accent" />
+              <span><strong className="text-foreground">Share Tips:</strong> Post your setup guides, tips, and best practices to help newcomers get started.</span>
+            </li>
+            <li className="flex items-start gap-2 text-sm text-muted-foreground transition-all duration-200 hover:translate-x-0.5">
+              <Heart className="mt-0.5 size-4 shrink-0 text-accent" />
+              <span><strong className="text-foreground">Spread the Word:</strong> Tell others about FreeHosts to help grow our community.</span>
+            </li>
+          </ul>
+        </div>
+      </section>
 
-          <ContentSection icon={<Mail className="size-5" />} title="Get In Touch">
-            <p>
-              Have questions, suggestions, or want to get involved? We would love to
-              hear from you!
+      {/* ── Our Story ──────────────────────────────────────────────── */}
+      <section className="border-t border-border">
+        <div className="mx-auto max-w-[900px] px-4 py-16 sm:px-6">
+          <div className="reveal">
+            <Badge variant="outline" className="gap-1.5 border-accent/50 text-accent border-rotate">
+              <BookOpen className="size-3.5" />
+              Our Story
+            </Badge>
+            <h2 className="mt-4">From idea to community</h2>
+            <p className="mt-2 text-muted-foreground body-large">
+              FreeHosts started as a simple idea: make it easier for people to find reliable free hosting without endless searching and comparing.
             </p>
-            <div className="mt-2 grid gap-4 sm:grid-cols-2">
+          </div>
+          <div className="mt-6 flex flex-col gap-4 border-l border-border pl-5 reveal reveal-delay-1">
+            <TimelineItem
+              title="The Beginning"
+              text="Started as a small list shared among friends to help each other find free hosting for hobby projects."
+            />
+            <TimelineItem
+              title="Growing Community"
+              text="Word spread, and more people joined to share their experiences and suggestions, forming the foundation of our community."
+            />
+            <TimelineItem
+              title="Launch of Directory"
+              text="Built a proper directory website with reviews, ratings, and detailed information to serve the growing community better."
+            />
+            <TimelineItem
+              title="Today"
+              text="A thriving community of 400+ members with 100+ curated hosting providers, helping thousands find the right hosting solution."
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* ── Get In Touch ────────────────────────────────────────────── */}
+      <section className="border-t border-border">
+        <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6">
+          <div className="reveal">
+            <Badge variant="outline" className="gap-1.5 border-accent/50 text-accent border-rotate">
+              <Mail className="size-3.5" />
+              Get In Touch
+            </Badge>
+            <h2 className="mt-4">We would love to hear from you</h2>
+            <p className="mt-2 text-muted-foreground body-large">
+              Have questions, suggestions, or want to get involved?
+            </p>
+          </div>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 stagger-children">
+            <TiltCard maxTilt={6} glare={false} className="h-full">
               <Card className="h-full card-hover card-glow transition-all duration-300">
                 <CardContent className="flex flex-col items-center gap-2 text-center">
                   <FontAwesomeIcon icon={faDiscord} className="size-6" />
@@ -260,6 +341,8 @@ export default function AboutPage() {
                   </Button>
                 </CardContent>
               </Card>
+            </TiltCard>
+            <TiltCard maxTilt={6} glare={false} className="h-full">
               <Card className="h-full card-hover card-glow transition-all duration-300">
                 <CardContent className="flex flex-col items-center gap-2 text-center">
                   <Mail className="size-6" />
@@ -276,34 +359,41 @@ export default function AboutPage() {
                   </Button>
                 </CardContent>
               </Card>
-            </div>
-          </ContentSection>
+            </TiltCard>
+          </div>
         </div>
+      </section>
 
-        <div className="mt-16 flex flex-col items-center gap-3 rounded-lg border border-border bg-card p-10 text-center card-hover transition-all duration-300 reveal">
-          <h2>Meet Our Team</h2>
-          <p className="max-w-md text-muted-foreground">
-            Learn more about the volunteers who keep FreeHosts running and discover
-            opportunities to join us.
-          </p>
-          <Button asChild className="gap-1.5 transition-all duration-200 hover:scale-105 active:scale-95">
-            <Link href="/staff">
-              <Users className="size-4" />
-              View Team
-            </Link>
-          </Button>
+      {/* ── Team CTA ────────────────────────────────────────────────── */}
+      <section className="border-t border-border">
+        <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6">
+          <SpotlightCard className="flex flex-col items-center gap-3 p-10 text-center reveal">
+            <h2>Meet Our Team</h2>
+            <p className="max-w-md text-muted-foreground">
+              Learn more about the volunteers who keep FreeHosts running and discover
+              opportunities to join us.
+            </p>
+            <Button asChild className="gap-1.5 transition-all duration-200 hover:scale-105 active:scale-95">
+              <Link href="/staff">
+                <Users className="size-4" />
+                View Team
+              </Link>
+            </Button>
+          </SpotlightCard>
         </div>
-      </main>
+      </section>
     </>
   );
 }
 
 function StatCard({ number, label }: { number: string; label: string }) {
   return (
-    <div className="h-full rounded-lg border border-border bg-card py-5 text-center card-hover card-glow transition-all duration-300">
-      <div className="font-mono text-2xl font-semibold">{number}</div>
-      <div className="mt-1 text-xs text-muted-foreground">{label}</div>
-    </div>
+    <Card variant="elevated" className="h-full py-5 text-center card-hover card-glow transition-all duration-300">
+      <CardContent>
+        <div className="font-mono text-2xl font-semibold gradient-text">{number}</div>
+        <div className="mt-1 text-xs text-muted-foreground">{label}</div>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -329,13 +419,15 @@ function ContentSection({
 
 function ValueCard({ icon, title, text }: { icon: React.ReactNode; title: string; text: string }) {
   return (
-    <Card className="h-full gap-2 py-4 card-hover card-glow transition-all duration-300">
-      <CardContent className="flex flex-col gap-2">
-        <div className="flex size-8 items-center justify-center rounded-md bg-secondary">{icon}</div>
-        <h3 className="text-sm font-semibold text-foreground">{title}</h3>
-        <p className="text-sm text-muted-foreground">{text}</p>
-      </CardContent>
-    </Card>
+    <TiltCard maxTilt={6} glare={false} className="h-full">
+      <Card variant="elevated" hover className="h-full transition-all duration-300 card-glow">
+        <CardContent className="flex flex-col gap-2">
+          <div className="flex size-8 items-center justify-center rounded-md bg-accent/10 text-accent">{icon}</div>
+          <h3 className="text-sm font-semibold text-foreground">{title}</h3>
+          <p className="text-sm text-muted-foreground">{text}</p>
+        </CardContent>
+      </Card>
+    </TiltCard>
   );
 }
 

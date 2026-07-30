@@ -20,7 +20,14 @@ import {
   HardDrive,
   Clock,
   ThumbsUp,
+  Sparkles,
+  Crosshair,
+  Compass,
 } from "lucide-react";
+import { GlitchText } from "@/components/ui/GlitchText";
+import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { TiltCard } from "@/components/ui/TiltCard";
+import { Badge } from "@/components/ui/badge";
 import { HostCard } from "@/components/primitives/HostCard";
 
 import { Button } from "@/components/ui/button";
@@ -472,167 +479,202 @@ function HostsContent({ initialHosts }: { initialHosts: Host[] }) {
   const sortOptions = ["random", "name", "cpu", "ram", "storage", "reviews", "recent"];
 
   return (
-    <main className="mx-auto max-w-[1200px] px-4 py-10 sm:px-6">
+    <main>
       {/* Hero */}
-      <section className="text-center reveal">
-        <h1>Free Hosting Directory</h1>
-        <p className="mt-2 text-muted-foreground">
-          Discover and compare the best free hosting providers for your projects.
-        </p>
+      <section className="relative overflow-hidden noise-overlay border-b border-border">
+        <div className="dot-grid relative">
+          <div className="pointer-events-none absolute -top-40 left-1/4 size-96 opacity-20 blob-morph" />
+          <div className="pointer-events-none absolute -bottom-40 right-1/4 size-80 opacity-15 blob-morph" style={{ animationDelay: "4s" }} />
+          <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
+            <div className="flex flex-col items-center gap-3 text-center reveal">
+              <div className="flex size-14 items-center justify-center rounded-full bg-accent/10 text-accent">
+                <Compass className="size-7" />
+              </div>
+              <GlitchText variant="chromatic" as="h1" text="Free Hosting Directory" />
+              <p className="max-w-2xl text-muted-foreground body-large">
+                Browse 100+ free hosting providers for websites, Discord bots, and apps. Filter by CPU, RAM, storage, language, and target.
+              </p>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* Search + filters */}
-      <div className="mt-8 grid gap-3 sm:grid-cols-[1fr_220px_220px]">
-        <div className="relative">
-          <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            type="text"
-            placeholder="Search for a host..."
-            value={currentFilters.search}
-            onChange={(e) => handleFilterChange("search", e.target.value)}
-            aria-label="Search hosting providers"
-            className={cn("pl-9", isSearching && "opacity-70")}
-          />
-        </div>
-        <CustomDropdown
-          id="locale"
-          value={currentFilters.locale}
-          placeholder="All Languages"
-          options={locales.map((locale) => ({
-            value: locale,
-            label: `${getLanguageName(locale)} (${locale})`,
-          }))}
-          onChange={(val) => handleFilterChange("locale", val)}
-        />
-        <CustomDropdown
-          id="target-filter"
-          value={currentFilters.target}
-          placeholder="All Targets"
-          options={targets.map((target) => ({ value: target, label: target }))}
-          onChange={(val) => handleFilterChange("target", val)}
-        />
-      </div>
+      <section className="border-t border-border">
+        <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6">
+          <div className="reveal">
+            <Badge variant="outline" className="gap-1.5 border-accent/50 text-accent border-rotate">
+              <Sparkles className="size-3.5" />
+              Filters
+            </Badge>
+            <h2 className="mt-4">Find the right host</h2>
+            <p className="mt-2 text-muted-foreground body-large">Search, sort, and filter to narrow down your options.</p>
+          </div>
+          <div className="mt-6 reveal reveal-delay-1">
+            <div className="grid gap-3 sm:grid-cols-[1fr_220px_220px]">
+              <div className="relative">
+                <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  type="text"
+                  placeholder="Search for a host..."
+                  value={currentFilters.search}
+                  onChange={(e) => handleFilterChange("search", e.target.value)}
+                  aria-label="Search hosting providers"
+                  className={cn("pl-9", isSearching && "opacity-70")}
+                />
+              </div>
+              <CustomDropdown
+                id="locale"
+                value={currentFilters.locale}
+                placeholder="All Languages"
+                options={locales.map((locale) => ({
+                  value: locale,
+                  label: `${getLanguageName(locale)} (${locale})`,
+                }))}
+                onChange={(val) => handleFilterChange("locale", val)}
+              />
+              <CustomDropdown
+                id="target-filter"
+                value={currentFilters.target}
+                placeholder="All Targets"
+                options={targets.map((target) => ({ value: target, label: target }))}
+                onChange={(val) => handleFilterChange("target", val)}
+              />
+            </div>
 
-      {/* Sort bar */}
-      <div className="mt-4 flex flex-col gap-3 border-b border-border pb-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-wrap items-center gap-1.5">
-          <span className="mr-1 text-sm text-muted-foreground">Sort by:</span>
-          {sortOptions.map((sortType) => (
-            <Button
-              key={sortType}
-              size="sm"
-              variant={currentFilters.sort === sortType ? "default" : "outline"}
-              className="gap-1.5"
-              onClick={() => handleSortChange(sortType)}
-            >
-              {getSortIcon(sortType)}
-              {getSortLabel(sortType)}
-            </Button>
-          ))}
-        </div>
-        <div className="flex items-center gap-3">
-          <span className="text-sm whitespace-nowrap text-muted-foreground">
-            {hasActiveFilters
-              ? `Showing ${filteredHosts.length} of ${hosts.length} hosts`
-              : `Showing all ${hosts.length} hosts`}
-          </span>
-          {Boolean(hasActiveFilters) && (
-            <Button size="sm" variant="ghost" className="gap-1.5" onClick={clearFilters}>
-              <X className="size-3.5" />
-              Clear Filters
-            </Button>
-          )}
-        </div>
-      </div>
-
-      {/* Hosts grid */}
-      <div id="hosts-container" className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {filteredHosts.length === 0 ? (
-          <div className="col-span-full flex flex-col items-center gap-3 py-16 text-center">
-            <Search className="size-10 text-muted-foreground" />
-            <div className="text-lg font-medium">No hosts found</div>
-            <p className="text-muted-foreground">No hosts match your current filters.</p>
-            <div className="flex flex-wrap justify-center gap-2">
-              {Boolean(hasActiveFilters) && (
-                <Button variant="outline" size="sm" className="gap-1.5" onClick={clearFilters}>
-                  <X className="size-3.5" />
-                  Clear all filters
-                </Button>
-              )}
-              {currentFilters.search && (
-                <Button variant="outline" size="sm" onClick={() => handleFilterChange("search", "")}>
-                  Clear search
-                </Button>
-              )}
+            {/* Sort bar */}
+            <div className="mt-4 flex flex-col gap-3 border-b border-border pb-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-wrap items-center gap-1.5">
+                <span className="mr-1 text-sm text-muted-foreground">Sort by:</span>
+                {sortOptions.map((sortType) => (
+                  <Button
+                    key={sortType}
+                    size="sm"
+                    variant={currentFilters.sort === sortType ? "default" : "outline"}
+                    className="gap-1.5"
+                    onClick={() => handleSortChange(sortType)}
+                  >
+                    {getSortIcon(sortType)}
+                    {getSortLabel(sortType)}
+                  </Button>
+                ))}
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-sm whitespace-nowrap text-muted-foreground">
+                  {hasActiveFilters
+                    ? `Showing ${filteredHosts.length} of ${hosts.length} hosts`
+                    : `Showing all ${hosts.length} hosts`}
+                </span>
+                {Boolean(hasActiveFilters) && (
+                  <Button size="sm" variant="ghost" className="gap-1.5" onClick={clearFilters}>
+                    <X className="size-3.5" />
+                    Clear Filters
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
-        ) : (
-          currentPageHosts.map((host) => (
-            <HostCard key={host.id} host={host} isNew={isHostNew(host)} />
-          ))
-        )}
-      </div>
+        </div>
+      </section>
 
-      {/* Pagination */}
-      {filteredHosts.length > pageSize && (
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-1.5">
-          <Button variant="outline" size="sm" className="gap-1.5" onClick={() => goToPage(1)} disabled={currentPage === 1}>
-            <ChevronsLeft className="size-3.5" />
-            First
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-1.5"
-            onClick={() => goToPage(currentPage - 1)}
-            disabled={currentPage === 1}
-          >
-            <ChevronLeft className="size-3.5" />
-            Previous
-          </Button>
-
-          <div className="flex items-center gap-1">
-            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-              const startPage = Math.max(1, currentPage - 2);
-              const pageNum = startPage + i;
-              if (pageNum > totalPages) return null;
-
-              return (
-                <Button
-                  key={pageNum}
-                  size="sm"
-                  variant={pageNum === currentPage ? "default" : "outline"}
-                  className="size-8 p-0"
-                  onClick={() => goToPage(pageNum)}
-                >
-                  {pageNum}
-                </Button>
-              );
-            })}
+      {/* Hosts grid */}
+      <section className="border-t border-border">
+        <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6">
+          <div id="hosts-container" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 stagger-children">
+            {filteredHosts.length === 0 ? (
+              <SpotlightCard className="col-span-full">
+                <div className="flex flex-col items-center gap-3 py-16 text-center">
+                  <Search className="size-10 text-muted-foreground" />
+                  <div className="text-lg font-medium">No hosts found</div>
+                  <p className="text-muted-foreground">No hosts match your current filters.</p>
+                  <div className="flex flex-wrap justify-center gap-2">
+                    {Boolean(hasActiveFilters) && (
+                      <Button variant="outline" size="sm" className="gap-1.5" onClick={clearFilters}>
+                        <X className="size-3.5" />
+                        Clear all filters
+                      </Button>
+                    )}
+                    {currentFilters.search && (
+                      <Button variant="outline" size="sm" onClick={() => handleFilterChange("search", "")}>
+                        Clear search
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </SpotlightCard>
+            ) : (
+              currentPageHosts.map((host) => (
+                <div key={host.id} className="h-full">
+                  <TiltCard maxTilt={6} glare={false} className="h-full">
+                    <HostCard host={host} isNew={isHostNew(host)} />
+                  </TiltCard>
+                </div>
+              ))
+            )}
           </div>
 
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-1.5"
-            onClick={() => goToPage(currentPage + 1)}
-            disabled={currentPage === totalPages}
-          >
-            Next
-            <ChevronRight className="size-3.5" />
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-1.5"
-            onClick={() => goToPage(totalPages)}
-            disabled={currentPage === totalPages}
-          >
-            Last
-            <ChevronsRight className="size-3.5" />
-          </Button>
+          {/* Pagination */}
+          {filteredHosts.length > pageSize && (
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-1.5 reveal">
+              <Button variant="outline" size="sm" className="gap-1.5" onClick={() => goToPage(1)} disabled={currentPage === 1}>
+                <ChevronsLeft className="size-3.5" />
+                First
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-1.5"
+                onClick={() => goToPage(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                <ChevronLeft className="size-3.5" />
+                Previous
+              </Button>
+
+              <div className="flex items-center gap-1">
+                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                  const startPage = Math.max(1, currentPage - 2);
+                  const pageNum = startPage + i;
+                  if (pageNum > totalPages) return null;
+
+                  return (
+                    <Button
+                      key={pageNum}
+                      size="sm"
+                      variant={pageNum === currentPage ? "default" : "outline"}
+                      className="size-8 p-0"
+                      onClick={() => goToPage(pageNum)}
+                    >
+                      {pageNum}
+                    </Button>
+                  );
+                })}
+              </div>
+
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-1.5"
+                onClick={() => goToPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                Next
+                <ChevronRight className="size-3.5" />
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-1.5"
+                onClick={() => goToPage(totalPages)}
+                disabled={currentPage === totalPages}
+              >
+                Last
+                <ChevronsRight className="size-3.5" />
+              </Button>
+            </div>
+          )}
         </div>
-      )}
+      </section>
     </main>
   );
 }

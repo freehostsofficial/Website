@@ -1,12 +1,16 @@
 "use client";
 
 import Link from "@/components/NoPrefetchLink";
-import { ArrowRight, Check, CircleHelp } from "lucide-react";
+import { Sparkles, Compass, Plus, CircleHelp, ArrowRight, Check } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { TiltCard } from "@/components/ui/TiltCard";
+import { GlitchText } from "@/components/ui/GlitchText";
+import { SpotlightCard } from "@/components/ui/SpotlightCard";
 
 const inviteUrl = "https://discord.gg/QbeZ3b5CQd";
 
@@ -52,102 +56,128 @@ const teaser = [
 
 export default function SubmitHostClient() {
   return (
-    <main className="mx-auto max-w-[1200px] px-4 py-12 sm:px-6">
-      <section className="text-center reveal">
-        <h1>Join the FreeHosts Directory</h1>
-        <p className="mx-auto mt-2 max-w-md text-muted-foreground">
-          Help the community discover reliable, zero-cost hosting by submitting a provider.
-        </p>
-      </section>
-
-      <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_320px]">
-        <div>
-          <h2 className="text-lg">Submission Guide</h2>
-          <p className="text-sm text-muted-foreground">Follow these steps to get your host listed.</p>
-
-          <div className="mt-4 flex flex-col gap-4">
-            {steps.map((step) => (
-              <Card key={step.num} className="flex-row items-start gap-4 py-5">
-                <CardContent className="flex items-start gap-4 px-5">
-                  <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-secondary font-mono text-sm font-semibold">
-                    {step.num}
-                  </div>
-                  <div>
-                    <h3>{step.title}</h3>
-                    <p className="mt-1 text-sm text-muted-foreground">{step.text}</p>
-                    {step.link && (
-                      <Link
-                        href={step.link.href}
-                        className="mt-2 inline-flex items-center gap-1.5 text-sm font-medium hover:underline"
-                      >
-                        {step.link.label}
-                        <ArrowRight className="size-3.5" />
-                      </Link>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+    <main>
+      <section className="relative overflow-hidden noise-overlay border-b border-border">
+        <div className="dot-grid relative">
+          <div className="pointer-events-none absolute -top-40 left-1/4 size-96 opacity-20 blob-morph" />
+          <div className="pointer-events-none absolute -bottom-40 right-1/4 size-80 opacity-15 blob-morph" style={{ animationDelay: "4s" }} />
+          <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
+            <div className="flex flex-col items-center gap-3 text-center reveal">
+              <div className="flex size-14 items-center justify-center rounded-full bg-accent/10 text-accent">
+                <Plus className="size-7" />
+              </div>
+              <GlitchText variant="chromatic" as="h1" text="Submit a Host" />
+              <p className="max-w-2xl text-muted-foreground body-large">
+                Help the community discover reliable, zero-cost hosting by submitting a provider.
+              </p>
+            </div>
           </div>
         </div>
+      </section>
 
-        <aside className="flex flex-col gap-4">
-          <Card>
-            <CardContent>
-              <h3>Quick Checklist</h3>
-              <ul className="mt-3 flex flex-col gap-2">
-                {checklist.map((item) => (
-                  <li key={item} className="flex items-start gap-2 text-sm text-muted-foreground">
-                    <Check className="mt-0.5 size-4 shrink-0 text-accent" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="flex flex-col gap-3">
-              <h3>Ready to Submit?</h3>
-              <p className="text-sm text-muted-foreground">
-                The quickest way to get listed is via our active Discord community.
-              </p>
-              <Button asChild className="gap-2">
-                <a href={inviteUrl} target="_blank" rel="noopener noreferrer">
-                  <FontAwesomeIcon icon={faDiscord} className="size-4" />
-                  Join Discord to Submit
-                </a>
-              </Button>
-              <p className="text-xs text-muted-foreground">
-                Need help with a listing? Contact us at{" "}
-                <a href={"mailto:support@" + process.env.EMAIL_DOMAIN} className="hover:underline">
-                  support@{process.env.EMAIL_DOMAIN}
-                </a>
-              </p>
-            </CardContent>
-          </Card>
-        </aside>
-      </div>
-
-      <section className="mt-16">
-        <h2 className="text-lg">Common Questions</h2>
-        <div className="mt-4 grid gap-4 sm:grid-cols-3">
-          {teaser.map((item) => (
-            <Card key={item.q} className="h-full">
-              <CardContent>
-                <h4 className="text-sm font-medium">{item.q}</h4>
-                <p className="mt-1 text-sm text-muted-foreground">{item.a}</p>
-              </CardContent>
-            </Card>
-          ))}
+      <section className="border-t border-border">
+        <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6">
+          <div className="grid gap-6 lg:grid-cols-3">
+            <div className="lg:col-span-2 space-y-6 stagger-children">
+              {steps.map((step, i) => (
+                <div key={i} className="h-full">
+                  <TiltCard maxTilt={6} glare={false} className="h-full">
+                    <Card variant="elevated" hover padding="none" className="h-full transition-all duration-300 card-glow">
+                      <CardContent className="flex items-start gap-4 p-5">
+                        <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-secondary font-mono text-sm font-semibold">
+                          {step.num}
+                        </div>
+                        <div>
+                          <h3>{step.title}</h3>
+                          <p className="mt-1 text-sm text-muted-foreground">{step.text}</p>
+                          {step.link && (
+                            <Link
+                              href={step.link.href}
+                              className="mt-2 inline-flex items-center gap-1.5 text-sm font-medium hover:underline"
+                            >
+                              {step.link.label}
+                              <ArrowRight className="size-3.5" />
+                            </Link>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </TiltCard>
+                </div>
+              ))}
+            </div>
+            <aside className="space-y-4 stagger-children">
+              <TiltCard maxTilt={6} glare={false} className="h-full">
+                <Card variant="elevated" hover className="h-full transition-all duration-300 card-glow">
+                  <CardContent>
+                    <h3>Quick Checklist</h3>
+                    <ul className="mt-3 flex flex-col gap-2">
+                      {checklist.map((item) => (
+                        <li key={item} className="flex items-start gap-2 text-sm text-muted-foreground">
+                          <Check className="mt-0.5 size-4 shrink-0 text-accent" />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              </TiltCard>
+              <TiltCard maxTilt={6} glare={false} className="h-full">
+                <Card variant="elevated" hover className="h-full transition-all duration-300 card-glow">
+                  <CardContent className="flex flex-col gap-3">
+                    <h3>Ready to Submit?</h3>
+                    <p className="text-sm text-muted-foreground">
+                      The quickest way to get listed is via our active Discord community.
+                    </p>
+                    <Button asChild className="gap-2">
+                      <a href={inviteUrl} target="_blank" rel="noopener noreferrer">
+                        <FontAwesomeIcon icon={faDiscord} className="size-4" />
+                        Join Discord to Submit
+                      </a>
+                    </Button>
+                    <p className="text-xs text-muted-foreground">
+                      Need help with a listing? Contact us at{" "}
+                      <a href={"mailto:support@" + process.env.EMAIL_DOMAIN} className="hover:underline">
+                        support@{process.env.EMAIL_DOMAIN}
+                      </a>
+                    </p>
+                  </CardContent>
+                </Card>
+              </TiltCard>
+            </aside>
+          </div>
         </div>
-        <div className="mt-6 text-center">
-          <Button asChild variant="outline" className="gap-1.5">
-            <Link href="/faq">
-              View All FAQs
+      </section>
+
+      <section className="border-t border-border">
+        <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6">
+          <div className="reveal">
+            <Badge variant="outline" className="gap-1.5 border-accent/50 text-accent border-rotate">
               <CircleHelp className="size-3.5" />
-            </Link>
-          </Button>
+              Common Questions
+            </Badge>
+            <h2 className="mt-4">Common Questions</h2>
+          </div>
+          <div className="mt-8 grid gap-4 sm:grid-cols-3 stagger-children">
+            {teaser.map((item) => (
+              <TiltCard key={item.q} maxTilt={6} glare={false} className="h-full">
+                <Card className="h-full card-hover card-glow transition-all duration-300">
+                  <CardContent>
+                    <h4 className="text-sm font-medium">{item.q}</h4>
+                    <p className="mt-1 text-sm text-muted-foreground">{item.a}</p>
+                  </CardContent>
+                </Card>
+              </TiltCard>
+            ))}
+          </div>
+          <div className="mt-6 text-center">
+            <Button asChild variant="outline" className="gap-1.5">
+              <Link href="/faq">
+                View All FAQs
+                <CircleHelp className="size-3.5" />
+              </Link>
+            </Button>
+          </div>
         </div>
       </section>
     </main>
