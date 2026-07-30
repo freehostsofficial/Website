@@ -1,13 +1,67 @@
-/* ─── Animation Keyframes ───────────────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pulseSlow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
 
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0%   { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+@keyframes orbit {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes tileRipple {
+  0%   { transform: translateY(0); opacity: 1; }
+  60%  { transform: translateY(-6px) scale(1.01); opacity: 1; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes pageEnter {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer-reveal {
+  0% { opacity: 0; transform: scale(0.98); }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes border-glow {
+  0%, 100% { border-color: rgb(var(--accent) / 0.2); }
+  50% { border-color: rgb(var(--accent) / 0.5); }
 }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 8px color-mix(in oklch, var(--accent) 15%, transparent); }
-  50% { box-shadow: 0 0 20px color-mix(in oklch, var(--accent) 30%, transparent); }
+  0%, 100% { box-shadow: 0 0 8px rgb(var(--accent) / 0.15); }
+  50% { box-shadow: 0 0 20px rgb(var(--accent) / 0.3); }
 }
 
 @keyframes breathe {
@@ -20,32 +74,10 @@
   50% { transform: translateY(-6px); }
 }
 
-@keyframes float-organic {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  25% { transform: translateY(-3px) rotate(0.5deg); }
-  50% { transform: translateY(-6px) rotate(0deg); }
-  75% { transform: translateY(-3px) rotate(-0.5deg); }
-}
-
-@keyframes scale-in {
-  from { transform: scale(0.95); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-
-@keyframes slide-up {
-  from { transform: translateY(12px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
 @keyframes gradient-shift {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
-}
-
-@keyframes border-glow {
-  0%, 100% { border-color: color-mix(in oklch, var(--accent) 20%, transparent); }
-  50% { border-color: color-mix(in oklch, var(--accent) 50%, transparent); }
 }
 
 @keyframes count-up {
@@ -53,159 +85,31 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ─── KokonutUI-style Border Trace ─────────────────────────────────────── */
-
-@keyframes border-trace {
-  from { stroke-dashoffset: 1000; }
-  to { stroke-dashoffset: 0; }
+.orbit {
+  --orbit-duration: 8s;
+  animation: orbit var(--orbit-duration) linear infinite;
 }
 
-.animate-border-trace {
-  animation: border-trace 1.5s ease-in-out forwards;
+.orbit-fast { --orbit-duration: 2.2s; }
+
+.orb {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: rgba(79, 217, 223, 0.9);
+  box-shadow: 0 0 8px rgba(79, 217, 223, 0.9);
 }
 
-/* ─── Pulse Ring (KokonutUI Card Scale Rings) ──────────────────────────── */
+.o1 { transform: rotate(0deg) translate(30px) rotate(0deg); }
+.o2 { transform: rotate(60deg) translate(30px) rotate(-60deg); }
+.o3 { transform: rotate(120deg) translate(30px) rotate(-120deg); }
+.o4 { transform: rotate(180deg) translate(30px) rotate(-180deg); }
+.o5 { transform: rotate(240deg) translate(30px) rotate(-240deg); }
 
-@keyframes pulse-ring {
-  0% { transform: scale(0.5); opacity: 0.6; }
-  100% { transform: scale(2.5); opacity: 0; }
+.ripple-anim {
+  animation: tileRipple 420ms ease-out;
+  box-shadow: 0 10px 36px rgba(79, 217, 223, 0.06);
 }
-
-.pulse-ring {
-  animation: pulse-ring 2s ease-out infinite;
-}
-
-.pulse-ring-delay-1 { animation-delay: 0.3s; }
-.pulse-ring-delay-2 { animation-delay: 0.6s; }
-.pulse-ring-delay-3 { animation-delay: 0.9s; }
-.pulse-ring-delay-4 { animation-delay: 1.2s; }
-.pulse-ring-delay-5 { animation-delay: 1.5s; }
-
-/* ─── Glitch/Chromatic Text (Bklit-inspired) ───────────────────────────── */
-
-@keyframes glitch-skew {
-  0% { transform: skew(0deg); }
-  10% { transform: skew(0.5deg); }
-  20% { transform: skew(-0.5deg); }
-  30% { transform: skew(0deg); }
-  40% { transform: skew(-0.3deg); }
-  50% { transform: skew(0.3deg); }
-  60% { transform: skew(0deg); }
-  100% { transform: skew(0deg); }
-}
-
-@keyframes glitch-rgb-1 {
-  0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
-  20% { clip-path: inset(20% 0 60% 0); transform: translate(-3px, 2px); }
-  40% { clip-path: inset(40% 0 40% 0); transform: translate(3px, -1px); }
-  60% { clip-path: inset(60% 0 20% 0); transform: translate(-2px, 1px); }
-  80% { clip-path: inset(10% 0 70% 0); transform: translate(2px, -2px); }
-}
-
-@keyframes glitch-rgb-2 {
-  0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
-  20% { clip-path: inset(30% 0 50% 0); transform: translate(3px, -1px); }
-  40% { clip-path: inset(10% 0 60% 0); transform: translate(-3px, 2px); }
-  60% { clip-path: inset(50% 0 30% 0); transform: translate(2px, -2px); }
-  80% { clip-path: inset(20% 0 40% 0); transform: translate(-2px, 1px); }
-}
-
-.glitch-text {
-  position: relative;
-  animation: glitch-skew 4s infinite linear alternate-reverse;
-}
-
-.glitch-text::before,
-.glitch-text::after {
-  content: attr(data-text);
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.glitch-text::before {
-  color: #ff0040;
-  z-index: -1;
-  animation: glitch-rgb-1 2s infinite linear alternate-reverse;
-}
-
-.glitch-text::after {
-  color: #00d4ff;
-  z-index: -1;
-  animation: glitch-rgb-2 2.5s infinite linear alternate-reverse;
-}
-
-/* ─── Chromatic Glitch Image Filter (Bklit-inspired) ───────────────────── */
-
-.chromatic-glitch {
-  position: relative;
-  overflow: hidden;
-}
-
-.chromatic-glitch::before,
-.chromatic-glitch::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-position: center;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.chromatic-glitch::before {
-  background-color: rgba(255, 0, 64, 0.15);
-  mix-blend-mode: screen;
-}
-
-.chromatic-glitch::after {
-  background-color: rgba(0, 212, 255, 0.15);
-  mix-blend-mode: screen;
-}
-
-.chromatic-glitch:hover::before {
-  opacity: 1;
-  transform: translate(3px, -1px);
-  transition: opacity 0.1s ease, transform 0.1s ease;
-}
-
-.chromatic-glitch:hover::after {
-  opacity: 1;
-  transform: translate(-3px, 1px);
-  transition: opacity 0.15s ease, transform 0.15s ease;
-}
-
-/* ─── Slide Text (KokonutUI Button Effect) ─────────────────────────────── */
-
-.slide-text-wrapper {
-  position: relative;
-  display: inline-block;
-  overflow: hidden;
-}
-
-.slide-text-current,
-.slide-text-next {
-  display: block;
-  transition: transform 0.35s cubic-bezier(0.77, 0, 0.175, 1);
-}
-
-.slide-text-next {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-}
-
-.group:hover .slide-text-current {
-  transform: translateY(-100%);
-}
-
-.group:hover .slide-text-next {
-  transform: translateY(-100%);
-}
-
-/* ─── Scroll-Reveal with Blur (KokonutUI-style) ────────────────────────── */
 
 .reveal {
   opacity: 0;
@@ -231,7 +135,47 @@
 .reveal-delay-7 { transition-delay: 0.35s; }
 .reveal-delay-8 { transition-delay: 0.4s; }
 
-/* ─── Shimmer Loading ───────────────────────────────────────────────────── */
+.dot-grid {
+  background-image: radial-gradient(circle, rgb(var(--color-text) / 0.06) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.card-glow:hover {
+  border-color: rgb(var(--accent) / 0.3);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgb(var(--accent) / 0.1),
+    0 0 30px rgb(var(--accent) / 0.1);
+}
+
+.gradient-text-subtle {
+  background: linear-gradient(135deg, var(--foreground) 30%, rgb(var(--accent)) 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-shift 5s ease-in-out infinite;
+}
+
+.press-scale {
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.press-scale:active {
+  transform: scale(0.93);
+}
+
+.spring-lift {
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.spring-lift:hover {
+  transform: translateY(-4px) scale(1.02);
+}
+
+.shimmer-reveal {
+  animation: shimmer-reveal 0.6s ease-out forwards;
+}
 
 .skeleton-shimmer {
   background: linear-gradient(
@@ -246,174 +190,23 @@
   animation: shimmer 1.8s ease-in-out infinite;
 }
 
-/* ─── Card Hover Effects ────────────────────────────────────────────────── */
-
-.card-hover {
-  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-              box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-              border-color 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.card-hover:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-}
-
-.card-glow:hover {
-  border-color: color-mix(in oklch, var(--accent) 30%, transparent);
-  box-shadow:
-    0 12px 40px rgba(0, 0, 0, 0.4),
-    0 0 0 1px color-mix(in oklch, var(--accent) 10%, transparent),
-    0 0 30px color-mix(in oklch, var(--accent) 10%, transparent);
-}
-
-/* ─── Gradient Text ─────────────────────────────────────────────────────── */
-
-.gradient-text {
-  background: linear-gradient(135deg, var(--foreground) 0%, var(--accent) 100%);
-  background-size: 200% 200%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: gradient-shift 4s ease-in-out infinite;
-}
-
-.gradient-text-subtle {
-  background: linear-gradient(135deg, var(--foreground) 30%, color-mix(in oklch, var(--accent) 70%, var(--foreground)) 100%);
-  background-size: 200% 200%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: gradient-shift 5s ease-in-out infinite;
-}
-
-/* ─── Border Glow ───────────────────────────────────────────────────────── */
-
-.border-glow {
-  animation: border-glow 3s ease-in-out infinite;
-}
-
-/* ─── Dot Grid Pattern ──────────────────────────────────────────────────── */
-
-.dot-grid {
-  background-image: radial-gradient(circle, color-mix(in oklch, var(--foreground) 6%, transparent) 1px, transparent 1px);
-  background-size: 24px 24px;
-}
-
-/* ─── Glass Card ────────────────────────────────────────────────────────── */
-
 .glass-card {
   background: linear-gradient(
     135deg,
-    color-mix(in oklch, var(--card) 90%, transparent) 0%,
+    color-mix(in oklch, var(--card-bg) 90%, transparent) 0%,
     color-mix(in oklch, var(--secondary) 50%, transparent) 100%
   );
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid color-mix(in oklch, var(--border) 80%, transparent);
+  border: 1px solid color-mix(in oklch, var(--border-color) 80%, transparent);
 }
 
-/* ─── Stat Counter ──────────────────────────────────────────────────────── */
-
-.stat-value {
-  animation: count-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  opacity: 0;
-}
-
-.stat-value.visible {
-  opacity: 1;
-}
-
-/* ─── 3D Card Flip (KokonutUI-inspired) ──────────────────────────────────── */
-
-.card-flip-container {
-  perspective: 2000px;
-}
-
-.card-flip-inner {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  transform-style: preserve-3d;
-  transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1);
-}
-
-.card-flip-container.flipped .card-flip-inner {
-  transform: rotateY(180deg);
-}
-
-.card-flip-front,
-.card-flip-back {
-  position: absolute;
-  inset: 0;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-
-.card-flip-back {
-  transform: rotateY(180deg);
-}
-
-/* ─── Staggered List Reveal (KokonutUI card flip inner items) ──────────── */
-
-.stagger-item {
-  transform: translateX(-12px);
-  opacity: 0;
-  transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1),
-              opacity 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-.stagger-item.visible {
-  transform: translateX(0);
-  opacity: 1;
-}
-
-.stagger-item-delay-1 { transition-delay: 100ms; }
-.stagger-item-delay-2 { transition-delay: 150ms; }
-.stagger-item-delay-3 { transition-delay: 200ms; }
-.stagger-item-delay-4 { transition-delay: 250ms; }
-
-/* ─── Press Scale (Spring-like motion.dev feel) ──────────────────────────── */
-
-.press-scale {
-  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.press-scale:active {
-  transform: scale(0.93);
-}
-
-/* ─── Spring Lift (motion.dev spring-inspired) ──────────────────────────── */
-
-.spring-lift {
-  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.spring-lift:hover {
-  transform: translateY(-4px) scale(1.02);
-}
-
-/* ─── Shimmer Reveal (motion.dev skeleton shimmer style) ────────────────── */
-
-@keyframes shimmer-reveal {
-  0% { opacity: 0; transform: scale(0.98); }
-  50% { opacity: 0.5; }
-  100% { opacity: 1; transform: scale(1); }
-}
-
-.shimmer-reveal {
-  animation: shimmer-reveal 0.6s ease-out forwards;
-}
-
-/* ─── SVG Draw (animejs line-drawing inspired) ──────────────────────────── */
-
-@keyframes line-draw {
-  from { stroke-dashoffset: 1000; }
-  to { stroke-dashoffset: 0; }
-}
-
-.line-draw {
-  stroke-dasharray: 1000;
-  stroke-dashoffset: 1000;
-  animation: line-draw 2s ease-out forwards;
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .orbit { animation: none !important; }
 }

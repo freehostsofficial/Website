@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import React, { Suspense } from "react";
+import { Geist, Geist_Mono } from "next/font/google";
 import RouteInitializer from "../components/RouteInitializer";
 import GlobalStructuredData from "../components/GlobalStructuredData";
 import MatomoTracker from "../components/MatomoTracker";
@@ -9,6 +10,7 @@ import BackToTop from "../components/BackToTop";
 import { ConsentProvider } from "../contexts/ConsentContext";
 import { ComparisonProvider } from "../contexts/ComparisonContext";
 import { FavoritesProvider } from "../contexts/FavoritesContext";
+import { ThemeProvider } from "../contexts/ThemeContext";
 import GdprConsentBanner from "../components/GdprConsentBanner";
 import CookieConsentBanner from "../components/CookieConsentBanner";
 import ComparisonPanel from "../components/ComparisonPanel";
@@ -17,15 +19,30 @@ import RevealProvider from "../components/RevealProvider";
 import SiteHeader from "../components/SiteHeader";
 import SiteFooter from "../components/SiteFooter";
 import PageBreadcrumbs from "../components/PageBreadcrumbs";
+import ThemeScript from "../components/ThemeScript";
+import LayoutContent from "../components/LayoutContent";
 import { fetchHosts } from "../lib/cache";
-import { config } from "@fortawesome/fontawesome-svg-core";
+import { config, library } from "@fortawesome/fontawesome-svg-core";
+import { fas } from "@fortawesome/free-solid-svg-icons";
+import { far } from "@fortawesome/free-regular-svg-icons";
+import { fab } from "@fortawesome/free-brands-svg-icons";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 
-// Prevent FontAwesome from injecting its CSS at runtime (causes FOUC)
 config.autoAddCss = false;
+library.add(fas, far, fab);
 
 import "./src/css/globals.css";
 import "./src/css/animations.css";
+
+const geistSans = Geist({
+  subsets: ["latin"],
+  variable: "--font-geist-sans",
+});
+
+const geistMono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-geist-mono",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.APP_URL ?? "https://freehosts.space"),
@@ -104,15 +121,14 @@ export default async function RootLayout({
   const hosts = await fetchHosts();
 
   return (
-    <html lang="en" className="dark" style={{ colorScheme: "dark" }} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`dark ${geistSans.variable} ${geistMono.variable}`}
+      style={{ colorScheme: "dark" }}
+      suppressHydrationWarning
+    >
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
-        <link
-          href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700;800&family=Inter:wght@400;600;700;800&display=swap"
-          rel="stylesheet"
-        />
+        <ThemeScript />
         <link
           rel="sitemap"
           type="application/xml"
@@ -122,48 +138,48 @@ export default async function RootLayout({
         <link rel="alternate" href={process.env.APP_URL} hrefLang="x-default" />
         <link rel="alternate" href={process.env.APP_URL} hrefLang="en" />
       </head>
-      <body>
+      <body className="min-h-screen flex flex-col antialiased font-sans">
         <PreviewCard />
         <RouteInitializer />
         <GlobalStructuredData />
         <RevealProvider />
 
-        <ConsentProvider>
-          <ComparisonProvider>
-            <FavoritesProvider>
+        <ThemeProvider>
+          <ConsentProvider>
+            <ComparisonProvider>
+              <FavoritesProvider>
 
-              <SiteHeader trustpilotUrl={process.env.TRUST_PILOT} hosts={hosts} />
+                <SiteHeader trustpilotUrl={process.env.TRUST_PILOT} hosts={hosts} />
 
-              <ComparisonPanel />
+                <ComparisonPanel />
 
-              <ConsentGate>
-                <GdprConsentBanner className="consent-banner" />
+                <ConsentGate>
+                  <GdprConsentBanner className="consent-banner" />
 
-                <div className="skippable">
+                  <div className="skippable flex-1">
                     <Suspense fallback={null}>
                       <PageBreadcrumbs />
                     </Suspense>
-                    {children}
-                </div>
-              </ConsentGate>
+                    <LayoutContent>
+                      {children}
+                    </LayoutContent>
+                  </div>
+                </ConsentGate>
 
-              {/* Matomo self-gates on explicit analytics consent; it does not
-                  depend on the legal ToS/Privacy gate above. */}
-              <Suspense fallback={null}>
-                <MatomoTracker />
-              </Suspense>
+                <Suspense fallback={null}>
+                  <MatomoTracker />
+                </Suspense>
 
-              {/* Cookie preferences: independent of the legal gate, never
-                  blocks the page, and can be reopened anytime via the footer. */}
-              <CookieConsentBanner />
+                <CookieConsentBanner />
 
-              <SiteFooter trustpilotUrl={process.env.TRUST_PILOT} emailDomain={process.env.EMAIL_DOMAIN} />
+                <SiteFooter trustpilotUrl={process.env.TRUST_PILOT} emailDomain={process.env.EMAIL_DOMAIN} />
 
-              <div id="previewCard" className="preview-card" aria-hidden="true" />
+                <div id="previewCard" className="preview-card" aria-hidden="true" />
 
-            </FavoritesProvider>
-          </ComparisonProvider>
-        </ConsentProvider>
+              </FavoritesProvider>
+            </ComparisonProvider>
+          </ConsentProvider>
+        </ThemeProvider>
 
         <ToastContainer />
         <BackToTop />

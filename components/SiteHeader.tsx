@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "@/components/NoPrefetchLink";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
 import {
   BookOpen,
   ChevronDown,
@@ -25,6 +26,8 @@ import {
   Upload,
   Users,
 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -48,6 +51,7 @@ import {
 } from "@/components/ui/accordion";
 import { Separator } from "@/components/ui/separator";
 import CommandPalette from "@/components/CommandPalette";
+import { useTheme } from "@/contexts/ThemeContext";
 import type { Host } from "@/lib/cache";
 import { cn } from "@/lib/utils";
 
@@ -181,9 +185,24 @@ function AccordionGroup({
 
 export default function SiteHeader({ trustpilotUrl, hosts }: { trustpilotUrl?: string; hosts?: Host[] }) {
   const pathname = usePathname();
+  const { resolvedTheme, toggleTheme } = useTheme();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-border bg-background/80 backdrop-blur supports-backdrop-filter:bg-background/60">
+    <header
+      className={cn(
+        "sticky top-0 z-40 w-full transition-all duration-300",
+        scrolled
+          ? "glass border-b border-border"
+          : "bg-transparent"
+      )}
+    >
       <div className="mx-auto flex h-14 max-w-[1200px] items-center gap-2 px-4 sm:px-6">
         <Sheet>
           <SheetTrigger asChild>
@@ -268,6 +287,27 @@ export default function SiteHeader({ trustpilotUrl, hosts }: { trustpilotUrl?: s
         </nav>
 
         <div className="ml-auto flex items-center gap-0.5">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleTheme}
+            aria-label={`Switch to ${resolvedTheme === "dark" ? "light" : "dark"} mode`}
+            title={`Switch to ${resolvedTheme === "dark" ? "light" : "dark"} mode`}
+          >
+            <motion.div
+              key={resolvedTheme}
+              initial={{ rotate: -90, opacity: 0, scale: 0.5 }}
+              animate={{ rotate: 0, opacity: 1, scale: 1 }}
+              exit={{ rotate: 90, opacity: 0, scale: 0.5 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+            >
+              <FontAwesomeIcon
+                icon={resolvedTheme === "dark" ? faMoon : faSun}
+                className="size-4"
+              />
+            </motion.div>
+          </Button>
+
           <CommandPalette initialHosts={hosts ?? []} />
 
           <Button asChild variant="ghost" size="icon" className="hidden sm:inline-flex" title="Trustpilot">

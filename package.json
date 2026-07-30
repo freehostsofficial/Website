@@ -12,7 +12,8 @@
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.2.0",
     "@fortawesome/free-brands-svg-icons": "^7.2.0",
-    "@fortawesome/free-solid-svg-icons": "^7.2.0",
+    "@fortawesome/free-regular-svg-icons": "^7.3.1",
+    "@fortawesome/free-solid-svg-icons": "^7.3.1",
     "@fortawesome/react-fontawesome": "^3.3.1",
     "@radix-ui/react-accordion": "^1.2.20",
     "@radix-ui/react-checkbox": "^1.3.11",
@@ -30,6 +31,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
+    "framer-motion": "^12.43.0",
     "lucide-react": "^1.11.0",
     "next": "^16.2.6",
     "react": "^19.2.6",
