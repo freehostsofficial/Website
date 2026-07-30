@@ -34,7 +34,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
 import { TiltCard } from "@/components/ui/TiltCard";
-import { GlitchText } from "@/components/ui/GlitchText";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { cn } from "@/lib/utils";
 
@@ -212,20 +211,17 @@ export default function SubmitLayoutClient() {
 
   return (
     <>
-      <section className="relative overflow-hidden noise-overlay border-b border-border">
-        <div className="dot-grid relative">
-          <div className="pointer-events-none absolute -top-40 left-1/4 size-96 opacity-20 blob-morph" />
-          <div className="pointer-events-none absolute -bottom-40 right-1/4 size-80 opacity-15 blob-morph" style={{ animationDelay: "4s" }} />
-          <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
-            <div className="flex flex-col items-center gap-3 text-center reveal">
-              <div className="flex size-14 items-center justify-center rounded-full bg-accent/10 text-accent">
-                <Wand className="size-7" />
-              </div>
-              <GlitchText variant="chromatic" as="h1" text="Submit Layout" />
-              <p className="max-w-2xl text-muted-foreground body-large">
-                Create Discord-formatted hosting layouts instantly, with a live preview and one-click copy.
-              </p>
-              <div className="mt-4 flex flex-wrap gap-3 justify-center">
+      <section className="border-b border-border">
+        <div className="mx-auto max-w-[1200px] px-4 py-12 sm:px-6">
+          <div className="flex flex-col items-center gap-3 text-center reveal">
+            <div className="flex size-12 items-center justify-center rounded-full bg-accent/10 text-accent">
+              <Wand className="size-6" />
+            </div>
+            <h1>Submit Layout</h1>
+            <p className="max-w-2xl text-muted-foreground body-large">
+              Create Discord-formatted hosting layouts instantly, with a live preview and one-click copy.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-3 justify-center">
                 <span className="flex items-center gap-1.5 border-accent/50 text-accent border-rotate">
                   <Zap className="size-3.5" />
                   Instant Generation
@@ -237,7 +233,6 @@ export default function SubmitLayoutClient() {
               </div>
             </div>
           </div>
-        </div>
       </section>
 
       <section className="border-t border-border">

@@ -6,12 +6,10 @@ import {
   ArrowUpRight,
   Award,
   Code,
-  Compass,
   Crown,
   Globe,
   GraduationCap,
   HandHeart,
-  HandMetal,
   Heart,
   LayoutGrid,
   Newspaper,
@@ -19,7 +17,6 @@ import {
   Shield,
   ShieldCheck,
   Sparkles,
-  Star,
   Terminal,
   Upload,
   UserCheck,
@@ -32,9 +29,6 @@ import { faDiscord, faGithub, faLinkedin, faTwitter } from "@fortawesome/free-br
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { TiltCard } from "@/components/ui/TiltCard";
-import { GlitchText } from "@/components/ui/GlitchText";
-import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import {
   Dialog,
   DialogContent,
@@ -168,26 +162,22 @@ export default function StaffClient() {
 
   return (
     <main>
-      <section className="relative overflow-hidden noise-overlay border-b border-border">
-        <div className="dot-grid relative">
-          <div className="pointer-events-none absolute -top-40 left-1/4 size-96 opacity-20 blob-morph" />
-          <div className="pointer-events-none absolute -bottom-40 right-1/4 size-80 opacity-15 blob-morph" style={{ animationDelay: "4s" }} />
-          <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
-            <div className="flex flex-col items-center gap-3 text-center reveal">
-              <div className="flex size-14 items-center justify-center rounded-full bg-accent/10 text-accent">
-                <Compass className="size-7" />
-              </div>
-              <GlitchText text="Our Team" variant="chromatic" as="h1" />
-              <p className="max-w-2xl text-muted-foreground body-large">
-                Dedicated volunteers who help run, maintain, and grow the FreeHosts community.
-              </p>
+      <section className="border-b border-border">
+        <div className="mx-auto max-w-[1200px] px-4 py-12 sm:px-6">
+          <div className="flex flex-col items-center gap-3 text-center reveal">
+            <div className="flex size-12 items-center justify-center rounded-full bg-accent/10 text-accent">
+              <Users className="size-6" />
             </div>
+            <h1>Our Team</h1>
+            <p className="max-w-2xl text-muted-foreground body-large">
+              Dedicated volunteers who help run, maintain, and grow the FreeHosts community.
+            </p>
           </div>
         </div>
       </section>
 
       <div className="mx-auto max-w-[1200px] px-4 mt-8 sm:px-6">
-        <div className="flex flex-wrap justify-center gap-2 reveal">
+        <div className="flex flex-wrap justify-center gap-2">
           {filters.map((filter) => (
             <Button
               key={filter.key}
@@ -195,7 +185,7 @@ export default function StaffClient() {
               size="sm"
               variant={activeFilter === filter.key ? "default" : "outline"}
               onClick={() => setActiveFilter(filter.key)}
-              className="gap-1.5 card-hover transition-all duration-200 active:scale-95"
+              className="gap-1.5 transition-all duration-200 active:scale-95"
             >
             <filter.icon className="size-3.5" />
             {filter.label}
@@ -206,10 +196,10 @@ export default function StaffClient() {
 
       <StaffSections grouped={grouped} onSelect={setSelectedMember} />
 
-      <section className="border-t border-border">
-        <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6">
-          <SpotlightCard className="flex flex-col items-center gap-4 p-10 text-center">
-            <div className="flex size-12 items-center justify-center rounded-full bg-secondary">
+      <section className="border-b border-border">
+        <div className="mx-auto max-w-[1200px] px-4 py-12 sm:px-6">
+          <div className="flex flex-col items-center gap-4 rounded-lg border border-border bg-card p-10 text-center">
+            <div className="flex size-12 items-center justify-center rounded-full bg-accent/10 text-accent">
               <Sparkles className="size-6" />
             </div>
             <h2>Want to Join the Team?</h2>
@@ -219,7 +209,7 @@ export default function StaffClient() {
               development, or community support, there&apos;s a place for you here.
             </p>
 
-            <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 stagger-children">
+            <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <Benefit icon={Heart} title="Make an Impact" text="Help thousands find the right hosting" />
               <Benefit icon={Users} title="Join Community" text="Work with passionate volunteers" />
               <Benefit icon={GraduationCap} title="Learn & Grow" text="Gain experience and skills" />
@@ -232,7 +222,7 @@ export default function StaffClient() {
                 Join Our Discord
               </a>
             </Button>
-          </SpotlightCard>
+          </div>
         </div>
       </section>
 
@@ -263,36 +253,30 @@ function StaffSections({
       {visible.map(([key, section]) => {
         const members = grouped[key as Exclude<FilterKey, "all">];
         return (
-          <section className="border-t border-border" key={key}>
-            <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6">
-              <div className="reveal">
-                <Badge variant="outline" className="gap-1.5 border-accent/50 text-accent border-rotate">
-                  <section.icon className="size-3.5" />
-                  {section.title}
-                </Badge>
-                <h2 className="mt-4">{section.title}</h2>
-                <p className="mt-2 text-muted-foreground body-large">{section.desc}</p>
-              </div>
-              <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 stagger-children">
+          <section className="border-b border-border" key={key}>
+            <div className="mx-auto max-w-[1200px] px-4 py-12 sm:px-6">
+              <h2 className="flex items-center gap-2">
+                <section.icon className="size-4 text-accent" />
+                {section.title}
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">{section.desc}</p>
+              <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {members.map((member) => (
-                  <div key={member.username} className="h-full">
-                    <TiltCard maxTilt={6} glare={false} className="h-full">
-                      <Card
-                        className="cursor-pointer p-0 card-hover card-glow transition-all duration-300 h-full"
-                        onClick={() => onSelect(member)}
-                      >
-                        <CardContent className="flex items-center gap-3 p-4">
-                          <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-secondary">
-                            <member.primaryRole.icon className="size-4" />
-                          </div>
-                          <div className="min-w-0 text-left">
-                            <h3 className="truncate text-sm font-medium">{member.name}</h3>
-                            <RoleBadges roles={member.roles} />
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </TiltCard>
-                  </div>
+                  <Card
+                    key={member.username}
+                    className="cursor-pointer p-0 card-hover card-glow transition-all duration-300"
+                    onClick={() => onSelect(member)}
+                  >
+                    <CardContent className="flex items-center gap-3 p-4">
+                      <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-secondary">
+                        <member.primaryRole.icon className="size-4" />
+                      </div>
+                      <div className="min-w-0 text-left">
+                        <h3 className="truncate text-sm font-medium">{member.name}</h3>
+                        <RoleBadges roles={member.roles} />
+                      </div>
+                    </CardContent>
+                  </Card>
                 ))}
               </div>
             </div>
@@ -388,14 +372,12 @@ function StaffModal({ member, onClose }: { member: StaffMember | null; onClose: 
 
 function Benefit({ icon: Icon, title, text }: { icon: LucideIcon; title: string; text: string }) {
   return (
-    <TiltCard maxTilt={6} glare={false} className="h-full">
-      <div className="flex flex-col items-center gap-1.5 text-center rounded-lg border border-border bg-card p-6 card-hover transition-all duration-300">
-        <div className="flex size-9 items-center justify-center rounded-md bg-secondary">
-          <Icon className="size-4" />
-        </div>
-        <strong className="text-sm">{title}</strong>
-        <span className="text-xs text-muted-foreground">{text}</span>
+    <div className="flex flex-col items-center gap-1.5 text-center rounded-lg border border-border bg-card p-6 card-hover transition-all duration-300">
+      <div className="flex size-9 items-center justify-center rounded-md bg-secondary">
+        <Icon className="size-4" />
       </div>
-    </TiltCard>
+      <strong className="text-sm">{title}</strong>
+      <span className="text-xs text-muted-foreground">{text}</span>
+    </div>
   );
 }

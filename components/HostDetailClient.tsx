@@ -36,7 +36,6 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { TiltCard } from "@/components/ui/TiltCard";
-import { GlitchText } from "@/components/ui/GlitchText";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 
 interface HostDetailClientProps {
@@ -132,22 +131,19 @@ export default function HostDetailClient({ host, related = [] }: HostDetailClien
 
   return (
     <>
-      <section className="relative overflow-hidden noise-overlay border-b border-border">
-        <div className="dot-grid relative">
-          <div className="pointer-events-none absolute -top-40 left-1/4 size-96 opacity-20 blob-morph" />
-          <div className="pointer-events-none absolute -bottom-40 right-1/4 size-80 opacity-15 blob-morph" style={{ animationDelay: "4s" }} />
-          <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
-            <div className="reveal">
-              <Button asChild variant="ghost" size="sm" className="gap-1.5 text-muted-foreground">
-                <Link href="/hosts">
-                  <ArrowLeft className="size-4" />
-                  Back to All Hosts
-                </Link>
-              </Button>
+      <section className="border-b border-border">
+        <div className="mx-auto max-w-[1200px] px-4 py-12 sm:px-6">
+          <div className="reveal">
+            <Button asChild variant="ghost" size="sm" className="gap-1.5 text-muted-foreground">
+              <Link href="/hosts">
+                <ArrowLeft className="size-4" />
+                Back to All Hosts
+              </Link>
+            </Button>
 
-              <div className="mt-4 flex flex-wrap items-start justify-between gap-4">
-                <div>
-                  <GlitchText variant="chromatic" as="h1" text={host.name} />
+            <div className="mt-4 flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <h1>{host.name}</h1>
                   <div className="mt-2 flex flex-wrap gap-1.5">
                     <Badge variant="secondary">{typeDisplay}</Badge>
                     <Badge variant={isOnline ? "success" : "destructive"}>{host.status}</Badge>
@@ -182,7 +178,6 @@ export default function HostDetailClient({ host, related = [] }: HostDetailClien
               </div>
             </div>
           </div>
-        </div>
       </section>
 
       <section className="border-t border-border">

@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { type FaqCategory, faqItems } from "./data";
-import { Compass, HelpCircle, Info, LayoutGrid, LifeBuoy, Mail, PlusCircle, Search, Settings, Sparkles } from "lucide-react";
+import { HelpCircle, Info, LayoutGrid, LifeBuoy, Mail, PlusCircle, Search, Settings } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import type { LucideIcon } from "lucide-react";
@@ -16,9 +16,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { GlitchText } from "@/components/ui/GlitchText";
-import { SpotlightCard } from "@/components/ui/SpotlightCard";
-import { TiltCard } from "@/components/ui/TiltCard";
 
 const categories: { id: FaqCategory | "all"; icon: LucideIcon; label: string }[] = [
   { id: "all", icon: LayoutGrid, label: "All Questions" },
@@ -55,59 +52,46 @@ export default function FaqClient() {
 
   return (
     <main>
-      <section className="relative overflow-hidden noise-overlay border-b border-border">
-        <div className="dot-grid relative">
-          <div className="pointer-events-none absolute -top-40 left-1/4 size-96 opacity-20 blob-morph" />
-          <div className="pointer-events-none absolute -bottom-40 right-1/4 size-80 opacity-15 blob-morph" style={{ animationDelay: "4s" }} />
-          <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
-            <div className="flex flex-col items-center gap-3 text-center reveal">
-              <div className="flex size-14 items-center justify-center rounded-full bg-accent/10 text-accent">
-                <HelpCircle className="size-7" />
-              </div>
-              <GlitchText variant="chromatic" as="h1" text="Frequently Asked Questions" />
-              <p className="max-w-2xl text-muted-foreground body-large">
-                Find answers to common questions about FreeHosts, free hosting, and how our
-                community directory works.
-              </p>
+      <section className="border-b border-border">
+        <div className="mx-auto max-w-[1200px] px-4 py-12 sm:px-6">
+          <div className="flex flex-col items-center gap-3 text-center reveal">
+            <div className="flex size-12 items-center justify-center rounded-full bg-accent/10 text-accent">
+              <HelpCircle className="size-6" />
             </div>
+            <h1>Frequently Asked Questions</h1>
+            <p className="max-w-2xl text-muted-foreground body-large">
+              Find answers to common questions about FreeHosts, free hosting, and how our
+              community directory works.
+            </p>
           </div>
         </div>
       </section>
 
-      <section className="border-t border-border">
-        <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6">
-          <div className="reveal">
-            <Badge variant="outline" className="gap-1.5 border-accent/50 text-accent border-rotate">
-              <Sparkles className="size-3.5" />
-              Browse Topics
-            </Badge>
-            <h2 className="mt-4">Find answers</h2>
+      <section className="border-b border-border">
+        <div className="mx-auto max-w-[900px] px-4 py-12 sm:px-6">
+          <div className="relative">
+            <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              type="search"
+              placeholder="Search questions..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-9"
+            />
           </div>
-          <div className="mt-6 reveal reveal-delay-1">
-            <div className="relative">
-              <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search questions..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="pl-9"
-              />
-            </div>
-            <div className="mt-4 flex flex-wrap justify-center gap-2">
-              {categories.map(({ id, icon: Icon, label }) => (
-                <Button
-                  key={id}
-                  size="sm"
-                  variant={activeCategory === id ? "default" : "outline"}
-                  className="gap-1.5"
-                  onClick={() => setCategory(id)}
-                >
-                  <Icon className="size-3.5" />
-                  {label}
-                </Button>
-              ))}
-            </div>
+          <div className="mt-4 flex flex-wrap justify-center gap-2">
+            {categories.map(({ id, icon: Icon, label }) => (
+              <Button
+                key={id}
+                size="sm"
+                variant={activeCategory === id ? "default" : "outline"}
+                className="gap-1.5"
+                onClick={() => setCategory(id)}
+              >
+                <Icon className="size-3.5" />
+                {label}
+              </Button>
+            ))}
           </div>
         </div>
       </section>
@@ -116,16 +100,14 @@ export default function FaqClient() {
         const items = visibleItems.filter((item) => item.category === id);
         if (items.length === 0) return null;
         return (
-          <section key={id} className="border-t border-border">
-            <div className="mx-auto max-w-[900px] px-4 py-16 sm:px-6">
-              <div className="reveal">
-                <h2 className="flex items-center gap-2 text-base font-semibold">
-                  <Icon className="size-4" />
-                  {title}
-                </h2>
-              </div>
-              <div className="mt-6 space-y-2 stagger-children">
-                <Accordion type="single" collapsible className="rounded-lg border border-border bg-card px-4">
+          <section key={id} className="border-b border-border">
+            <div className="mx-auto max-w-[900px] px-4 py-12 sm:px-6">
+              <h2 className="flex items-center gap-2 text-base font-semibold">
+                <Icon className="size-4 text-accent" />
+                {title}
+              </h2>
+              <div className="mt-4">
+                <Accordion type="single" collapsible className="rounded-lg border border-border bg-card">
                   {items.map((item) => (
                     <AccordionItem key={item.question} value={item.question}>
                       <AccordionTrigger>{item.question}</AccordionTrigger>
@@ -140,8 +122,8 @@ export default function FaqClient() {
       })}
 
       {visibleItems.length === 0 && (
-        <section className="border-t border-border">
-          <div className="mx-auto max-w-[900px] px-4 py-16 sm:px-6">
+        <section className="border-b border-border">
+          <div className="mx-auto max-w-[900px] px-4 py-12 sm:px-6">
             <div className="flex flex-col items-center gap-2 text-center text-muted-foreground">
               <Search className="size-10" />
               <h3 className="text-foreground">No results found</h3>
@@ -151,9 +133,9 @@ export default function FaqClient() {
         </section>
       )}
 
-      <section className="border-t border-border">
-        <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6">
-          <SpotlightCard className="flex flex-col items-center gap-3 p-10 text-center reveal">
+      <section className="border-b border-border">
+        <div className="mx-auto max-w-[1200px] px-4 py-12 sm:px-6">
+          <div className="flex flex-col items-center gap-3 rounded-lg border border-border bg-card p-10 text-center">
             <h2>Still have questions?</h2>
             <p className="text-muted-foreground">
               Join our community and get help from our team and fellow users.
@@ -172,7 +154,7 @@ export default function FaqClient() {
                 </a>
               </Button>
             </div>
-          </SpotlightCard>
+          </div>
         </div>
       </section>
     </main>

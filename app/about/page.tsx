@@ -19,7 +19,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { TiltCard } from "@/components/ui/TiltCard";
-import { GlitchText } from "@/components/ui/GlitchText";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 
 export const metadata: Metadata = {
@@ -133,21 +132,17 @@ export default function AboutPage() {
       />
 
       {/* ── Hero ────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden noise-overlay border-b border-border">
-        <div className="dot-grid relative">
-          <div className="pointer-events-none absolute -top-40 left-1/4 size-96 opacity-20 blob-morph" />
-          <div className="pointer-events-none absolute -bottom-40 right-1/4 size-80 opacity-15 blob-morph" style={{ animationDelay: "4s" }} />
-          <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
-            <div className="flex flex-col items-center gap-3 text-center reveal">
-              <div className="flex size-14 items-center justify-center rounded-full bg-accent/10 text-accent">
-                <Heart className="size-7" />
-              </div>
-              <GlitchText variant="chromatic" as="h1" text="About FreeHosts" />
-              <p className="max-w-md text-muted-foreground body-large">
-                A community-driven directory helping developers, students, and makers
-                discover reliable free hosting for their projects.
-              </p>
+      <section className="border-b border-border">
+        <div className="mx-auto max-w-[1200px] px-4 py-12 sm:px-6">
+          <div className="flex flex-col items-center gap-3 text-center reveal">
+            <div className="flex size-12 items-center justify-center rounded-full bg-accent/10 text-accent">
+              <Heart className="size-6" />
             </div>
+            <h1>About FreeHosts</h1>
+            <p className="max-w-md text-muted-foreground body-large">
+              A community-driven directory helping developers, students, and makers
+              discover reliable free hosting for their projects.
+            </p>
           </div>
         </div>
       </section>
