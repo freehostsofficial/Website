@@ -15,21 +15,13 @@ import GdprConsentBanner from "../components/GdprConsentBanner";
 import CookieConsentBanner from "../components/CookieConsentBanner";
 import ComparisonPanel from "../components/ComparisonPanel";
 import ConsentGate from "../components/ConsentGate";
-import RevealProvider from "../components/RevealProvider";
 import SiteHeader from "../components/SiteHeader";
 import SiteFooter from "../components/SiteFooter";
 import PageBreadcrumbs from "../components/PageBreadcrumbs";
 import ThemeScript from "../components/ThemeScript";
 import LayoutContent from "../components/LayoutContent";
 import { fetchHosts } from "../lib/cache";
-import { config, library } from "@fortawesome/fontawesome-svg-core";
-import { fas } from "@fortawesome/free-solid-svg-icons";
-import { far } from "@fortawesome/free-regular-svg-icons";
-import { fab } from "@fortawesome/free-brands-svg-icons";
-import "@fortawesome/fontawesome-svg-core/styles.css";
 
-config.autoAddCss = false;
-library.add(fas, far, fab);
 
 import "./src/css/globals.css";
 import "./src/css/animations.css";
@@ -45,7 +37,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.APP_URL ?? "https://freehosts.space"),
+  metadataBase: new URL(process.env.APP_URL ?? "https://freehosts.eu"),
   title: {
     default: "FreeHosts - Free Hosting for Anything You Build",
     template: "%s | FreeHosts",
@@ -142,7 +134,6 @@ export default async function RootLayout({
         <PreviewCard />
         <RouteInitializer />
         <GlobalStructuredData />
-        <RevealProvider />
 
         <ThemeProvider>
           <ConsentProvider>

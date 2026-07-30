@@ -1,7 +1,6 @@
 import Image from "next/image";
-import Link from "@/components/NoPrefetchLink";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDiscord, faGithub, faInstagram, faTwitter } from "@fortawesome/free-brands-svg-icons";
+import Link from "next/link";
+import { DiscordIcon, GitHubIcon, InstagramIcon, TwitterIcon } from "@/components/icons";
 import { Mail } from "lucide-react";
 
 import { Separator } from "@/components/ui/separator";
@@ -65,7 +64,7 @@ export default function SiteFooter({
               aria-label="Discord"
               className="transition-all duration-200 hover:text-foreground hover:scale-110"
             >
-              <FontAwesomeIcon icon={faDiscord} className="size-4" />
+              <DiscordIcon className="size-4" />
             </a>
             <a
               href="https://x.com/freehosts_"
@@ -74,7 +73,7 @@ export default function SiteFooter({
               aria-label="Twitter"
               className="transition-all duration-200 hover:text-foreground hover:scale-110"
             >
-              <FontAwesomeIcon icon={faTwitter} className="size-4" />
+              <TwitterIcon className="size-4" />
             </a>
             <a
               href="https://www.instagram.com/freehosts/"
@@ -83,7 +82,7 @@ export default function SiteFooter({
               aria-label="Instagram"
               className="transition-all duration-200 hover:text-foreground hover:scale-110"
             >
-              <FontAwesomeIcon icon={faInstagram} className="size-4" />
+              <InstagramIcon className="size-4" />
             </a>
             <a
               href="https://github.com/freehostsofficial"
@@ -92,7 +91,7 @@ export default function SiteFooter({
               aria-label="GitHub"
               className="transition-all duration-200 hover:text-foreground hover:scale-110"
             >
-              <FontAwesomeIcon icon={faGithub} className="size-4" />
+              <GitHubIcon className="size-4" />
             </a>
           </div>
         </div>
@@ -148,7 +147,7 @@ export default function SiteFooter({
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 transition-colors duration-200 hover:text-foreground"
               >
-                <FontAwesomeIcon icon={faDiscord} className="size-4" />
+              <DiscordIcon className="size-4" />
                 Join Discord
               </a>
             </li>

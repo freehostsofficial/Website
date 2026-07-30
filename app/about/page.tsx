@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "@/components/NoPrefetchLink";
+import Link from "next/link";
 import {
   BookOpen,
   Compass,
@@ -13,8 +13,7 @@ import {
   Users,
   Zap,
 } from "lucide-react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { DiscordIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -312,7 +311,7 @@ export default function AboutPage() {
             <TiltCard maxTilt={6} glare={false} className="h-full">
               <Card className="h-full card-hover card-glow transition-all duration-300">
                 <CardContent className="flex flex-col items-center gap-2 text-center">
-                  <FontAwesomeIcon icon={faDiscord} className="size-6" />
+                  <DiscordIcon className="size-6" />
                   <h3>Join Discord</h3>
                   <p className="text-sm text-muted-foreground">
                     Connect with the community, get help, and stay updated with the latest
@@ -320,7 +319,7 @@ export default function AboutPage() {
                   </p>
                   <Button asChild className="mt-2 gap-2">
                     <a href="https://discord.gg/QbeZ3b5CQd" target="_blank" rel="noopener noreferrer">
-                      <FontAwesomeIcon icon={faDiscord} className="size-4" />
+                      <DiscordIcon className="size-4" />
                       Join Server
                     </a>
                   </Button>

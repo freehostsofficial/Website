@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "@/components/NoPrefetchLink";
+import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import {
   Bot,
@@ -18,8 +18,7 @@ import {
   Sparkles,
   Users,
 } from "lucide-react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { DiscordIcon } from "@/components/icons";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -29,7 +28,10 @@ import { GlitchText } from "@/components/ui/GlitchText";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 import { LiquidGlassCard } from "@/components/ui/LiquidGlassCard";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import dynamic from "next/dynamic";
 import { cn } from "@/lib/utils";
+
+const HeroScene = dynamic(() => import("@/components/three/HeroScene"), { ssr: false });
 
 const inviteCode = "QbeZ3b5CQd";
 const inviteUrl = `https://discord.gg/${inviteCode}`;
@@ -296,7 +298,8 @@ export default function HomeClient() {
 
   return (
     <main>
-      <section className="relative border-b border-border overflow-hidden noise-overlay" id="home" aria-labelledby="hero-title">
+      <section className="relative border-b border-border overflow-hidden" id="home" aria-labelledby="hero-title">
+        <HeroScene />
         <div className="dot-grid absolute inset-0 opacity-40" />
         <div className="absolute -top-24 -right-24 size-96 blob-morph opacity-20" />
         <div className="absolute -bottom-24 -left-24 size-96 blob-morph opacity-10" style={{ animationDelay: "-4s" }} />
@@ -330,7 +333,7 @@ export default function HomeClient() {
               </Button>
               <Button asChild size="lg" variant="outline">
                 <a href={inviteUrl} target="_blank" rel="noopener noreferrer">
-                  <FontAwesomeIcon icon={faDiscord} className="size-4" />
+                  <DiscordIcon className="size-4" />
                   Join the community
                 </a>
               </Button>
@@ -362,7 +365,7 @@ export default function HomeClient() {
               <div className="flex items-center justify-between gap-4" aria-live="polite">
                 <div className="min-w-0">
                   <div className="flex items-center gap-2 text-sm font-medium">
-                    <FontAwesomeIcon icon={faDiscord} className="size-4 text-muted-foreground" />
+                    <DiscordIcon className="size-4 text-muted-foreground" />
                     {discord.name}
                   </div>
                   <p className="truncate text-xs text-muted-foreground">{discord.status}</p>
@@ -560,7 +563,7 @@ export default function HomeClient() {
         <div className="mx-auto max-w-[1200px] px-4 py-16 text-center sm:px-6 reveal">
           <div className="flex items-center justify-center gap-2 mb-4">
             <span className="float-anim">
-              <FontAwesomeIcon icon={faDiscord} className="size-5 text-accent" />
+              <DiscordIcon className="size-5 text-accent" />
             </span>
             <span className="float-anim float-anim-delay-1">
               <Rocket className="size-5 text-accent-2" />

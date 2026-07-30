@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: Props) {
   const totalReviews = (host.approvals || 0) + (host.disapprovals || 0)
   const rating = totalReviews > 0 ? Math.round(((host.approvals || 0) / totalReviews) * 100) : 0
   
-  const site = `${(await headers()).get('host')?.includes('localhost') ? 'http' : 'https'}://${(await headers()).get('host') || 'freehosts.space'}`
+  const site = `${(await headers()).get('host')?.includes('localhost') ? 'http' : 'https'}://${(await headers()).get('host') || 'freehosts.eu'}`
   const hostUrl = `${site}/hosts/${slugify(host.name)}`
   
   // Construct dynamic OG image URL
@@ -76,7 +76,7 @@ export default async function HostDetailPage({ params }: Props) {
   const typeText = host.type && host.type.toLowerCase().includes('trusted') ? 'Trusted & Free' : host.type || 'Free'
   let description = `Learn about ${host.name}, a ${typeText.toLowerCase()} hosting provider. ${specsText} Read user reviews and compare options on FreeHosts.`
   if (description.length > 160) description = description.substring(0, 157) + '...'
-  const site = `${(await headers()).get('host')?.includes('localhost') ? 'http' : 'https'}://${(await headers()).get('host') || 'freehosts.space'}`
+  const site = `${(await headers()).get('host')?.includes('localhost') ? 'http' : 'https'}://${(await headers()).get('host') || 'freehosts.eu'}`
   const hostUrl = `${site}/hosts/${slugify(host.name)}`
   const totalReviews = host.approvals + host.disapprovals
   const ratingValue = totalReviews > 0 ? ((host.approvals / totalReviews) * 5).toFixed(1) : null

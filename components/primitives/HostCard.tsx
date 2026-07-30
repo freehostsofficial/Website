@@ -1,4 +1,4 @@
-import Link from "@/components/NoPrefetchLink";
+import Link from "next/link";
 import { Cpu, GitCompare, Globe2, HardDrive, MemoryStick, Star } from "lucide-react";
 
 import { type Host } from "@/lib/cache";

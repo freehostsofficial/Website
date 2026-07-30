@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { type Host } from "../../lib/cache";
-import Link from "@/components/NoPrefetchLink";
+import Link from "next/link";
 import { ArrowDownAZ, Clock, Star, Sparkles, Compass, Bookmark } from "lucide-react";
 import { useFavorites } from "../../contexts/FavoritesContext";
 import { HostCard } from "@/components/primitives/HostCard";

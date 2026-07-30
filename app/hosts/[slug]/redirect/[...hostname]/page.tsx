@@ -63,7 +63,7 @@ function buildTargetUrl(hostnameSegments: string[]): string {
         : `https://${hostnameOrPath}`;
 
     const url = new URL(withScheme);
-    url.searchParams.set('ref', process.env.RAW_APP_URL ?? "freehosts.space");
+    url.searchParams.set('ref', process.env.RAW_APP_URL ?? "freehosts.eu");
     return url.toString();
   } catch {
     // Malformed URL — should never reach here since isValidRedirect already

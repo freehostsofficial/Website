@@ -22,9 +22,7 @@ import {
   UserCheck,
   Users,
 } from "lucide-react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
-import { faDiscord, faGithub, faLinkedin, faTwitter } from "@fortawesome/free-brands-svg-icons";
+import { DiscordIcon, GitHubIcon, LinkedInIcon, TwitterIcon } from "@/components/icons";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -103,12 +101,20 @@ const filters: { key: FilterKey; icon: LucideIcon; label: string }[] = [
   { key: "hosting-provider", icon: Server, label: "Hosting Provider" },
 ];
 
-const linkIcons: Record<string, { icon: LucideIcon | IconDefinition; label: string; isBrand?: boolean }> = {
-  github: { icon: faGithub, label: "GitHub Profile", isBrand: true },
-  website: { icon: Globe, label: "Website" },
-  discord: { icon: faDiscord, label: "Discord", isBrand: true },
-  twitter: { icon: faTwitter, label: "Twitter", isBrand: true },
-  linkedin: { icon: faLinkedin, label: "LinkedIn", isBrand: true },
+const linkIcons: Record<string, LucideIcon | React.ComponentType<{ className?: string }>> = {
+  github: GitHubIcon,
+  website: Globe,
+  discord: DiscordIcon,
+  twitter: TwitterIcon,
+  linkedin: LinkedInIcon,
+};
+
+const linkLabels: Record<string, string> = {
+  github: "GitHub Profile",
+  website: "Website",
+  discord: "Discord",
+  twitter: "Twitter",
+  linkedin: "LinkedIn",
 };
 
 const roleBorderColors: Record<string, string> = {
@@ -236,7 +242,7 @@ export default function StaffClient() {
             </div>
             <Button asChild className="gap-2 transition-all duration-200 hover:scale-105 active:scale-95">
               <a href="https://discord.gg/QbeZ3b5CQd" target="_blank" rel="noopener noreferrer">
-                <FontAwesomeIcon icon={faDiscord} className="size-4" />
+                <DiscordIcon className="size-4" />
                 Join Our Discord
               </a>
             </Button>
@@ -362,7 +368,7 @@ function StaffModal({ member, onClose }: { member: StaffMember | null; onClose: 
                 <h3 className="text-sm font-medium text-foreground">Links</h3>
                 <div className="mt-2 flex flex-col gap-2">
                   {links.map(([key, value]) => {
-                    const info = linkIcons[key] || { icon: Globe, label: key };
+                    const Icon = linkIcons[key] || Globe;
                     return (
                       <a
                         key={key}
@@ -372,14 +378,10 @@ function StaffModal({ member, onClose }: { member: StaffMember | null; onClose: 
                         className="flex items-center gap-3 rounded-md border border-border p-3 text-sm transition-all duration-200 hover:bg-secondary hover:border-accent/30"
                       >
                         <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-secondary">
-                          {info.isBrand ? (
-                            <FontAwesomeIcon icon={info.icon as IconDefinition} className="size-4" />
-                          ) : (
-                            React.createElement(info.icon as LucideIcon, { className: "size-4" })
-                          )}
+                          <Icon className="size-4" />
                         </div>
                         <div className="min-w-0 flex-1">
-                          <strong className="block">{info.label}</strong>
+                          <strong className="block">{linkLabels[key] || key}</strong>
                           <span className="block truncate text-muted-foreground">{value}</span>
                         </div>
                         <ArrowUpRight className="size-4 shrink-0 text-muted-foreground" />

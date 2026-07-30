@@ -22,8 +22,7 @@ import {
   Wand,
   Zap,
 } from "lucide-react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { DiscordIcon } from "@/components/icons";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -467,7 +466,7 @@ export default function SubmitLayoutClient() {
                 <CardContent>
                   <div className="mb-4 flex items-center justify-between">
                     <h3 className="flex items-center gap-2 text-base">
-                      <FontAwesomeIcon icon={faDiscord} className="size-4" />
+                      <DiscordIcon className="size-4" />
                       Discord Message Preview
                     </h3>
                     <Badge variant="success" className="gap-1 animate-pulse">

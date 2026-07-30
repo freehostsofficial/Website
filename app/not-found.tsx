@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import Link from "@/components/NoPrefetchLink";
+import Link from "next/link";
 import { Compass, Home, Mail, Server } from "lucide-react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { DiscordIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -50,7 +49,7 @@ export default function NotFound() {
             </Button>
             <Button asChild variant="ghost" className="gap-1.5">
               <a href="https://discord.gg/QbeZ3b5CQd" target="_blank" rel="noopener noreferrer">
-                <FontAwesomeIcon icon={faDiscord} className="size-4" />
+                <DiscordIcon className="size-4" />
                 Join Discord
               </a>
             </Button>

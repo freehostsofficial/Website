@@ -25,7 +25,7 @@ export default function GlobalStructuredData() {
       "@type": "ListItem",
       position: 1,
       name: "Home",
-      item: process.env.APP_URL ?? "https://freehosts.space"
+      item: process.env.APP_URL ?? "https://freehosts.eu"
     },
   ];
 

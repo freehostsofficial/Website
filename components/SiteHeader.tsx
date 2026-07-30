@@ -2,10 +2,8 @@
 
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import Link from "@/components/NoPrefetchLink";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDiscord } from "@fortawesome/free-brands-svg-icons";
-import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
+import Link from "next/link";
+import { DiscordIcon } from "@/components/icons";
 import {
   BookOpen,
   ChevronDown,
@@ -17,12 +15,14 @@ import {
   ListChecks,
   Lock,
   Menu,
+  Moon,
   Pencil,
   Plus,
   Scale,
   Server,
   Shield,
   Star,
+  Sun,
   Upload,
   Users,
 } from "lucide-react";
@@ -247,7 +247,7 @@ export default function SiteHeader({ trustpilotUrl, hosts }: { trustpilotUrl?: s
             <div className="mt-auto border-t border-border p-3">
               <Button asChild className="w-full gap-2">
                 <a href="https://discord.gg/QbeZ3b5CQd" target="_blank" rel="noopener noreferrer">
-                  <FontAwesomeIcon icon={faDiscord} className="size-4" />
+                  <DiscordIcon className="size-4" />
                   Join Discord
                 </a>
               </Button>
@@ -297,10 +297,7 @@ export default function SiteHeader({ trustpilotUrl, hosts }: { trustpilotUrl?: s
               key={resolvedTheme}
               className="inline-flex animate-scale-in"
             >
-              <FontAwesomeIcon
-                icon={resolvedTheme === "dark" ? faMoon : faSun}
-                className="size-4"
-              />
+              {resolvedTheme === "dark" ? <Moon className="size-4" /> : <Sun className="size-4" />}
             </span>
           </Button>
 
@@ -323,7 +320,7 @@ export default function SiteHeader({ trustpilotUrl, hosts }: { trustpilotUrl?: s
               rel="noopener noreferrer"
               aria-label="Join our Discord community"
             >
-              <FontAwesomeIcon icon={faDiscord} className="size-4" />
+              <DiscordIcon className="size-4" />
               <span className="hidden sm:inline">Discord</span>
             </a>
           </Button>

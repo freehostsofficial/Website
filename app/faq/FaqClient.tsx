@@ -14,8 +14,7 @@ import {
   ThumbsUp,
   ThumbsDown,
 } from "lucide-react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { DiscordIcon } from "@/components/icons";
 import type { LucideIcon } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -222,7 +221,7 @@ export default function FaqClient() {
             <div className="flex flex-wrap justify-center gap-3">
               <Button asChild className="gap-1.5 transition-all duration-200 hover:scale-105 active:scale-95">
                 <a href="https://discord.gg/QbeZ3b5CQd" target="_blank" rel="noopener noreferrer">
-                  <FontAwesomeIcon icon={faDiscord} className="size-4" />
+                  <DiscordIcon className="size-4" />
                   Join Discord
                 </a>
               </Button>

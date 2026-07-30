@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useCallback } from "react";
-import Link from "@/components/NoPrefetchLink";
+import Link from "next/link";
 import { type Host } from "../lib/cache";
 import { slugify } from "../lib/slugify";
 import { getLanguageName } from "../lib/getLanguageName";
@@ -25,8 +25,7 @@ import {
   ThumbsDown,
   ThumbsUp,
 } from "lucide-react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { DiscordIcon } from "@/components/icons";
 import { showToast } from "./Toast";
 import { useFavorites } from "../contexts/FavoritesContext";
 
@@ -455,7 +454,7 @@ export default function HostDetailClient({ host, related = [] }: HostDetailClien
         <DialogContent className="text-center sm:max-w-sm">
           <DialogHeader className="items-center text-center">
             <div className="flex size-12 items-center justify-center rounded-full bg-secondary">
-              <FontAwesomeIcon icon={faDiscord} className="size-5" />
+              <DiscordIcon className="size-5" />
             </div>
             <DialogTitle>Discord Required</DialogTitle>
           </DialogHeader>

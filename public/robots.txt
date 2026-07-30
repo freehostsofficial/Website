@@ -1,10 +1,20 @@
 User-agent: *
 Allow: /
-
 Disallow: /api/
 Disallow: /admin/
 Disallow: /private/
 Disallow: /cgi-bin/
 Disallow: /hosts/*/redirect/*
-
 Sitemap: https://freehosts.eu/sitemap.xml
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /

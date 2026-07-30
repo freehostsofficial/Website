@@ -1,9 +1,8 @@
+import React from "react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import { ExternalLink, Globe, Info, List, Sparkles } from "lucide-react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDiscord } from "@fortawesome/free-brands-svg-icons";
-import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+import { DiscordIcon } from "@/components/icons";
 import type { LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -21,7 +20,7 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title: "Other Free Hosting Platforms & Directories - FreeHosts", description: "Discover other trusted platforms and directories that list free hosting services for websites, Minecraft servers, and applications.", images: [{ url: process.env.APP_URL + "/Src/Images/banner.png", alt: "FreeHosts - Other Free Hosting Platforms" }], site: "@freehosts_", creator: "@freehosts_" },
 };
 
-type HostLink = { href: string; lucideIcon?: LucideIcon; faIcon?: IconDefinition; label: string };
+type HostLink = { href: string; lucideIcon?: LucideIcon; component?: React.ComponentType<{ className?: string }>; label: string };
 
 const externalHosts: { initials?: string; image?: string; name: string; description: string; links: HostLink[] }[] = [
   {
@@ -30,7 +29,7 @@ const externalHosts: { initials?: string; image?: string; name: string; descript
     description: "The best collection of free minecraft server hosting providers. Includings a tons of free minecraft hostings. Allow you to write your own experiences while using free hostings. Founded by the best handsome human in the entire world.",
     links: [
       { href: "https://freeminecrafthostings.com/", lucideIcon: ExternalLink, label: "Website" },
-      { href: "https://discord.gg/sc2kauFE3D", faIcon: faDiscord, label: "Discord" },
+      { href: "https://discord.gg/sc2kauFE3D", component: DiscordIcon, label: "Discord" },
     ],
   },
   {
@@ -39,7 +38,7 @@ const externalHosts: { initials?: string; image?: string; name: string; descript
     description: "A comprehensive directory dedicated to free Minecraft server hosting providers, help you find the perfect host for your server.",
     links: [
       { href: "https://myuui.com/", lucideIcon: ExternalLink, label: "Website" },
-      { href: "https://discord.gg/JzvVMZ9Zrm", faIcon: faDiscord, label: "Discord" },
+      { href: "https://discord.gg/JzvVMZ9Zrm", component: DiscordIcon, label: "Discord" },
     ],
   },
   {
@@ -140,8 +139,8 @@ export default function OtherFreeHostsPage() {
                           >
                             {link.lucideIcon ? (
                               <link.lucideIcon className="size-4" />
-                            ) : link.faIcon ? (
-                              <FontAwesomeIcon icon={link.faIcon} className="size-4" />
+                            ) : link.component ? (
+                              React.createElement(link.component, { className: "size-4" })
                             ) : null}
                           </a>
                         </Button>

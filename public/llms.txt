@@ -1,0 +1,25 @@
+# FreeHosts — Free Hosting Directory
+> https://freehosts.eu
+
+## About
+FreeHosts is a community-curated directory of free hosting providers for websites, Discord bots, applications, and databases.
+
+## Pages
+- Home: https://freehosts.eu
+- Directory: https://freehosts.eu/hosts
+- Compare: https://freehosts.eu/compare
+- FAQ: https://freehosts.eu/faq
+- About: https://freehosts.eu/about
+- Staff: https://freehosts.eu/staff
+- Saved: https://freehosts.eu/saved
+- Submit Host: https://freehosts.eu/submit-host
+- Submit Layout: https://freehosts.eu/submit-layout
+- Submission Rules: https://freehosts.eu/submission-rules
+- Terms of Service: https://freehosts.eu/tos
+- Privacy Policy: https://freehosts.eu/privacy-policy
+- Cookie Policy: https://freehosts.eu/cookies
+- Server Rules: https://freehosts.eu/server-rules
+- Other Free Hosts: https://freehosts.eu/other-free-hosts
+
+## Structured data
+All pages use JSON-LD schema.org markup including WebSite, WebPage, Organization, BreadcrumbList, FAQPage, ItemList, and Service types.

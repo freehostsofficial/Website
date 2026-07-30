@@ -1,9 +1,8 @@
 "use client";
 
-import Link from "@/components/NoPrefetchLink";
+import Link from "next/link";
 import { Sparkles, Compass, Plus, CircleHelp, ArrowRight, Check } from "lucide-react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { DiscordIcon } from "@/components/icons";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -133,7 +132,7 @@ export default function SubmitHostClient() {
                     </p>
                     <Button asChild className="gap-2">
                       <a href={inviteUrl} target="_blank" rel="noopener noreferrer">
-                        <FontAwesomeIcon icon={faDiscord} className="size-4" />
+                        <DiscordIcon className="size-4" />
                         Join Discord to Submit
                       </a>
                     </Button>
