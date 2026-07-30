@@ -10,6 +10,7 @@
     "test": "vitest --run"
   },
   "dependencies": {
+    "@dietrichgebert/ponytail": "^4.8.4",
     "@fortawesome/fontawesome-svg-core": "^7.2.0",
     "@fortawesome/free-brands-svg-icons": "^7.2.0",
     "@fortawesome/free-regular-svg-icons": "^7.3.1",

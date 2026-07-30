@@ -158,7 +158,9 @@ export default async function RootLayout({
 
                   <div className="skippable flex-1">
                     <Suspense fallback={null}>
-                      <PageBreadcrumbs />
+                      <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
+                        <PageBreadcrumbs />
+                      </div>
                     </Suspense>
                     <LayoutContent>
                       {children}

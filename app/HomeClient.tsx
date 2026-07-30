@@ -24,6 +24,11 @@ import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { TiltCard } from "@/components/ui/TiltCard";
+import { GlitchText } from "@/components/ui/GlitchText";
+import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
+import { LiquidGlassCard } from "@/components/ui/LiquidGlassCard";
+import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { cn } from "@/lib/utils";
 
 const inviteCode = "QbeZ3b5CQd";
@@ -118,6 +123,25 @@ function useReveal<T extends HTMLElement = HTMLDivElement>() {
   return ref;
 }
 
+function useParallax<T extends HTMLElement = HTMLDivElement>(speed = 0.3) {
+  const ref = useRef<T>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const isMobile = window.matchMedia("(pointer: coarse)").matches;
+    if (isMobile) return;
+    const handleScroll = () => {
+      const rect = el.getBoundingClientRect();
+      const scrollProgress = rect.top / window.innerHeight;
+      el.style.transform = `translateY(${scrollProgress * speed * 100}px)`;
+    };
+    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [speed]);
+  return ref;
+}
+
 function fetchWithTimeout(url: string, timeout = 7000) {
   const controller = new AbortController();
   const timer = window.setTimeout(() => controller.abort(), timeout);
@@ -138,6 +162,7 @@ export default function HomeClient() {
   });
 
   const heroRef = useReveal<HTMLDivElement>();
+  const parallaxRef = useParallax<HTMLDivElement>(-0.15);
 
   useEffect(() => {
     const words = ["for demos", "for students", "for hobby projects", "for experiments"];
@@ -271,17 +296,21 @@ export default function HomeClient() {
 
   return (
     <main>
-      <section className="relative border-b border-border overflow-hidden" id="home" aria-labelledby="hero-title">
+      <section className="relative border-b border-border overflow-hidden noise-overlay" id="home" aria-labelledby="hero-title">
         <div className="dot-grid absolute inset-0 opacity-40" />
+        <div className="absolute -top-24 -right-24 size-96 blob-morph opacity-20" />
+        <div className="absolute -bottom-24 -left-24 size-96 blob-morph opacity-10" style={{ animationDelay: "-4s" }} />
+
         <div
           ref={heroRef}
           className="mx-auto grid max-w-[1200px] gap-10 px-4 py-16 sm:px-6 md:grid-cols-2 md:items-center md:py-24"
         >
           <div className="flex flex-col gap-6 reveal visible">
             <h1 id="hero-title" className="text-balance">
-              <span className="gradient-text">Discover free hosting</span>
-              <br />
-              <span>that just works.</span>
+              <GlitchText text="Discover free hosting" variant="chromatic" as="span" />
+              <span className="block gradient-text">
+                that just works.
+              </span>
               <span className="mt-2 block font-mono text-xl text-muted-foreground sm:text-2xl" aria-hidden="true">
                 <span>{typedText}</span>
                 <span className="animate-pulse">|</span>
@@ -310,21 +339,27 @@ export default function HomeClient() {
             <dl className="flex flex-wrap gap-8" aria-hidden="true">
               <div className="reveal visible reveal-delay-1">
                 <dt className="sr-only">Hosts listed</dt>
-                <dd className="font-mono text-2xl font-semibold gradient-text">100+</dd>
+                <dd className="font-mono text-2xl font-semibold gradient-text">
+                  <AnimatedCounter from={0} to={100} suffix="+" duration={2500} />
+                </dd>
                 <dt className="text-sm text-muted-foreground">Hosts listed</dt>
               </div>
               <div className="reveal visible reveal-delay-2">
-                <dd className="font-mono text-2xl font-semibold gradient-text">400+</dd>
+                <dd className="font-mono text-2xl font-semibold gradient-text">
+                  <AnimatedCounter from={0} to={400} suffix="+" duration={2500} />
+                </dd>
                 <dt className="text-sm text-muted-foreground">Community members</dt>
               </div>
               <div className="reveal visible reveal-delay-3">
-                <dd className="font-mono text-2xl font-semibold gradient-text">100+</dd>
+                <dd className="font-mono text-2xl font-semibold gradient-text">
+                  <AnimatedCounter from={0} to={100} suffix="+" duration={2500} />
+                </dd>
                 <dt className="text-sm text-muted-foreground">Reviews</dt>
               </div>
             </dl>
 
-            <Card variant="outlined" padding="none" className="card-hover" aria-live="polite">
-              <CardContent className="flex items-center justify-between gap-4 px-4 py-3">
+            <LiquidGlassCard glassSize="sm">
+              <div className="flex items-center justify-between gap-4" aria-live="polite">
                 <div className="min-w-0">
                   <div className="flex items-center gap-2 text-sm font-medium">
                     <FontAwesomeIcon icon={faDiscord} className="size-4 text-muted-foreground" />
@@ -345,11 +380,11 @@ export default function HomeClient() {
                     </Button>
                   ) : null}
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </LiquidGlassCard>
           </div>
 
-          <div aria-hidden="true" className="reveal visible reveal-delay-4">
+          <div aria-hidden="true" className="reveal visible reveal-delay-4" ref={parallaxRef}>
             <div className="overflow-hidden rounded-xl border border-border bg-card shadow-medium">
               <div className="flex items-center gap-2 border-b border-border px-4 py-2.5">
                 <span className="size-2.5 rounded-full bg-destructive/70" />
@@ -409,15 +444,17 @@ export default function HomeClient() {
         <div className="mt-8 grid gap-4 sm:grid-cols-3">
           {features.map((feature, i) => (
             <div key={feature.title} className={cn("reveal", `reveal-delay-${i + 1}`)}>
-              <Card variant="elevated" hover className="h-full transition-all duration-300">
-                <CardContent className="flex flex-col gap-3">
-                  <div className="flex size-10 items-center justify-center rounded-lg bg-accent/10 text-accent">
-                    {feature.icon}
-                  </div>
-                  <h3>{feature.title}</h3>
-                  <p className="text-sm text-muted-foreground">{feature.text}</p>
-                </CardContent>
-              </Card>
+              <TiltCard maxTilt={8} glare={false}>
+                <Card variant="elevated" hover className="h-full transition-all duration-300">
+                  <CardContent className="flex flex-col gap-3">
+                    <div className="flex size-10 items-center justify-center rounded-lg bg-accent/10 text-accent">
+                      {feature.icon}
+                    </div>
+                    <h3>{feature.title}</h3>
+                    <p className="text-sm text-muted-foreground">{feature.text}</p>
+                  </CardContent>
+                </Card>
+              </TiltCard>
             </div>
           ))}
         </div>
@@ -426,7 +463,7 @@ export default function HomeClient() {
       <section id="what-is-free-hosting" className="border-t border-border">
         <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6">
           <div className="max-w-2xl reveal">
-            <Badge variant="outline" className="gap-1.5 border-accent/50 text-accent">
+            <Badge variant="outline" className="gap-1.5 border-accent/50 text-accent border-rotate">
               <Sparkles className="size-3.5" />
               Learn the Basics
             </Badge>
@@ -439,7 +476,7 @@ export default function HomeClient() {
             </p>
           </div>
 
-          <Card variant="elevated" hover className="mt-8 flex-row items-start gap-4 py-5 reveal reveal-delay-1">
+          <SpotlightCard className="mt-8 flex-row items-start gap-4 py-5 reveal reveal-delay-1">
             <CardContent className="flex items-start gap-4 px-5">
               <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-accent/10 text-accent">
                 <Compass className="size-5" />
@@ -453,20 +490,22 @@ export default function HomeClient() {
                 </p>
               </div>
             </CardContent>
-          </Card>
+          </SpotlightCard>
 
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 stagger-children">
             {hostingCategories.map((category, i) => (
-              <div key={category.title} className={cn("reveal", `reveal-delay-${i + 1}`)}>
-                <Card variant="elevated" hover className="h-full transition-all duration-300">
-                  <CardContent className="flex flex-col gap-3">
-                    <div className="flex size-10 items-center justify-center rounded-lg bg-accent/10 text-accent">
-                      {category.icon}
-                    </div>
-                    <h3>{category.title}</h3>
-                    <p className="text-sm text-muted-foreground">{category.text}</p>
-                  </CardContent>
-                </Card>
+              <div key={category.title} className="h-full">
+                <TiltCard maxTilt={6} glare={false} className="h-full">
+                  <Card variant="elevated" hover className="h-full transition-all duration-300">
+                    <CardContent className="flex flex-col gap-3">
+                      <div className="flex size-10 items-center justify-center rounded-lg bg-accent/10 text-accent">
+                        {category.icon}
+                      </div>
+                      <h3>{category.title}</h3>
+                      <p className="text-sm text-muted-foreground">{category.text}</p>
+                    </CardContent>
+                  </Card>
+                </TiltCard>
               </div>
             ))}
           </div>
@@ -492,24 +531,26 @@ export default function HomeClient() {
             </div>
 
             <div className="reveal reveal-delay-2">
-              <Card variant="elevated" hover className={cn("h-full transition-all duration-300 border-accent/30")}>
-                <CardContent className="flex flex-col gap-3">
-                  <h3 className="flex items-center gap-2">
-                    <Users className="size-4 text-accent" />
-                    Join Our Community
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    Our staff and community regularly update hosting lists, publish answers,
-                    and share real deployment experience. It is the quickest way to avoid
-                    weak providers and find something that actually fits your project.
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    Most free hosting plans have limits, but they are often generous enough
-                    for portfolios, bots, MVPs, and learning projects. And when your app
-                    starts growing, many providers offer an easy path to paid upgrades.
-                  </p>
-                </CardContent>
-              </Card>
+              <TiltCard maxTilt={5} glare={false}>
+                <Card variant="elevated" hover className={cn("h-full transition-all duration-300 border-accent/30")}>
+                  <CardContent className="flex flex-col gap-3">
+                    <h3 className="flex items-center gap-2">
+                      <Users className="size-4 text-accent" />
+                      Join Our Community
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      Our staff and community regularly update hosting lists, publish answers,
+                      and share real deployment experience. It is the quickest way to avoid
+                      weak providers and find something that actually fits your project.
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Most free hosting plans have limits, but they are often generous enough
+                      for portfolios, bots, MVPs, and learning projects. And when your app
+                      starts growing, many providers offer an easy path to paid upgrades.
+                    </p>
+                  </CardContent>
+                </Card>
+              </TiltCard>
             </div>
           </div>
         </div>
@@ -517,6 +558,17 @@ export default function HomeClient() {
 
       <section id="about-teaser" className="border-t border-border">
         <div className="mx-auto max-w-[1200px] px-4 py-16 text-center sm:px-6 reveal">
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <span className="float-anim">
+              <FontAwesomeIcon icon={faDiscord} className="size-5 text-accent" />
+            </span>
+            <span className="float-anim float-anim-delay-1">
+              <Rocket className="size-5 text-accent-2" />
+            </span>
+            <span className="float-anim float-anim-delay-2">
+              <Sparkles className="size-5 text-accent" />
+            </span>
+          </div>
           <h2>About FreeHosts</h2>
           <p className="mx-auto mt-2 max-w-md text-muted-foreground body-large">
             Built by people who love the web — a friendly place to discover hosting

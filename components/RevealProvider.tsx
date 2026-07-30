@@ -20,6 +20,9 @@ export default function RevealProvider() {
       document.querySelectorAll(".reveal:not(.visible)").forEach((el) => {
         observer.observe(el);
       });
+      document.querySelectorAll(".stagger-children:not(.visible)").forEach((el) => {
+        observer.observe(el);
+      });
     };
 
     scan();
