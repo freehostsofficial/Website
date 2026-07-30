@@ -444,7 +444,7 @@ export default function HomeClient() {
         <div className="mt-8 grid gap-4 sm:grid-cols-3">
           {features.map((feature, i) => (
             <div key={feature.title} className={cn("reveal", `reveal-delay-${i + 1}`)}>
-              <TiltCard maxTilt={8} glare={false}>
+              <TiltCard maxTilt={8} glare={false} className="h-full">
                 <Card variant="elevated" hover className="h-full transition-all duration-300">
                   <CardContent className="flex flex-col gap-3">
                     <div className="flex size-10 items-center justify-center rounded-lg bg-accent/10 text-accent">
@@ -531,7 +531,7 @@ export default function HomeClient() {
             </div>
 
             <div className="reveal reveal-delay-2">
-              <TiltCard maxTilt={5} glare={false}>
+              <TiltCard maxTilt={5} glare={false} className="h-full">
                 <Card variant="elevated" hover className={cn("h-full transition-all duration-300 border-accent/30")}>
                   <CardContent className="flex flex-col gap-3">
                     <h3 className="flex items-center gap-2">

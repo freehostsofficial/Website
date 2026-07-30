@@ -244,7 +244,7 @@ export default function AboutPage() {
               hear from you!
             </p>
             <div className="mt-2 grid gap-4 sm:grid-cols-2">
-              <Card className="card-hover card-glow transition-all duration-300">
+              <Card className="h-full card-hover card-glow transition-all duration-300">
                 <CardContent className="flex flex-col items-center gap-2 text-center">
                   <FontAwesomeIcon icon={faDiscord} className="size-6" />
                   <h3>Join Discord</h3>
@@ -260,7 +260,7 @@ export default function AboutPage() {
                   </Button>
                 </CardContent>
               </Card>
-              <Card className="card-hover card-glow transition-all duration-300">
+              <Card className="h-full card-hover card-glow transition-all duration-300">
                 <CardContent className="flex flex-col items-center gap-2 text-center">
                   <Mail className="size-6" />
                   <h3>Email Us</h3>
@@ -300,7 +300,7 @@ export default function AboutPage() {
 
 function StatCard({ number, label }: { number: string; label: string }) {
   return (
-    <div className="rounded-lg border border-border bg-card py-5 text-center card-hover card-glow transition-all duration-300">
+    <div className="h-full rounded-lg border border-border bg-card py-5 text-center card-hover card-glow transition-all duration-300">
       <div className="font-mono text-2xl font-semibold">{number}</div>
       <div className="mt-1 text-xs text-muted-foreground">{label}</div>
     </div>
@@ -329,7 +329,7 @@ function ContentSection({
 
 function ValueCard({ icon, title, text }: { icon: React.ReactNode; title: string; text: string }) {
   return (
-    <Card className="gap-2 py-4 card-hover card-glow transition-all duration-300">
+    <Card className="h-full gap-2 py-4 card-hover card-glow transition-all duration-300">
       <CardContent className="flex flex-col gap-2">
         <div className="flex size-8 items-center justify-center rounded-md bg-secondary">{icon}</div>
         <h3 className="text-sm font-semibold text-foreground">{title}</h3>

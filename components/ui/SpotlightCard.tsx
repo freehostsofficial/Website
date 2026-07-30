@@ -34,7 +34,7 @@ export function SpotlightCard({ children, className, as: Tag = "div", href }: Sp
       ref={cardRef}
       onMouseMove={handleMouseMove}
       className={cn(
-        "group relative overflow-hidden rounded-xl border border-border bg-card p-6 transition-shadow transition-colors duration-300",
+        "group relative overflow-hidden rounded-xl border border-border bg-card p-6 transition duration-300",
         "hover:border-accent/30 hover:shadow-lg hover:shadow-accent/5",
         className
       )}

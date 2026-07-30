@@ -133,7 +133,7 @@ export default function SubmitHostClient() {
         <h2 className="text-lg">Common Questions</h2>
         <div className="mt-4 grid gap-4 sm:grid-cols-3">
           {teaser.map((item) => (
-            <Card key={item.q}>
+            <Card key={item.q} className="h-full">
               <CardContent>
                 <h4 className="text-sm font-medium">{item.q}</h4>
                 <p className="mt-1 text-sm text-muted-foreground">{item.a}</p>

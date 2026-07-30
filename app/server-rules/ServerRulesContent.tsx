@@ -241,7 +241,7 @@ export default function ServerRulesContent() {
           <h2 className="text-lg">{category.title}</h2>
           <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {category.rules.map((rule, index) => (
-              <Card key={index} className="gap-3 py-4">
+              <Card key={index} className="h-full gap-3 py-4">
                 <CardContent className="flex flex-col gap-3">
                   <div className="flex items-center justify-between">
                     <div className="flex size-9 items-center justify-center rounded-md bg-secondary">

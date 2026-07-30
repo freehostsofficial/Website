@@ -94,7 +94,7 @@ export default function OtherFreeHostsPage() {
 
           <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {externalHosts.map((host) => (
-              <Card key={host.name} className="gap-3 py-4">
+              <Card key={host.name} className="h-full gap-3 py-4">
                 <CardContent className="flex flex-col gap-2">
                   <div className="flex items-center gap-3">
                     <div className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-md bg-secondary">
