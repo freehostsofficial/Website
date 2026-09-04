@@ -25,6 +25,40 @@ export const metadata: Metadata = {
   },
 };
 
+// Dynamic: the Discord member count below is fetched server-side on each
+// render (cached 5 min), so no /api route is needed and the visitor's
+// browser never contacts Discord directly.
+export const dynamic = "force-dynamic";
+
+const INVITE_URL =
+  "https://discord.com/api/v9/invites/QbeZ3b5CQd?with_counts=true&with_expiration=true";
+
+async function getDiscord(): Promise<{ name: string; count: number | null }> {
+  try {
+    const res = await fetch(INVITE_URL, {
+      signal: AbortSignal.timeout(5000),
+      next: { revalidate: 300 },
+    });
+    if (!res.ok) throw new Error(`Discord ${res.status}`);
+    const data = (await res.json()) as {
+      guild?: { name?: string };
+      approximate_member_count?: number | null;
+      approximate_presence_count?: number | null;
+      members?: unknown[];
+    };
+    const count =
+      data.approximate_member_count ??
+      data.approximate_presence_count ??
+      (Array.isArray(data.members) ? data.members.length : null);
+    return {
+      name: data.guild?.name ?? "Discord",
+      count: typeof count === "number" ? count : null,
+    };
+  } catch {
+    return { name: "Discord", count: null };
+  }
+}
+
 const structuredData = {
   "@context": "https://schema.org",
   "@graph": [
@@ -70,14 +104,15 @@ const structuredData = {
   ],
 };
 
-export default function HomePage() {
+export default async function HomePage() {
+  const discord = await getDiscord();
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: safeJsonLd(structuredData) }}
       />
-      <HomeClient />
+      <HomeClient initialDiscord={discord} />
     </>
   );
 }

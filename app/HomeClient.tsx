@@ -89,20 +89,27 @@ type DiscordState = {
 };
 
 type DiscordApi = {
-  name?: string;
-  count?: number | null;
+  name: string;
+  count: number | null;
 };
 
-export default function HomeClient() {
+function initialDiscordState({ name, count }: DiscordApi): DiscordState {
+  if (count === null) {
+    return { name, status: "Server info unavailable", count: "-", showInvite: false };
+  }
+  return {
+    name,
+    status: "Live - join the server",
+    count: String(count),
+    showInvite: true,
+  };
+}
+
+export default function HomeClient({ initialDiscord }: { initialDiscord: DiscordApi }) {
   const [terminalCommand, setTerminalCommand] = useState("");
   const [terminalOutput, setTerminalOutput] = useState<TerminalLine[]>([]);
   const [typedText, setTypedText] = useState("");
-  const [discord, setDiscord] = useState<DiscordState>({
-    name: "Discord",
-    status: "Loading server info...",
-    count: "-",
-    showInvite: false,
-  });
+  const [discord] = useState<DiscordState>(() => initialDiscordState(initialDiscord));
 
   // Hero typing effect
   useEffect(() => {
@@ -177,42 +184,6 @@ export default function HomeClient() {
       cancelled = true;
       if (timer) window.clearTimeout(timer);
     };
-  }, []);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    const setLive = (name: string, count: number | null) => {
-      if (cancelled) return;
-      setDiscord({
-        name,
-        status: count !== null ? "Live - join the server" : "Live server info",
-        count: count !== null ? String(count) : "-",
-        showInvite: true,
-      });
-    };
-
-    // Live member count comes from our own server-side proxy
-    // (/api/discord-widget), so the visitor's browser never contacts
-    // Discord directly and no data is shared before consent.
-    const loadDiscord = async () => {
-      try {
-        const response = await fetch("/api/discord-widget", { signal: AbortSignal.timeout(7000) });
-        if (!response.ok) throw new Error("widget unavailable");
-        const data = (await response.json()) as DiscordApi;
-        const count = typeof data.count === "number" ? data.count : null;
-        setLive(data.name || "Discord", count);
-        return;
-      } catch {
-        // fall through to the static fallback
-      }
-      if (!cancelled) {
-        setDiscord({ name: "Discord", status: "Server info unavailable", count: "-", showInvite: false });
-      }
-    };
-
-    loadDiscord();
-    return () => { cancelled = true; };
   }, []);
 
   return (
