@@ -329,6 +329,11 @@ export default function PrivacyPolicyContent() {
         <li>
           <strong>Website Performance Monitoring:</strong> Matomo
         </li>
+        <li>
+          <strong>Content Delivery and Security:</strong> Cloudflare (CDN, DDoS protection, and
+          bot management; processes IP addresses technically required to deliver the site — no
+          Cloudflare analytics or advertising cookies are used)
+        </li>
       </ul>
 
       <p>We may also need to share your personal information in the following situations:</p>

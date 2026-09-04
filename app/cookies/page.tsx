@@ -84,10 +84,11 @@ export default function CookiePolicyPage() {
         </p>
 
         <p>
-          Cookies set by the website owner (in this case, FreeHosts) are called{" "}
-          <strong>first-party cookies</strong>. All cookies and browser storage listed on this
-          page are first-party: nothing on our Website allows a third party to store anything in
-          your browser.
+          We use first-party cookies for the purposes above, plus one security cookie set by our
+          CDN provider (Cloudflare) that appears only if you are asked to complete a bot check.
+          Beyond that, no third party may store anything in your browser: there are no
+          advertising cookies, no cross-site trackers, and no social media widgets that set
+          cookies.
         </p>
 
         <hr className="section-divider" />
@@ -144,6 +145,15 @@ export default function CookiePolicyPage() {
                 page.
               </td>
               <td>6 months</td>
+            </tr>
+            <tr>
+              <td>cf_clearance</td>
+              <td>
+                Security cookie set by our CDN provider (Cloudflare) only if you are asked to
+                complete a bot or spam check. It proves you passed so you are not asked again.
+                Exempt from consent as strictly necessary for security.
+              </td>
+              <td>1 year</td>
             </tr>
           </tbody>
         </table>
