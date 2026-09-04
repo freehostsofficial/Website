@@ -1,0 +1,39 @@
+{
+  "name": "FreeHosts",
+  "homepage": "https://freehosts.eu",
+  "description": "Community-curated directory of genuinely free hosting providers for websites, apps, bots, game servers, and databases. Non-commercial volunteer project; no paid placements, advertising, or affiliate links.",
+  "resources": [
+    {
+      "rel": "service-doc",
+      "href": "https://freehosts.eu/llms.txt",
+      "type": "text/plain",
+      "title": "FreeHosts llms.txt",
+      "description": "Agent-readable summary of the directory: key pages, host profile URL pattern, usage guide, and contacts."
+    },
+    {
+      "rel": "describedby",
+      "href": "https://freehosts.eu/sitemap.xml",
+      "type": "application/xml",
+      "title": "FreeHosts sitemap",
+      "description": "Full URL inventory: directory, host profiles, comparisons, categories, and policy pages."
+    },
+    {
+      "rel": "service-desc",
+      "href": "https://freehosts.eu/methodology",
+      "type": "text/html",
+      "title": "Curation methodology",
+      "description": "How listings are submitted, verified, voted on, and removed. Available as Markdown via Accept: text/markdown content negotiation."
+    }
+  ],
+  "contentNegotiation": {
+    "markdown": {
+      "requestHeader": "Accept: text/markdown",
+      "responseContentType": "text/markdown; charset=utf-8",
+      "description": "Any page URL returns a Markdown representation when requested with Accept: text/markdown; HTML remains the default for browsers."
+    }
+  },
+  "aiPolicy": {
+    "contentSignal": "ai-train=no, search=yes, ai-input=yes",
+    "description": "AI training use disallowed; search indexing and AI input/citation allowed. Declared in robots.txt and the Content-Signal response header."
+  }
+}

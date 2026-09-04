@@ -18,6 +18,15 @@ const SECURITY_HEADERS = [
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "X-Frame-Options", value: "SAMEORIGIN" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  // AI usage preferences (contentsignals.org) — mirrors robots.txt.
+  // Origin is authoritative: Cloudflare preserves this on converted responses.
+  { key: "Content-Signal", value: "ai-train=no, search=yes, ai-input=yes" },
+  // Agent discovery (RFC 8288): machine-readable resources for crawlers/AI.
+  // Targets must exist — never point these at unwritten files.
+  {
+    key: "Link",
+    value: '</.well-known/api-catalog>; rel="api-catalog", </llms.txt>; rel="service-doc"',
+  },
   {
     key: "Permissions-Policy",
     value: "camera=(), microphone=(), geolocation=()",

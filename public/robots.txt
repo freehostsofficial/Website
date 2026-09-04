@@ -8,4 +8,6 @@ Disallow: /cgi-bin/
 Disallow: /hosts/*/redirect/*
 Disallow: /hosts/*/og/*
 
+Content-Signal: ai-train=no, search=yes, ai-input=yes
+
 Sitemap: https://freehosts.eu/sitemap.xml
