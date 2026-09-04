@@ -1,4 +1,6 @@
-export const runtime = 'edge';
+// Interstitial warning page, never publicly cacheable (per-user navigation,
+// no-store is set via Cache-Control headers in next.config.ts).
+export const dynamic = 'force-dynamic';
 
 import { notFound } from 'next/navigation';
 import { fetchHosts } from '../../../../../lib/hosts';

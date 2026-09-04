@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "@/components/NoPrefetchLink";
+import Link from "next/link";
 import { Compass, Home, Mail, Server } from "lucide-react";
 import { DiscordIcon } from "@/components/BrandIcons";
 

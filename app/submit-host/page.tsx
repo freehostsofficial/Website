@@ -1,4 +1,4 @@
-import Link from "@/components/NoPrefetchLink";
+import Link from "next/link";
 import ProsePage from "@/components/ProsePage";
 import { pageMeta } from "../../lib/pageMeta";
 import { ArrowRight, Check, CircleHelp } from "lucide-react";

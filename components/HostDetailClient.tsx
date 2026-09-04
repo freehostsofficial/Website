@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useCallback } from 'react'
-import Link from '@/components/NoPrefetchLink'
+import Link from 'next/link'
 import { type Host } from '../lib/hosts'
 import { slugify } from '../lib/slugify'
 import { getLanguageName } from '../lib/getLanguageName'
@@ -338,6 +338,9 @@ export default function HostDetailClient({ host, related = [], alternativesCount
                     <ThumbsDown size={14} aria-hidden="true" /> Downvote
                   </button>
                 </div>
+                <p style={{ color: 'var(--muted)', fontSize: 'var(--font-size-sm)', margin: 'var(--space-md) 0 0', lineHeight: 1.6, textAlign: 'center' }}>
+                  Specs as published by the provider; community scores are opinions, not measurements.
+                </p>
               </div>
             </div>
           </div>

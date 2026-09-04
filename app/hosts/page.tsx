@@ -5,7 +5,9 @@ import { slugify } from '../../lib/slugify'
 import { safeJsonLd } from "../../lib/safeJsonLd";
 import { pageMeta, webPageJsonLd } from "../../lib/pageMeta";
 
-export const runtime = 'edge';
+// ISR: directory listing regenerates at most every 30 min (must be a
+// literal; keep in sync with HOSTS_REVALIDATE_SECONDS in lib/hosts.ts).
+export const revalidate = 1800;
 
 const DESCRIPTION = 'Browse 100+ free hosting providers for websites, Discord bots, and apps. Filter by CPU, RAM, storage, language, and target. Find the best free host for your project.';
 const SOCIAL_DESCRIPTION = 'Browse 100+ free hosting providers for websites, Discord bots, and apps. Filter by CPU, RAM, storage, language, and target.';

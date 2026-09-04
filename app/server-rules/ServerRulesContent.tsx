@@ -203,6 +203,7 @@ const categories: Category[] = [
 
 export default function ServerRulesContent() {
   const totalRules = categories.reduce((sum, c) => sum + c.rules.length, 0);
+  const supportEmail = `support@${process.env.EMAIL_DOMAIN}`;
 
   return (
     <div className="rules-page-container">
@@ -268,6 +269,22 @@ export default function ServerRulesContent() {
       <footer className="rules-footer-info">
         <p>
           Staff reserve the right to update these rules at any time. Continued participation in the server constitutes acceptance of the current rules.
+        </p>
+        <div className="highlight-box">
+          <p>
+            <strong>FreeHosts</strong> — non-commercial community project, Portugal
+            <br />
+            <a href={"mailto:" + supportEmail}>{supportEmail}</a>
+          </p>
+        </div>
+        <p
+          style={{
+            textAlign: "center",
+            color: "var(--muted)",
+            marginTop: "3rem",
+          }}
+        >
+          These server rules were last updated on April 26, 2026
         </p>
       </footer>
     </div>

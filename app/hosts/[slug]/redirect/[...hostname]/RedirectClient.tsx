@@ -116,6 +116,9 @@ export default function RedirectClient({ targetUrl, hostnameOrPath, backUrl, inv
           <h2 className="redirect-title">Redirecting...</h2>
           <p className="redirect-text">You are being redirected to</p>
           <div className="redirect-url">{hostnameOrPath}</div>
+          <p style={{ color: 'var(--muted)', fontSize: 'var(--font-size-sm)', margin: 'var(--space-sm) 0 0', lineHeight: 1.6 }}>
+            FreeHosts doesn&apos;t control or endorse external sites — proceed at your own risk.
+          </p>
           <div className="redirect-timer">
             <span className="redirect-timer-number" style={{ opacity: isCancelled ? 0.6 : 1 }}>
               {isCancelled ? '✓ Stopped' : countdown}

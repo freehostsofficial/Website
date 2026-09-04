@@ -1,4 +1,4 @@
-import Link from '@/components/NoPrefetchLink'
+import Link from 'next/link'
 import { ArrowLeft, Home, Server, X } from 'lucide-react'
 import type { Metadata } from 'next'
 

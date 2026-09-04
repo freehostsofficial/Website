@@ -3,6 +3,7 @@
 import React, { createContext, useContext } from 'react';
 import { type Host } from '../lib/hosts';
 import { showToast } from '../lib/toast';
+import { isPreferenceAllowed, COMPARISON_STORAGE_KEY } from '../lib/cookies';
 import { usePersistentState } from '../hooks/usePersistentState';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -18,7 +19,7 @@ interface ComparisonContextValue {
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const STORAGE_KEY = 'fh_comparison';
+const STORAGE_KEY = COMPARISON_STORAGE_KEY;
 const MAX_COMPARISON = 4;
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -39,6 +40,8 @@ function load(): Host[] {
 }
 
 function save(selection: Host[]): void {
+  // Preferences category: without opt-in, comparison works in-memory only.
+  if (!isPreferenceAllowed('comparison')) return;
   try {
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(selection));
   } catch {

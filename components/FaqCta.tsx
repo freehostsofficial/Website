@@ -1,4 +1,4 @@
-import Link from '@/components/NoPrefetchLink';
+import Link from 'next/link';
 
 // Shared closing CTA (was copy-pasted in vs, alternatives, categories,
 // methodology with different copy but identical markup).

@@ -6,7 +6,9 @@ import { ramDisplay, diskDisplay } from '../../../../lib/specs';
 import { computeRating } from '../../../../lib/comparisonRows';
 import { extractDomainNames } from '../../../../lib/domains';
 
-export const runtime = 'edge';
+// OG images change rarely (specs/ratings); cache 12h at the CDN layer.
+// (Response sets its own s-maxage below; this keeps the function from re-running.)
+export const revalidate = 43200;
 
 type Props = {
   params: Promise<{ slug: string }>;

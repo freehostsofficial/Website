@@ -1,28 +1,110 @@
-/** @type {import('next').NextConfig} */
+import type { NextConfig } from "next";
+
+// Single source of truth for response headers on Vercel.
 //
-// Security headers, CSP, and Cache-Control are now defined in
-// middleware.ts (project root) instead of here.
-//
-// Reason: four routes in this app (/hosts, /hosts/[slug],
-// /hosts/[slug]/redirect/[...hostname], /hosts/og/[slug]) run on
-// `export const runtime = 'edge'`, and edge routes deployed to Cloudflare
-// do not reliably inherit headers set via next.config.ts's headers()
-// function — this was confirmed empirically on the OG image route, which
-// had no Cache-Control at all until it was set directly on the response.
-// middleware.ts runs as a genuine Cloudflare-native execution point
-// regardless of route runtime, so it's the single source of truth for
-// headers now. Keeping the logic in one place (rather than here AND in
-// middleware.ts) avoids the two ever drifting out of sync.
-//
-// See middleware.ts for the actual header values and per-route Cache-Control
-// tiers, and app/hosts/og/[slug]/route.tsx for the OG route's own
-// self-contained Cache-Control (set directly on the ImageResponse, since
-// that route is the most edge-sensitive one in the app).
-const nextConfig = {
-  // ponytail: on Cloudflare there's no sharp/Image Resizing behind
-  // /_next/image, so it just re-serves the ORIGINAL file (uncacheable,
-  // 240 KB for a w=64 request). Serving static URLs directly lets the
-  // CDN and browser actually cache. Revisit only if Image Resizing gets enabled.
-  images: { unoptimized: true },
+// - Security headers apply to every route (global source).
+// - Cache-Control is tiered per route below. Every path also matches the
+//   /:path* default, and the LAST matching source wins per header key — so
+//   the default is first and the specific tiers override it.
+// - The OG image route (/hosts/og/:slug) sets its own Cache-Control on the
+//   ImageResponse AND has a matching source below with the same value:
+//   config headers override route headers, so both must agree.
+// - /saved + /redirect/* are private and match no public source.
+const SECURITY_HEADERS = [
+  {
+    key: "Strict-Transport-Security",
+    value: "max-age=63072000; includeSubDomains; preload",
+  },
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "X-Frame-Options", value: "SAMEORIGIN" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  {
+    key: "Permissions-Policy",
+    value: "camera=(), microphone=(), geolocation=()",
+  },
+  {
+    key: "Content-Security-Policy",
+    value: [
+      "default-src 'self'",
+      // NOTE: no Google Fonts / Cloudflare Insights entries on purpose —
+      // fonts are self-hosted via next/font and no beacon is loaded.
+      // Re-add a source here only together with the code that loads it.
+      "script-src 'self' 'unsafe-inline' https://matomo.codelabworks.is-a.dev",
+      "style-src 'self' 'unsafe-inline'",
+      "font-src 'self'",
+      "img-src 'self' data: https:",
+      "connect-src 'self' https://matomo.codelabworks.is-a.dev",
+      "frame-src 'none'",
+      "object-src 'none'",
+      "base-uri 'self'",
+      "form-action 'self'",
+    ].join("; "),
+  },
+];
+
+const NO_STORE = "private, no-store";
+// Host directory: fresh HTML for 30 min, CDN-served for 12h.
+const HOSTS_CACHE =
+  "public, max-age=1800, s-maxage=43200, stale-while-revalidate=604800";
+// Sitemap: crawlers poll often; hourly CDN regeneration is plenty.
+const SITEMAP_CACHE =
+  "public, max-age=0, s-maxage=3600, stale-while-revalidate=43200, no-transform";
+// Default for content pages: fresh HTML for a day, CDN-served for 30 days.
+const CONTENT_CACHE =
+  "public, max-age=86400, s-maxage=2592000, stale-while-revalidate=2592000";
+
+const nextConfig: NextConfig = {
+  async headers() {
+    const cache = (value: string) => [{ key: "Cache-Control", value }];
+    return [
+      {
+        // Default for content pages. Deliberately FIRST: every source below
+        // also matches /:path*, and the last matching source wins per key.
+        source: "/:path*",
+        headers: [...SECURITY_HEADERS, ...cache(CONTENT_CACHE)],
+      },
+      {
+        source: "/saved",
+        headers: [...SECURITY_HEADERS, ...cache(NO_STORE)],
+      },
+      {
+        source: "/hosts/:slug/redirect/:path*",
+        headers: [...SECURITY_HEADERS, ...cache(NO_STORE)],
+      },
+      {
+        source: "/hosts",
+        headers: [...SECURITY_HEADERS, ...cache(HOSTS_CACHE)],
+      },
+      {
+        source: "/hosts/:slug",
+        headers: [...SECURITY_HEADERS, ...cache(HOSTS_CACHE)],
+      },
+      {
+        // Same value the route sets on its ImageResponse (config wins on
+        // merge, so the two must agree — verified with curl, single header).
+        source: "/hosts/og/:slug",
+        headers: [...SECURITY_HEADERS, ...cache(HOSTS_CACHE)],
+      },
+      {
+        source: "/sitemap.xml",
+        headers: [...SECURITY_HEADERS, ...cache(SITEMAP_CACHE)],
+      },
+      {
+        source: "/Src/:path*",
+        headers: [
+          ...SECURITY_HEADERS,
+          ...cache("public, max-age=2592000, stale-while-revalidate=604800"),
+        ],
+      },
+      {
+        source: "/favicon.ico",
+        headers: [
+          ...SECURITY_HEADERS,
+          ...cache("public, max-age=86400, stale-while-revalidate=604800"),
+        ],
+      },
+    ];
+  },
 };
-module.exports = nextConfig;
+
+export default nextConfig;

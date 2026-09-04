@@ -2,7 +2,9 @@ import { fetchHosts } from '../../lib/hosts'
 import SavedClient from './SavedClient'
 import Breadcrumbs from '@/components/Breadcrumbs'
 
-export const runtime = 'edge';
+// Personalized page: prerendered as a static shell (same HTML for everyone),
+// per-user favorites filtering happens client-side in SavedClient from
+// cookies. Served private, no-store (see next.config.ts).
 
 export const metadata = {
   title: 'Saved Hosts',

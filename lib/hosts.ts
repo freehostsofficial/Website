@@ -42,10 +42,18 @@ interface RawHost {
   image?: string
 }
 
+// Directory data changes at human curation pace (new listings, status flips,
+// votes), so a 30-minute shared cache is the deliberate trade-off: the API is
+// hit at most twice per hour per region instead of on every request, while
+// edits still surface quickly. Tag allows future on-demand invalidation via
+// revalidateTag('hosts') from a webhook/route handler.
+export const HOSTS_CACHE_TAG = 'hosts'
+export const HOSTS_REVALIDATE_SECONDS = 1800
+
 export async function fetchHosts(): Promise<Host[]> {
   try {
     const response = await fetch(`${process.env.API_URL}/api/hosts?limit=1000`, {
-      cache: 'no-store',
+      next: { revalidate: HOSTS_REVALIDATE_SECONDS, tags: [HOSTS_CACHE_TAG] },
     })
     if (!response.ok) throw new Error(`API ${response.status}`)
     const data = await response.json()

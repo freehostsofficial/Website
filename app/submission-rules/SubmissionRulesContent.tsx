@@ -1,5 +1,5 @@
 import React from "react";
-import Link from "@/components/NoPrefetchLink";
+import Link from "next/link";
 import {
   AlertTriangle,
   Ban,
@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 
 export default function SubmissionRulesContent() {
+  const supportEmail = `support@${process.env.EMAIL_DOMAIN}`;
   return (
     <div className="rules-container">
       <section className="rules-hero">
@@ -292,6 +293,25 @@ export default function SubmissionRulesContent() {
           </ul>
         </div>
       </section>
+
+      <footer className="rules-footer-info">
+        <div className="highlight-box">
+          <p>
+            <strong>FreeHosts</strong> — non-commercial community project, Portugal
+            <br />
+            <a href={"mailto:" + supportEmail}>{supportEmail}</a>
+          </p>
+        </div>
+        <p
+          style={{
+            textAlign: "center",
+            color: "var(--muted)",
+            marginTop: "3rem",
+          }}
+        >
+          These submission rules were last updated on April 26, 2026
+        </p>
+      </footer>
     </div>
   );
 }

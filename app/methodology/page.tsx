@@ -1,4 +1,4 @@
-import Link from "@/components/NoPrefetchLink";
+import Link from "next/link";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { safeJsonLd } from "../../lib/safeJsonLd";
 import { pageMeta, webPageJsonLd } from "../../lib/pageMeta";
@@ -99,7 +99,9 @@ const sections: { icon: LucideIcon; title: string; id?: string; body: React.Reac
       <p>
         Listings are removed when a provider shuts down, drops its free tier entirely, or turns out to be misleading
         users — hidden paid requirements, fake specs, or predatory data practices reported by the community. Removal
-        decisions are made by the curator team, and the reasoning can be discussed openly in the Discord.
+        decisions are made by the curator team, and the reasoning can be discussed openly in the Discord. If you
+        believe a listing is illegal (rather than merely outdated), report it by email so it is handled formally —
+        see our Terms of Service, section &ldquo;Reporting illegal content&rdquo;.
       </p>
     ),
   },

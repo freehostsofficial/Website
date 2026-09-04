@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import Link from '@/components/NoPrefetchLink'
+import Link from 'next/link'
 import { fetchHosts, type Host } from '../../../lib/hosts'
 import { slugify } from '../../../lib/slugify'
 import { splitTargets, targetBuckets, parseVsSlug, sharedBucket, providerKind, sharedTargets, primaryTargetLabel } from '../../../lib/taxonomy'
@@ -9,7 +9,9 @@ import { ramDisplay, diskDisplay, specSummary } from '../../../lib/specs'
 import { computeRating } from '../../../lib/comparisonRows'
 import CompareShell from '@/components/CompareShell'
 
-export const runtime = 'edge'
+// ISR on demand: the pair space is combinatorial (thousands of URLs), so
+// pages generate on first request and revalidate at most every 30 min.
+export const revalidate = 1800
 
 type Props = { params: Promise<{ slug: string }> }
 

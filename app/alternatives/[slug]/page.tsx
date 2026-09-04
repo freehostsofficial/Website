@@ -1,13 +1,22 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import Link from '@/components/NoPrefetchLink'
+import Link from 'next/link'
 import { safeJsonLd } from '../../../lib/safeJsonLd'
 import { fetchHosts } from '../../../lib/hosts'
 import { slugify } from '../../../lib/slugify'
 import { splitTargets, findAlternatives, primaryBucket, hostRow, sharedTargets, providerKind, hasPublishedSpecs, primaryTargetLabel } from '../../../lib/taxonomy'
 import CompareShell from '@/components/CompareShell'
 
-export const runtime = 'edge'
+// ISR: prerender all alternatives pages at build, regenerate at most every
+// 30 min (revalidate must be a literal; keep in sync with lib/hosts.ts).
+// dynamicParams covers hosts added after the build.
+export const revalidate = 1800;
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  const hosts = await fetchHosts();
+  return hosts.filter((h) => h.name).map((h) => ({ slug: slugify(h.name) }));
+}
 
 type Props = { params: Promise<{ slug: string }> }
 

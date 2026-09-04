@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect } from "react";
+import { isPreferenceAllowed, THEME_STORAGE_KEY } from "../lib/cookies";
 
 function getTheme(): string {
   try {
     return (
-      localStorage.getItem("fh_theme") ||
+      localStorage.getItem(THEME_STORAGE_KEY) ||
       (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
     );
   } catch {
@@ -17,8 +18,12 @@ function setTheme(theme: string) {
   document.documentElement.setAttribute("data-theme", theme);
   document.documentElement.classList.add("theme-transition");
 
+  // Preferences category: without opt-in the choice applies to this page
+  // load only and is never persisted.
+  if (!isPreferenceAllowed("theme")) return;
+
   try {
-    localStorage.setItem("fh_theme", theme);
+    localStorage.setItem(THEME_STORAGE_KEY, theme);
   } catch {
     // storage unavailable
   }

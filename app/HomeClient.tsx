@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "@/components/NoPrefetchLink";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
   Bot,
@@ -88,43 +88,10 @@ type DiscordState = {
   showInvite: boolean;
 };
 
-type InviteApi = {
-  guild?: { name?: string };
-  approximate_member_count?: number | null;
-  approximate_presence_count?: number | null;
-  members?: unknown[];
-};
-
-type WidgetApi = {
+type DiscordApi = {
   name?: string;
-  presence_count?: number | null;
-  members?: unknown[];
+  count?: number | null;
 };
-
-const discordSources: {
-  url: string;
-  parse: (data: InviteApi & WidgetApi) => { name: string; count: number | null };
-}[] = [
-  {
-    url: `https://discord.com/api/v9/invites/${encodeURIComponent(inviteCode)}?with_counts=true&with_expiration=true`,
-    parse: (data) => ({
-      name: data.guild?.name || "Discord",
-      count:
-        data.approximate_member_count ??
-        data.approximate_presence_count ??
-        (Array.isArray(data.members) ? data.members.length : null),
-    }),
-  },
-  {
-    url: "https://discord.com/api/guilds/1221389187719102514/widget.json",
-    parse: (data) => ({
-      name: data.name || "Discord",
-      count:
-        data.presence_count ??
-        (Array.isArray(data.members) ? data.members.length : null),
-    }),
-  },
-];
 
 export default function HomeClient() {
   const [terminalCommand, setTerminalCommand] = useState("");
@@ -225,18 +192,19 @@ export default function HomeClient() {
       });
     };
 
-    // Try each Discord source in order; fall back to the static widget.
+    // Live member count comes from our own server-side proxy
+    // (/api/discord-widget), so the visitor's browser never contacts
+    // Discord directly and no data is shared before consent.
     const loadDiscord = async () => {
-      for (const source of discordSources) {
-        try {
-          const response = await fetch(source.url, { cache: "no-cache", signal: AbortSignal.timeout(7000) });
-          if (!response.ok) continue;
-          const { name, count } = source.parse(await response.json());
-          setLive(name, count);
-          return;
-        } catch {
-          // try the next source
-        }
+      try {
+        const response = await fetch("/api/discord-widget", { signal: AbortSignal.timeout(7000) });
+        if (!response.ok) throw new Error("widget unavailable");
+        const data = (await response.json()) as DiscordApi;
+        const count = typeof data.count === "number" ? data.count : null;
+        setLive(data.name || "Discord", count);
+        return;
+      } catch {
+        // fall through to the static fallback
       }
       if (!cancelled) {
         setDiscord({ name: "Discord", status: "Server info unavailable", count: "-", showInvite: false });

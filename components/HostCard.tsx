@@ -1,6 +1,6 @@
 'use client';
 
-import Link from '@/components/NoPrefetchLink';
+import Link from 'next/link';
 import { type Host } from '../lib/hosts';
 import { slugify } from '../lib/slugify';
 import { getLanguageName } from '../lib/getLanguageName';

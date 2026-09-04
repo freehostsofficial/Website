@@ -4,11 +4,12 @@ import { slugify } from '../lib/slugify'
 import { categories } from '../lib/categories'
 import { findAlternatives, compatibleVsPairs } from '../lib/taxonomy'
 
-export const runtime = 'edge';
+// Crawlers fetch this often; hourly regeneration is plenty.
+export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = process.env.APP_URL ?? ''
-  const staticPaths = ['', '/about', '/faq', '/hosts', '/compare', '/methodology', '/other-free-hosts', '/privacy-policy', '/server-rules', '/staff', '/submission-rules', '/submit-host', '/submit-layout', '/tos']
+  const staticPaths = ['', '/about', '/acceptable-use-policy', '/cookies', '/disclaimer', '/faq', '/hosts', '/compare', '/methodology', '/other-free-hosts', '/privacy-policy', '/server-rules', '/staff', '/submission-rules', '/submit-host', '/submit-layout', '/tos']
   const urls: MetadataRoute.Sitemap = [
     ...staticPaths.map((path) => ({ url: `${base}${path}` })),
     ...categories.map((c) => ({ url: `${base}/categories/${c.slug}`, lastModified: c.updated })),

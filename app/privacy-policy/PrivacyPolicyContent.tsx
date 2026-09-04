@@ -6,7 +6,7 @@ export default function PrivacyPolicyContent() {
     <div className="tos-content wrap">
       <h1>PRIVACY POLICY</h1>
       <p className="last-updated">
-        <strong>Last updated</strong> November 30, 2025
+        <strong>Last updated</strong> September 4, 2026
       </p>
 
       <div className="toc">
@@ -117,9 +117,9 @@ export default function PrivacyPolicyContent() {
       <div className="highlight-box">
         <p>
           <strong>Questions or concerns?</strong> Reading this Privacy Notice
-          will help you understand your privacy rights and choices. We are
-          responsible for making decisions about how your personal information
-          is processed. If you do not agree with our policies and practices,
+          will help you understand your privacy rights and choices. The data
+          controller is FreeHosts, a non-commercial community project based in
+          Portugal. If you do not agree with our policies and practices,
           please do not use our Services. If you still have any questions or
           concerns, please contact us at{" "}
           <a href={"mailto:" + supportEmail}>{supportEmail}</a>.
@@ -178,7 +178,7 @@ export default function PrivacyPolicyContent() {
       <p>
         Like many businesses, we also collect information through cookies and
         similar technologies. You can find out more about this in our Cookie
-        Notice: <span className="question" style={{ color: "rgb(0, 58, 250)" }}>{process.env.RAW_APP_URL}/cookies</span>.
+        Policy: <a href="/cookies">Cookie Policy</a>.
       </p>
 
       <p>The information we collect includes:</p>
@@ -324,7 +324,7 @@ export default function PrivacyPolicyContent() {
 
       <ul>
         <li>
-          <strong>Web and Mobile Analytics:</strong> Google Analytics and Matomo
+          <strong>Web and Mobile Analytics:</strong> Matomo (self-hosted, opt-in only)
         </li>
         <li>
           <strong>Website Performance Monitoring:</strong> Matomo
@@ -339,6 +339,13 @@ export default function PrivacyPolicyContent() {
           information in connection with, or during negotiations of, any
           merger, sale of company assets, financing, or acquisition of all or a
           portion of our business to another company.
+        </li>
+        <li>
+          <strong>International transfers.</strong> FreeHosts is operated from
+          Portugal. Where our infrastructure providers process data outside the
+          European Economic Area, transfers take place under an adequacy
+          decision or appropriate safeguards such as the EU Standard Contractual
+          Clauses.
         </li>
       </ul>
 
@@ -361,21 +368,18 @@ export default function PrivacyPolicyContent() {
 
       <p>
         Specific information about how we use such technologies and how you can
-        refuse certain cookies is set out in our Cookie Notice:{" "}
-        <span className="question" style={{ color: "rgb(0, 58, 250)" }}>{process.env.RAW_APP_URL}/cookies</span>.
+        refuse certain cookies is set out in our Cookie Policy:{" "}
+        <a href="/cookies">Cookie Policy</a>.
       </p>
 
-      <h3>Google Analytics</h3>
+      <h3>Matomo Analytics</h3>
 
       <p>
-        We may share your information with Google Analytics to track and
-        analyze the use of the Services. To opt out of being tracked by Google
-        Analytics across the Services, visit{" "}
-        <a href="https://tools.google.com/dlpage/gaoptout">
-          https://tools.google.com/dlpage/gaoptout
-        </a>
-        . For more information on the privacy practices of Google, please visit
-        the <a href="https://policies.google.com/privacy">Google Privacy & Terms page</a>.
+        We use self-hosted Matomo to track and analyze the use of the Services,
+        but only if you explicitly opt in to Statistics cookies via our cookie
+        banner. If you decline, the Matomo script is never loaded and no
+        analytics data is collected. You can withdraw consent at any time via{" "}
+        <strong>Cookie Settings</strong> in the site footer.
       </p>
 
       <hr className="section-divider" />
@@ -455,6 +459,13 @@ export default function PrivacyPolicyContent() {
       <p>
         We will consider and act upon any request in accordance with applicable
         data protection laws.
+      </p>
+
+      <p>
+        You also have the right to lodge a complaint with a data protection
+        supervisory authority — in Portugal, the Comissão Nacional de Protecção
+        de Dados (CNPD, www.cnpd.pt), or the authority in your EU country of
+        residence.
       </p>
 
       <div className="highlight-box">
@@ -611,9 +622,9 @@ export default function PrivacyPolicyContent() {
 
       <div className="highlight-box">
         <p>
-          <strong>FreeHosts</strong>
+          <strong>FreeHosts</strong> — non-commercial community project, Portugal
           <br />
-          Privacy Team
+          Privacy contact
           <br />
           <a href={"mailto:" + supportEmail}>{supportEmail}</a>
         </p>
@@ -626,7 +637,7 @@ export default function PrivacyPolicyContent() {
           marginTop: "3rem",
         }}
       >
-        This privacy policy was last updated on November 30, 2025
+        This privacy policy was last updated on September 4, 2026
       </p>
     </div>
   );

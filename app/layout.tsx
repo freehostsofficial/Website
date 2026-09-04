@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist as GeistFont, Inter as InterFont } from "next/font/google";
 import React, { Suspense } from "react";
 import Image from "next/image";
-import Link from "@/components/NoPrefetchLink";
+import Link from "next/link";
 import ClientChrome from "../components/ClientChrome";
 import MatomoTracker from "../components/MatomoTracker";
 import ThemeProvider from "../components/ThemeProvider";
@@ -14,7 +14,7 @@ import { ComparisonProvider } from "../contexts/ComparisonContext";
 import { FavoritesProvider } from "../contexts/FavoritesContext";
 import GdprConsentBanner from "../components/GdprConsentBanner";
 import ComparisonPanel from "../components/ComparisonPanel";
-import ConsentGate from "../components/ConsentGate";
+import CookieSettingsButton from "../components/CookieSettingsButton";
 import {
   BookOpen,
   ChevronDown,
@@ -151,6 +151,9 @@ const resourceLinks = [
 const legalLinks = [
   { href: "/tos", icon: <FileText size={18} aria-hidden="true" />, label: "Terms of Service" },
   { href: "/privacy-policy", icon: <Lock size={18} aria-hidden="true" />, label: "Privacy Policy" },
+  { href: "/cookies", icon: <Lock size={18} aria-hidden="true" />, label: "Cookie Policy" },
+  { href: "/acceptable-use-policy", icon: <FileText size={18} aria-hidden="true" />, label: "Acceptable Use" },
+  { href: "/disclaimer", icon: <FileText size={18} aria-hidden="true" />, label: "Disclaimer" },
 ];
 
 function DropdownLinks({
@@ -370,18 +373,13 @@ export default function RootLayout({
 
               <ComparisonPanel />
 
-              <ConsentGate>
-                <GdprConsentBanner className="fh-gate" />
-
-                <div className="fh-locked">
-                    <Suspense fallback={null}>
-                      <MatomoTracker />
-                    </Suspense>
-                </div>
-                <div className="skippable" id="fh-page-content">
-                    {children}
-                </div>
-              </ConsentGate>
+              <div id="fh-page-content">
+                {children}
+              </div>
+              <Suspense fallback={null}>
+                <MatomoTracker />
+              </Suspense>
+              <GdprConsentBanner />
 
               <footer className="site-footer">
                 <div className="wrap footer-content">
@@ -453,7 +451,11 @@ export default function RootLayout({
                     <ul className="footer-list">
                       <li><Link href="/tos">Terms of Service</Link></li>
                       <li><Link href="/privacy-policy">Privacy Policy</Link></li>
+                      <li><Link href="/cookies">Cookie Policy</Link></li>
+                      <li><Link href="/acceptable-use-policy">Acceptable Use</Link></li>
+                      <li><Link href="/disclaimer">Disclaimer</Link></li>
                       <li><Link href="/server-rules">Server Rules</Link></li>
+                      <li><CookieSettingsButton /></li>
                     </ul>
                   </div>
 

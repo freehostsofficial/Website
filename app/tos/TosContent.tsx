@@ -5,7 +5,7 @@ export default function TosContent() {
     <div className="tos-content wrap">
       <h1>TERMS OF SERVICE</h1>
       <p className="last-updated">
-        <strong>Last updated</strong> November 30, 2025
+        <strong>Last updated</strong> September 4, 2026
       </p>
 
       <div className="toc">
@@ -77,13 +77,13 @@ export default function TosContent() {
             </a>
           </li>
           <li>
-            <a href="#california">21. CALIFORNIA USERS AND RESIDENTS</a>
+            <a href="#provider">21. SERVICE PROVIDER INFORMATION</a>
           </li>
           <li>
             <a href="#misc">22. MISCELLANEOUS</a>
           </li>
           <li>
-            <a href="#legal-inquiries">23. LAW ENFORCEMENT INQUIRIES</a>
+            <a href="#legal-inquiries">23. REPORTING ILLEGAL CONTENT & LAW ENFORCEMENT INQUIRIES</a>
           </li>
           <li>
             <a href="#contact">24. CONTACT US</a>
@@ -94,8 +94,9 @@ export default function TosContent() {
       <h2 id="agreement">AGREEMENT TO OUR LEGAL TERMS</h2>
 
       <p>
-        We are <span className="question">FreeHosts</span> ({"'"}
-        <strong>Company</strong>
+        We are <span className="question">FreeHosts</span>, a non-commercial
+        community project based in Portugal ({"'"}
+        <strong>FreeHosts</strong>
         {"'"}, {"'"}
         <strong>we</strong>
         {"'"}, {"'"}
@@ -382,7 +383,12 @@ export default function TosContent() {
         You may not access or use the Services for any purpose other than that
         for which we make the Services available. The Services may not be used
         in connection with any commercial endeavours except those that are
-        specifically endorsed or approved by us.
+        specifically endorsed or approved by us. These rules are supplemented by
+        our Acceptable Use Policy (
+        <span style={{ color: "rgb(0, 58, 250)" }}>
+          {process.env.RAW_APP_URL}/acceptable-use-policy
+        </span>
+        ), which forms part of these Legal Terms.
       </p>
 
       <p>As a user of the Services, you agree not to:</p>
@@ -808,24 +814,21 @@ export default function TosContent() {
           </span>
         </strong>
         . By using the Services, you agree to be bound by our Privacy Policy,
-        which is incorporated into these Legal Terms. Please be advised the
-        Services are hosted in the United States. If you access the Services
-        from any other region of the world with laws or other requirements
-        governing personal data collection, use, or disclosure that differ from
-        applicable laws in the United States, then through your continued use of
-        the Services, you are transferring your data to the United States, and
-        you expressly consent to have your data transferred to and processed in
-        the United States.
+        which is incorporated into these Legal Terms. FreeHosts is operated
+        from Portugal, in the European Union. Our infrastructure providers may
+        process data outside the European Economic Area; where they do, such
+        transfers take place under an adequacy decision or appropriate
+        safeguards such as the EU Standard Contractual Clauses.
       </p>
 
       <p>
         Further, we do not knowingly accept, request, or solicit information
         from children or knowingly market to children. Therefore, in accordance
-        with the U.S. Children{"'"}s Online Privacy Protection Act, if we
-        receive actual knowledge that anyone under the age of 13 has provided
-        personal information to us without the requisite and verifiable parental
-        consent, we will delete that information from the Services as quickly as
-        is reasonably practical.
+        with the GDPR and Portuguese Law No. 58/2019, if we receive actual
+        knowledge that anyone under the age of 13 has provided personal
+        information to us without verifiable parental consent, we will delete
+        that information from the Services as quickly as is reasonably
+        practical.
       </p>
 
       <hr className="section-divider" />
@@ -887,10 +890,12 @@ export default function TosContent() {
       <h2 id="law">13. GOVERNING LAW</h2>
 
       <p>
-        These Legal Terms shall be governed by and defined following the laws of
-        the United States. FreeHosts and yourself irrevocably consent that the
-        courts of the United States shall have exclusive jurisdiction to resolve
-        any dispute which may arise in connection with these Legal Terms.
+        These Legal Terms shall be governed by the laws of Portugal,
+        supplemented where applicable by European Union law. Any dispute
+        arising in connection with these Legal Terms shall fall within the
+        jurisdiction of the Portuguese courts, without prejudice to mandatory
+        consumer-protection rules that may grant jurisdiction to the courts of
+        your European Union country of residence.
       </p>
 
       <hr className="section-divider" />
@@ -906,54 +911,45 @@ export default function TosContent() {
         (individually, a {"'"}Party{"'"} and collectively, the {"'"}Parties
         {"'"}), the Parties agree to first attempt to negotiate any Dispute
         (except those Disputes expressly provided below) informally for at least
-        thirty (30) days before initiating arbitration. Such informal
+        thirty (30) days before initiating court proceedings. Such informal
         negotiations commence upon written notice from one Party to the other
         Party.
       </p>
 
-      <h3>Binding Arbitration</h3>
+      <h3>Jurisdiction</h3>
 
       <p>
-        Any dispute arising out of or in connection with these Legal Terms,
-        including any question regarding its existence, validity, or
-        termination, shall be referred to and finally resolved by the
-        International Commercial Arbitration Court under the European
-        Arbitration Chamber (Belgium, Brussels, Avenue Louise, 146) according to
-        the Rules of this ICAC, which, as a result of referring to it, is
-        considered as the part of this clause. The number of arbitrators shall
-        be one (1). The seat, or legal place, or arbitration shall be the United
-        States. The language of the proceedings shall be English. The governing
-        law of these Legal Terms shall be substantive law of the United States.
+        If a Dispute is not resolved through informal negotiations, either
+        Party may bring the Dispute before the courts competent under Section
+        13 above. The language of any proceedings shall be Portuguese or
+        English, as determined by the competent court.
       </p>
 
-      <h3>Restrictions</h3>
+      <h3>Consumers in the European Union</h3>
 
       <p>
-        The Parties agree that any arbitration shall be limited to the Dispute
-        between the Parties individually. To the full extent permitted by law,
-        (a) no arbitration shall be joined with any other proceeding; (b) there
-        is no right or authority for any Dispute to be arbitrated on a
-        class-action basis or to utilise class action procedures; and (c) there
-        is no right or authority for any Dispute to be brought in a purported
-        representative capacity on behalf of the general public or any other
-        persons.
+        If you are a consumer resident in the European Union, you may also
+        seek out-of-court resolution through a recognised consumer alternative
+        dispute resolution (ADR) body. In Portugal, that is the Centro Nacional
+        de Informação e Arbitragem de Conflitos de Consumo (CNIACC,
+        www.cniacc.pt). A list of dispute resolution bodies in all Member
+        States is published by the European Commission
+        (consumer-redress.ec.europa.eu). Note: the former EU-wide ODR platform
+        was discontinued in 2025 and no longer accepts complaints.
       </p>
 
-      <h3>Exceptions to Informal Negotiations and Arbitration</h3>
+      <h3>Exceptions to Informal Negotiations</h3>
 
       <p>
         The Parties agree that the following Disputes are not subject to the
-        above provisions concerning informal negotiations binding arbitration:
-        (a) any Disputes seeking to enforce or protect, or concerning the
-        validity of, any of the intellectual property rights of a Party; (b) any
-        Dispute related to, or arising from, allegations of theft, piracy,
-        invasion of privacy, or unauthorised use; and (c) any claim for
-        injunctive relief. If this provision is found to be illegal or
-        unenforceable, then neither Party will elect to arbitrate any Dispute
-        falling within that portion of this provision found to be illegal or
-        unenforceable and such Dispute shall be decided by a court of competent
-        jurisdiction within the courts listed for jurisdiction above, and the
-        Parties agree to submit to the personal jurisdiction of that court.
+        above provisions concerning informal negotiations: (a) any Disputes
+        seeking to enforce or protect, or concerning the validity of, any of
+        the intellectual property rights of a Party; (b) any Dispute related
+        to, or arising from, allegations of theft, piracy, invasion of
+        privacy, or unauthorised use; and (c) any claim for injunctive relief.
+        Such Disputes may be brought directly before the courts referred to in
+        Section 13 above, and the Parties agree to submit to the personal
+        jurisdiction of those courts.
       </p>
 
       <hr className="section-divider" />
@@ -1000,7 +996,13 @@ export default function TosContent() {
         WAY BE RESPONSIBLE FOR MONITORING ANY TRANSACTION BETWEEN YOU AND ANY
         THIRD-PARTY PROVIDERS OF PRODUCTS OR SERVICES. AS WITH THE PURCHASE OF A
         PRODUCT OR SERVICE THROUGH ANY MEDIUM OR IN ANY ENVIRONMENT, YOU SHOULD
-        USE YOUR BEST JUDGEMENT AND EXERCISE CAUTION WHERE APPROPRIATE.
+        USE YOUR BEST JUDGEMENT AND EXERCISE CAUTION WHERE APPROPRIATE. Our
+        plain-language Disclaimer (
+        <span style={{ color: "rgb(0, 58, 250)" }}>
+          {process.env.RAW_APP_URL}/disclaimer
+        </span>
+        ) summarises these limits alongside our listings, reviews, and outbound
+        links.
       </p>
 
       <hr className="section-divider" />
@@ -1078,14 +1080,18 @@ export default function TosContent() {
 
       <hr className="section-divider" />
 
-      <h2 id="california">21. CALIFORNIA USERS AND RESIDENTS</h2>
+      <h2 id="provider">21. SERVICE PROVIDER INFORMATION</h2>
 
       <p>
-        If any complaint with us is not satisfactorily resolved, you can contact
-        the Complaint Assistance Unit of the Division of Consumer Services of
-        the California Department of Consumer Affairs in writing at 1625 North
-        Market Blvd., Suite N 112, Sacramento, California 95834 or by telephone
-        at (800) 952-5210 or (916) 445-1254.
+        FreeHosts is a non-commercial community project operated from Portugal.
+        We publish no paid placements and earn no advertising or affiliate
+        revenue; outbound links may carry a traffic marker so listed providers
+        can see visits came from our directory. You can contact us at{" "}
+        <a href={"mailto:legal@" + process.env.EMAIL_DOMAIN}>legal@{process.env.EMAIL_DOMAIN}</a>{" "}
+        (legal matters) or{" "}
+        <a href={"mailto:support@" + process.env.EMAIL_DOMAIN}>support@{process.env.EMAIL_DOMAIN}</a>{" "}
+        (general and privacy matters). As a non-commercial project with no
+        paid services, we hold no commercial registration or VAT number.
       </p>
 
       <hr className="section-divider" />
@@ -1116,7 +1122,17 @@ export default function TosContent() {
 
       <hr className="section-divider" />
 
-      <h2 id="legal-inquiries">23. LAW ENFORCEMENT INQUIRIES</h2>
+      <h2 id="legal-inquiries">23. REPORTING ILLEGAL CONTENT & LAW ENFORCEMENT INQUIRIES</h2>
+
+      <p>
+        Anyone who believes that a listing or other content on the Services is
+        illegal can report it to{" "}
+        <a href={"mailto:legal@" + process.env.EMAIL_DOMAIN}>legal@{process.env.EMAIL_DOMAIN}</a>.
+        Please include the exact URL of the content and the reasons you consider
+        it illegal. We review every report and remove or disable access to
+        content we confirm to be illegal, and we tell the reporter what action
+        we took.
+      </p>
 
       <p>
         Law enforcement and other formal legal inquiries must be submitted to{" "}
@@ -1126,7 +1142,7 @@ export default function TosContent() {
       </p>
 
       <p>
-        The Company does not accept service of legal process via email. Informal
+        The FreeHosts project does not accept service of legal process via email. Informal
         communications, cease-and-desist notices, or messages from unauthorized
         parties do not constitute valid legal notice and may not receive a
         response.
@@ -1142,9 +1158,29 @@ export default function TosContent() {
       </p>
 
       <p>
-        <strong>FreeHosts</strong>
+        <strong>FreeHosts</strong> — non-commercial community project, Portugal
         <br />
-        Email: <a href={"mailto:legal@" + process.env.EMAIL_DOMAIN}>legal@{process.env.EMAIL_DOMAIN}</a>
+        Legal matters: <a href={"mailto:legal@" + process.env.EMAIL_DOMAIN}>legal@{process.env.EMAIL_DOMAIN}</a>
+        <br />
+        General inquiries: <a href={"mailto:support@" + process.env.EMAIL_DOMAIN}>support@{process.env.EMAIL_DOMAIN}</a>
+      </p>
+
+      <div className="highlight-box">
+        <p>
+          <strong>FreeHosts</strong> — non-commercial community project, Portugal
+          <br />
+          <a href={"mailto:legal@" + process.env.EMAIL_DOMAIN}>legal@{process.env.EMAIL_DOMAIN}</a>
+        </p>
+      </div>
+
+      <p
+        style={{
+          textAlign: "center",
+          color: "var(--muted)",
+          marginTop: "3rem",
+        }}
+      >
+        These legal terms were last updated on September 4, 2026
       </p>
     </div>
   );

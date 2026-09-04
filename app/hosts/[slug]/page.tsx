@@ -6,7 +6,16 @@ import { findAlternatives, providerKind, primaryTargetLabel } from '../../../lib
 import HostDetailClient from '../../../components/HostDetailClient'
 import Breadcrumbs from '../../../components/Breadcrumbs'
 import { safeJsonLd } from "../../../lib/safeJsonLd";
-export const runtime = 'edge';
+// ISR: prerender all known hosts at build, regenerate at most every 30 min
+// (revalidate must be a literal; keep in sync with lib/hosts.ts).
+// dynamicParams allows hosts added after the build to render on demand.
+export const revalidate = 1800;
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  const hosts = await fetchHosts();
+  return hosts.filter((h) => h.name).map((h) => ({ slug: slugify(h.name) }));
+}
 
 type Props = { params: Promise<{ slug: string }> }
 
