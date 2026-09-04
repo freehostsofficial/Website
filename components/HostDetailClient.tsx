@@ -13,6 +13,7 @@ import { useFavorites } from '../contexts/FavoritesContext'
 import { computeRating } from '../lib/comparisonRows'
 import { ramDisplay, diskDisplay } from '../lib/specs'
 import { providerKind, hasPublishedSpecs, splitTargets } from '../lib/taxonomy'
+import { extractDomainNames } from '../lib/domains'
 
 interface HostDetailClientProps { host: Host; related?: Host[]; alternativesCount?: number }
 
@@ -357,10 +358,7 @@ export default function HostDetailClient({ host, related = [], alternativesCount
                   
                   const isDomainHost = r.targets?.some(t => t.toLowerCase().includes('domain'))
                   const combinedText = `${r.info || ''}\n${r.description || ''}\n${r.free_plan || ''}`
-                  const allExtractedDomains = isDomainHost ? Array.from(new Set(combinedText.split(/\r?\n/)
-                    .map(l => l.trim())
-                    .filter(l => l.includes('.') && !l.includes(':') && !l.toLowerCase().includes('available domains') && !l.toLowerCase().includes('available extensions'))
-                  )) : []
+                  const allExtractedDomains = isDomainHost ? extractDomainNames(combinedText) : []
                   const extractedDomains = allExtractedDomains.slice(0, 5)
                   const hasMoreDomains = allExtractedDomains.length > 5
                   

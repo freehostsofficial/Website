@@ -1,11 +1,4 @@
-let displayNames: Intl.DisplayNames | null = null
-
-function getDisplayNames(): Intl.DisplayNames {
-  if (!displayNames) {
-    displayNames = new Intl.DisplayNames(['en'], { type: 'language' })
-  }
-  return displayNames
-}
+const displayNames = new Intl.DisplayNames(['en'], { type: 'language' })
 
 /**
  * Resolves a locale code (e.g. "EN", "PT-BR", "zh-Hans") to a human-readable
@@ -24,7 +17,7 @@ export function getLanguageName(locale: string): string {
 
   for (const candidate of candidates) {
     try {
-      const name = getDisplayNames().of(candidate)
+      const name = displayNames.of(candidate)
       // Intl returns the tag itself when it can't resolve — skip those
       if (name && name.toLowerCase() !== candidate.toLowerCase()) {
         return name

@@ -1,5 +1,6 @@
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { safeJsonLd } from '../lib/safeJsonLd';
+import { webPageJsonLd } from '../lib/pageMeta';
 import FaqCta from './FaqCta';
 
 // Shared shell for the comparison-style pages (was duplicated in
@@ -30,17 +31,8 @@ export default function CompareShell({
   ctaButtons: { href: string; label: string; primary?: boolean }[];
   children: React.ReactNode;
 }) {
-  const webPageSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'WebPage',
-    '@id': `${pageUrl}#webpage`,
-    url: pageUrl,
-    name,
-    isPartOf: { '@id': `${process.env.APP_URL}/#website` },
-    inLanguage: 'en',
-    description,
-    ...(dateModified ? { dateModified } : {}),
-  };
+  const path = pageUrl.replace(process.env.APP_URL ?? '', '') || '/';
+  const webPageSchema = webPageJsonLd(path, name, description, dateModified);
 
   return (
     <>

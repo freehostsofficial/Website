@@ -7,7 +7,6 @@ import ClientChrome from "../components/ClientChrome";
 import MatomoTracker from "../components/MatomoTracker";
 import ThemeProvider from "../components/ThemeProvider";
 import BackToTop from "../components/BackToTop";
-import PreviewCard from "../components/PreviewCard";
 import ToastContainer from "../components/Toast";
 import { ConsentProvider } from "../contexts/ConsentContext";
 import { ComparisonProvider } from "../contexts/ComparisonContext";
@@ -253,7 +252,6 @@ export default function RootLayout({
         </a>
         <ThemeProvider />
         <ClientChrome />
-        <PreviewCard />
 
         <ConsentProvider>
           <ComparisonProvider>

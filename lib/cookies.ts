@@ -48,16 +48,6 @@ export const FAVORITES_COOKIE = 'fh_favorites';
 export const THEME_STORAGE_KEY = 'fh_theme';
 export const COMPARISON_STORAGE_KEY = 'fh_comparison';
 
-const ALL_OFF: ConsentSelection = {
-  preferences: { theme: false, favorites: false, comparison: false },
-  statistics: false,
-};
-
-const ALL_ON: ConsentSelection = {
-  preferences: { theme: true, favorites: true, comparison: true },
-  statistics: true,
-};
-
 function isPreferenceSelection(value: unknown): value is PreferenceSelection {
   if (typeof value !== 'object' || value === null) return false;
   const v = value as Record<string, unknown>;
@@ -72,21 +62,10 @@ function isPreferenceSelection(value: unknown): value is PreferenceSelection {
 export function readConsentSelection(): ConsentSelection | null {
   const raw = readCookie(CONSENT_COOKIE);
   if (!raw) return null;
-  // Legacy single-value cookie from the old accept/decline banner.
-  if (raw === 'accepted') return ALL_ON;
-  if (raw === 'declined') return ALL_OFF;
   try {
     const parsed: unknown = JSON.parse(raw);
     if (typeof parsed !== 'object' || parsed === null) return null;
     const p = parsed as { v?: unknown; preferences?: unknown; statistics?: unknown };
-    // v1: one boolean for the whole preferences category — expand to per-cookie.
-    if (p.v === 1 && typeof p.preferences === 'boolean' && typeof p.statistics === 'boolean') {
-      const on = p.preferences;
-      return {
-        preferences: { theme: on, favorites: on, comparison: on },
-        statistics: p.statistics,
-      };
-    }
     if (
       p.v === CONSENT_VERSION &&
       isPreferenceSelection(p.preferences) &&

@@ -62,7 +62,7 @@ export function pageMeta({
   };
 }
 
-export function webPageJsonLd(path: string, name: string, description: string) {
+export function webPageJsonLd(path: string, name: string, description: string, dateModified?: string) {
   const base = process.env.APP_URL;
   return {
     "@context": "https://schema.org",
@@ -73,6 +73,7 @@ export function webPageJsonLd(path: string, name: string, description: string) {
     isPartOf: { "@id": base + "/#website" },
     inLanguage: "en",
     description,
+    ...(dateModified ? { dateModified } : {}),
   };
 }
 

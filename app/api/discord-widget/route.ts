@@ -14,15 +14,11 @@ export const revalidate = 300;
 
 const INVITE_URL =
   "https://discord.com/api/v9/invites/QbeZ3b5CQd?with_counts=true&with_expiration=true";
-const WIDGET_URL =
-  "https://discord.com/api/guilds/1221389187719102514/widget.json";
 
 type DiscordPayload = {
   guild?: { name?: string };
-  name?: string;
   approximate_member_count?: number | null;
   approximate_presence_count?: number | null;
-  presence_count?: number | null;
   members?: unknown[];
 };
 
@@ -40,7 +36,6 @@ async function fetchJson(url: string): Promise<DiscordPayload | null> {
 }
 
 export async function GET() {
-  // Source 1: invite endpoint (member count).
   const invite = await fetchJson(INVITE_URL);
   if (invite) {
     const count =
@@ -53,15 +48,6 @@ export async function GET() {
         count,
       });
     }
-  }
-
-  // Source 2: widget endpoint (presence count fallback).
-  const widget = await fetchJson(WIDGET_URL);
-  if (widget) {
-    const count =
-      widget.presence_count ??
-      (Array.isArray(widget.members) ? widget.members.length : null);
-    return NextResponse.json({ name: widget.name ?? "Discord", count });
   }
 
   return NextResponse.json({ name: "Discord", count: null });

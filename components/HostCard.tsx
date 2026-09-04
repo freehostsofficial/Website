@@ -47,12 +47,7 @@ function DomainSection({ host }: { host: Host }) {
   }
 
   if (host.targets?.some(t => t.toLowerCase().includes('subdomain'))) {
-    const domains = Array.from(new Set((host.free_plan || '')
-      .split('\n')
-      .map(l => l.trim())
-      .filter(l => /^[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(l))
-      .map(l => l.split(/\s/)[0])
-    )).slice(0, 10);
+    const domains = extractDomainNames(host.free_plan || '').slice(0, 10);
     if (domains.length > 0) {
       return (
         <div className="host-domains">
