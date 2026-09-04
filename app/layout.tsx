@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist as GeistFont, Inter as InterFont } from "next/font/google";
 import React, { Suspense } from "react";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/SiteLink";
 import ClientChrome from "../components/ClientChrome";
 import MatomoTracker from "../components/MatomoTracker";
 import ThemeProvider from "../components/ThemeProvider";

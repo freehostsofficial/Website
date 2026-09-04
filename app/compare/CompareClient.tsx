@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import Link from '@/components/SiteLink';
 import { GitCompare, Trash2, ArrowLeft, Star, CheckCircle2, XCircle } from 'lucide-react';
 import { useComparison } from '../../contexts/ComparisonContext';
 import { ROWS, findBestIndex, computeRating } from '../../lib/comparisonRows';

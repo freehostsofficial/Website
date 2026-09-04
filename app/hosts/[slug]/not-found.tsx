@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from '@/components/SiteLink'
 import { ArrowLeft, Home, Server, X } from 'lucide-react'
 import type { Metadata } from 'next'
 

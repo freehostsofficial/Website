@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import Link from '@/components/SiteLink';
 import { X, GitCompare, ArrowRight } from 'lucide-react';
 import { useComparison } from '../contexts/ComparisonContext';
 

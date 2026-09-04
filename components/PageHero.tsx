@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '@/components/SiteLink';
 
 // Shared centered hero (was copy-pasted in compare, saved, hosts, faq,
 // categories, vs, alternatives — same blobs + hero-inner + h1 + lead).

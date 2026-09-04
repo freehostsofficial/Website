@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import Link from 'next/link'
+import Link from '@/components/SiteLink'
 import { fetchHosts, type Host } from '../../../lib/hosts'
 import { slugify } from '../../../lib/slugify'
 import { splitTargets, targetBuckets, parseVsSlug, sharedBucket, providerKind, sharedTargets, primaryTargetLabel } from '../../../lib/taxonomy'

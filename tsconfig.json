@@ -19,8 +19,7 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"],
-      "next/link": ["./overrides/next/link"]
+      "@/*": ["./*"]
     }
   },
   "include": [

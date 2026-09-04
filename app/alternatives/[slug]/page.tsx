@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import Link from 'next/link'
+import Link from '@/components/SiteLink'
 import { safeJsonLd } from '../../../lib/safeJsonLd'
 import { fetchHosts } from '../../../lib/hosts'
 import { slugify } from '../../../lib/slugify'

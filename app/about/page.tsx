@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/SiteLink";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { safeJsonLd } from "../../lib/safeJsonLd";
 import { pageMeta, organizationJsonLd } from "../../lib/pageMeta";

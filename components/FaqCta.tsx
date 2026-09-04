@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '@/components/SiteLink';
 
 // Shared closing CTA (was copy-pasted in vs, alternatives, categories,
 // methodology with different copy but identical markup).

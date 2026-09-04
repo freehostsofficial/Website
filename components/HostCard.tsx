@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import Link from '@/components/SiteLink';
 import { type Host } from '../lib/hosts';
 import { slugify } from '../lib/slugify';
 import { getLanguageName } from '../lib/getLanguageName';
