@@ -8,7 +8,7 @@ import type { NextRequest } from "next/server";
 // `Content-Type: text/markdown`. Everything else passes through to HTML.
 //
 // Security headers and Cache-Control tiers live in next.config.ts; this
-// middleware only negotiates the representation.
+// proxy only negotiates the representation.
 
 function wantsMarkdown(request: NextRequest): boolean {
   // Internal HTML fetch performed by /api/md itself — never rewrite.
@@ -17,7 +17,7 @@ function wantsMarkdown(request: NextRequest): boolean {
   return accept.toLowerCase().includes("text/markdown");
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (

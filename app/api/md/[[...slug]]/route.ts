@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { htmlToMarkdown, estimateTokens } from "@/lib/markdown";
 
-// Agent content negotiation endpoint. The middleware rewrites page requests
+// Agent content negotiation endpoint. The proxy rewrites page requests
 // carrying `Accept: text/markdown` here; this handler fetches the page's own
-// HTML server-side (?__md=1 bypasses the middleware rewrite) and converts it.
+// HTML server-side (?__md=1 bypasses the proxy rewrite) and converts it.
 //
 // Response mirrors Cloudflare's "Markdown for Agents" shape: text/markdown
 // body + x-markdown-tokens header.
