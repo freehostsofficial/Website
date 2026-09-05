@@ -82,10 +82,10 @@ export default function MatomoTracker() {
     if (!statisticsEnabled) return;
     if (!MATOMO_URL || !MATOMO_SITE_ID) return;
     window._paq = window._paq || [];
-    const url = qs ? `${pathname}?${qs}` : pathname;
-    if (lastTracked.current === url) return;
-    lastTracked.current = url;
-    window._paq.push(["setCustomUrl", url]);
+    const route = qs ? `${pathname}?${qs}` : pathname;
+    if (lastTracked.current === route) return;
+    lastTracked.current = route;
+    window._paq.push(["setCustomUrl", window.location.href]);
     window._paq.push(["trackPageView"]);
   }, [pathname, qs, statisticsEnabled]);
 
