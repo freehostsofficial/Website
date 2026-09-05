@@ -20,13 +20,10 @@ function wantsMarkdown(request: NextRequest): boolean {
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (
-    (request.method === "GET" || request.method === "HEAD") &&
-    wantsMarkdown(request)
-  ) {
+  if (request.method === "GET" && wantsMarkdown(request)) {
     const url = request.nextUrl.clone();
     url.pathname = `/api/md${pathname === "/" ? "" : pathname}`;
-    url.search = "";
+    url.searchParams.delete("__md");
     const res = NextResponse.rewrite(url);
     res.headers.set("Vary", "Accept");
     return res;
@@ -42,7 +39,7 @@ export function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     // Page routes only: skip APIs, Next internals, files (sitemap.xml,
-    // robots.txt, icons…), and the OG image route (returns image/png).
-    "/((?!api|_next|hosts/og|.*\\..*).*)",
+    // robots.txt, icons…), well-known, and the OG image route (returns image/png).
+    "/((?!.well-known|api|_next|hosts/og|.*\\..*).*)",
   ],
 };

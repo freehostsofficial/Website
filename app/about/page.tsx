@@ -17,6 +17,7 @@ import {
   Zap,
 } from "lucide-react";
 import { DiscordIcon } from "../../components/BrandIcons";
+import { SITE_URL, SUPPORT_EMAIL } from "../../lib/site";
 
 const DESCRIPTION =
   "Learn about FreeHosts — a community-driven directory helping developers, students, and makers discover reliable free hosting. Meet the team and find out how to contribute.";
@@ -44,11 +45,11 @@ const structuredData = {
     organizationJsonLd(),
     {
       "@type": "WebPage",
-      "@id": process.env.APP_URL + "/about#webpage",
-      url: process.env.APP_URL + "/about",
+      "@id": SITE_URL + "/about#webpage",
+      url: SITE_URL + "/about",
       name: "About FreeHosts - Our Mission, Team & Community",
-      isPartOf: { "@id": process.env.APP_URL + "/#website" },
-      about: { "@id": process.env.APP_URL + "/#organization" },
+      isPartOf: { "@id": SITE_URL + "/#website" },
+      about: { "@id": SITE_URL + "/#organization" },
       inLanguage: "en",
       description:
         "Learn about FreeHosts — a community-driven directory helping developers, students, and makers discover reliable free hosting.",
@@ -63,7 +64,7 @@ export default function AboutPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: safeJsonLd(structuredData) }}
       />
-      <Breadcrumbs siteUrl={process.env.APP_URL} items={[{ name: "About", path: "/about" }]} />
+      <Breadcrumbs siteUrl={SITE_URL} items={[{ name: "About", path: "/about" }]} />
       <main className="wrap">
         <section className="about-hero">
           <div className="about-hero-icon">
@@ -297,7 +298,7 @@ export default function AboutPage() {
                   For general inquiries, partnerships, or formal communications, reach
                   out via email.
                 </p>
-                <a href={"mailto:support@" + process.env.EMAIL_DOMAIN} className="contact-btn">
+                <a href={"mailto:" + SUPPORT_EMAIL} className="contact-btn">
                   <Mail size={14} aria-hidden="true" />
                   Send Email
                 </a>

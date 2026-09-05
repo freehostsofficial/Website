@@ -74,6 +74,7 @@ export default function FaqClient({ emailDomain }: { emailDomain: string }) {
             key={id}
             className={`faq-category-btn ${activeCategory === id ? "active" : ""}`}
             type="button"
+            aria-pressed={activeCategory === id}
             onClick={() => setCategory(id)}
           >
             <Icon size={14} aria-hidden="true" />
@@ -109,7 +110,7 @@ export default function FaqClient({ emailDomain }: { emailDomain: string }) {
                         </div>
                       </button>
                     </h3>
-                    <div className="faq-answer" style={{ maxHeight: isOpen ? "260px" : "0" }}>
+                    <div className="faq-answer" hidden={!isOpen} aria-hidden={!isOpen} style={isOpen ? { maxHeight: "none" } : undefined}>
                       <div className="faq-answer-content">{item.answer}</div>
                     </div>
                   </div>
@@ -121,7 +122,7 @@ export default function FaqClient({ emailDomain }: { emailDomain: string }) {
       </div>
 
       {visibleItems.length === 0 && (
-        <div className="no-results" id="noResults">
+        <div className="no-results" id="noResults" role="status">
           <Search size={48} aria-hidden="true" />
           <h3>No results found</h3>
           <p>Try adjusting your search or browse all categories</p>

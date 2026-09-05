@@ -3,7 +3,8 @@
 export function readCookie(name: string): string | undefined {
   if (typeof document === 'undefined') return undefined;
   const match = document.cookie
-    .split('; ')
+    .split(';')
+    .map((row) => row.trim())
     .find((row) => row.startsWith(`${name}=`));
   if (!match) return undefined;
   return decodeURIComponent(match.split('=').slice(1).join('='));
@@ -11,6 +12,7 @@ export function readCookie(name: string): string | undefined {
 
 export function writeCookie(name: string, value: string, maxAgeSeconds?: number): void {
   try {
+    if (typeof document === 'undefined' || typeof location === 'undefined') return;
     const secure = location.protocol === 'https:' ? '; Secure' : '';
     const age = maxAgeSeconds !== undefined ? `; Max-Age=${maxAgeSeconds}` : '';
     document.cookie = `${name}=${encodeURIComponent(value)}${age}; Path=/; SameSite=Lax${secure}`;
@@ -99,6 +101,21 @@ export function clearNonEssentialStorage(selection: ConsentSelection): void {
       sessionStorage.removeItem(COMPARISON_STORAGE_KEY);
     } catch {
       // storage unavailable
+    }
+  }
+  if (!selection.statistics) {
+    // Matomo first-party cookies (_pk_id.*, _pk_ses.*, _pk_ref, MATOMO_SESSID)
+    try {
+      if (typeof document !== 'undefined') {
+        for (const row of document.cookie.split(';')) {
+          const name = row.trim().split('=')[0];
+          if (name.startsWith('_pk_') || name === 'MATOMO_SESSID' || name.startsWith('mtm_')) {
+            deleteCookie(name);
+          }
+        }
+      }
+    } catch {
+      // ignore — storage unavailable
     }
   }
 }

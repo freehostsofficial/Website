@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useCallback, useContext, useMemo } from 'react';
 import { readCookie, writeCookie, isPreferenceAllowed, FAVORITES_COOKIE } from '../lib/cookies';
 import { usePersistentState } from '../hooks/usePersistentState';
 
@@ -46,7 +46,8 @@ const FavoritesContext = createContext<FavoritesContextValue | null>(null);
 
 export function FavoritesProvider({ children }: { children: React.ReactNode }) {
   // Preferences category: without opt-in, favorites work in-memory for the
-  // session but are never written to a cookie.
+  // session but are never written to a cookie. The store only saves on
+  // user-action sets (never on mount), so no hydration guard is needed.
   const [favorites, setFavorites] = usePersistentState<number[]>(
     [],
     load,
@@ -55,14 +56,22 @@ export function FavoritesProvider({ children }: { children: React.ReactNode }) {
     },
   );
 
-  const isFavorite = (id: number): boolean => favorites.includes(id);
+  const isFavorite = useCallback(
+    (id: number): boolean => favorites.includes(id),
+    [favorites],
+  );
 
-  const toggleFavorite = (id: number): void => {
+  const toggleFavorite = useCallback((id: number): void => {
     setFavorites((prev) => applyToggle(prev, id));
-  };
+  }, [setFavorites]);
+
+  const value = useMemo<FavoritesContextValue>(
+    () => ({ favorites, isFavorite, toggleFavorite }),
+    [favorites, isFavorite, toggleFavorite],
+  );
 
   return (
-    <FavoritesContext.Provider value={{ favorites, isFavorite, toggleFavorite }}>
+    <FavoritesContext.Provider value={value}>
       {children}
     </FavoritesContext.Provider>
   );

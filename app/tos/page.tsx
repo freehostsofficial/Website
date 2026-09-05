@@ -15,6 +15,7 @@ export const metadata = pageMeta({
   ogDescription: SOCIAL_DESCRIPTION,
   keywords: ["freehosts terms of service", "freehosts tos", "hosting directory terms"],
   imageAlt: "FreeHosts - Terms of Service",
+  twitterImageAlt: "FreeHosts - Terms of Service",
 });
 
 export default function TermsOfServicePage() {

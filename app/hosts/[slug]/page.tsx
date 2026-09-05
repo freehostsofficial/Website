@@ -1,20 +1,21 @@
 import { redirect, notFound } from 'next/navigation'
-import { fetchHosts, type Host } from '../../../lib/hosts'
+import { Suspense } from 'react'
+import { fetchHosts, hostOgVersion, type Host } from '../../../lib/hosts'
 import { slugify } from '../../../lib/slugify'
 import { specSummary } from '../../../lib/specs'
-import { findAlternatives, providerKind, primaryTargetLabel } from '../../../lib/taxonomy'
+import { findAlternatives, providerKind, primaryTargetLabel, targetBuckets } from '../../../lib/taxonomy'
 import HostDetailClient from '../../../components/HostDetailClient'
 import Breadcrumbs from '../../../components/Breadcrumbs'
 import { safeJsonLd } from "../../../lib/safeJsonLd";
-// ISR: prerender all known hosts at build, regenerate at most every 30 min
-// (revalidate must be a literal; keep in sync with lib/hosts.ts).
-// dynamicParams allows hosts added after the build to render on demand.
-export const revalidate = 1800;
-export const dynamicParams = true;
-
+import { SITE_URL } from "../../../lib/site";
+// Prerender all known hosts at build; data freshness comes from
+// fetchHosts()' cache lifetime. Hosts added after the build render on demand.
 export async function generateStaticParams() {
   const hosts = await fetchHosts();
-  return hosts.filter((h) => h.name).map((h) => ({ slug: slugify(h.name) }));
+  const params = hosts.filter((h) => h.name).map((h) => ({ slug: slugify(h.name) }));
+  // Must return ≥1 param under Cache Components; a never-matching sentinel
+  // keeps the build green when the API is unreachable (renders notFound()).
+  return params.length > 0 ? params : [{ slug: '__unlisted__' }];
 }
 
 type Props = { params: Promise<{ slug: string }> }
@@ -38,7 +39,7 @@ function getHostSeo(host: Host) {
     : `${host.name} is a free ${targetLabel} provider. ${specsText} Read community reviews and compare on FreeHosts.`
   if (description.length > 160) description = description.substring(0, 157) + '...'
 
-  const site = process.env.APP_URL
+  const site = SITE_URL
   const hostUrl = `${site}/hosts/${slugify(host.name)}`
 
   // Target-aware title: "RRHosting — Free Web Hosting & Coding Host" instead of generic
@@ -54,8 +55,8 @@ export async function generateMetadata({ params }: Props) {
   if (!host) return { title: 'Host Not Found', description: 'The host you are looking for does not exist or has been removed.', robots: { index: false, follow: false } }
   const { targetLabel, description, site, hostUrl, title } = getHostSeo(host)
 
-  // Construct dynamic OG image URL
-  const ogImageUrl = `${site}/hosts/og/${slug}`
+  // Construct dynamic OG image URL (content-hashed: immutable per version).
+  const ogImageUrl = `${site}/hosts/og/${slug}?v=${hostOgVersion(host)}`
 
   // Rich keywords: host name + target-specific terms derived from actual targets
   const targetKeywords = (host.targets ?? []).flatMap(t =>
@@ -81,7 +82,7 @@ export async function generateMetadata({ params }: Props) {
       description,
       url: hostUrl,
       siteName: 'FreeHosts',
-      type: 'website',
+      type: 'article',
       locale: 'en_US',
       images: [{ url: ogImageUrl, width: 1200, height: 630, alt: `${host.name} — Free ${targetLabel} on FreeHosts` }]
     },
@@ -96,7 +97,17 @@ export async function generateMetadata({ params }: Props) {
   }
 }
 
-export default async function HostDetailPage({ params }: Props) {
+export default function HostDetailPage({ params }: Props) {
+  // Params resolve at request time for hosts added after the build — await
+  // them inside Suspense so the static shell still prerenders.
+  return (
+    <Suspense fallback={null}>
+      <HostDetailBody params={params} />
+    </Suspense>
+  );
+}
+
+async function HostDetailBody({ params }: Props) {
   const { slug } = await params
   // One full-list fetch per render (wrappers removed — on Cloudflare each
   // call is a real upstream request, so derive everything from one list).
@@ -111,10 +122,9 @@ export default async function HostDetailPage({ params }: Props) {
   const { targetLabel, description, site, hostUrl, title } = getHostSeo(host)
   const totalReviews = host.approvals + host.disapprovals
   const ratingValue = totalReviews > 0 ? ((host.approvals / totalReviews) * 5).toFixed(1) : null
-  // Owner decision: show the community score as soon as ANY vote exists (>=1).
-  // Votes are Discord thumbs, not written reviews — if Google ever flags this,
-  // re-add a review-body requirement here before touching the schema.
-  const showRating = ratingValue !== null && totalReviews >= 1
+  // Votes are Discord thumbs, not written reviews — require at least 3 votes
+  // before emitting aggregateRating so Google never sees a 1-vote rich result.
+  const showRating = ratingValue !== null && totalReviews >= 3
   const jsonLd = { "@context": "https://schema.org", "@type": "WebPage", "@id": `${hostUrl}#webpage`, "url": hostUrl, "name": title, "isPartOf": { "@id": `${site}/#website` }, "inLanguage": "en", "description": description, ...(host.created_at ? { "dateModified": new Date(host.created_at).toISOString().split('T')[0] } : {}) }
   const serviceLd = {
     "@context": "https://schema.org", "@type": "Service", "name": host.name, "description": description, "url": hostUrl,
@@ -125,8 +135,13 @@ export default async function HostDetailPage({ params }: Props) {
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD", "availability": host.status?.toLowerCase() === "online" ? "https://schema.org/InStock" : "https://schema.org/OutOfStock", "url": hostUrl, "description": `Free ${targetLabel}${specSummary(host) ? ` — ${specSummary(host)}` : ''}` },
     ...(showRating ? { "aggregateRating": { "@type": "AggregateRating", "ratingValue": ratingValue, "bestRating": "5", "worstRating": "1", "ratingCount": totalReviews, "reviewCount": totalReviews } } : {}),
   }
+  const hostBuckets = targetBuckets(host);
   const related = allHosts
-    .filter(h => h.id !== host.id && h.targets?.some(t => host.targets?.includes(t)))
+    .filter(h => {
+      if (h.id === host.id) return false;
+      for (const b of targetBuckets(h)) if (hostBuckets.has(b)) return true;
+      return false;
+    })
     // Use a seed-based sort for stable variety between different hosts
     .sort((a, b) => {
       const seed = host.id;

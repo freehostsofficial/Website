@@ -1,5 +1,7 @@
 import ProsePage from "@/components/ProsePage";
+import Link from "@/components/SiteLink";
 import { pageMeta } from "../../lib/pageMeta";
+import { SUPPORT_EMAIL, LEGAL_EMAIL } from "../../lib/site";
 
 const TITLE = "Disclaimer - FreeHosts";
 const DESCRIPTION =
@@ -14,10 +16,12 @@ export const metadata = pageMeta({
   ogDescription: SOCIAL_DESCRIPTION,
   keywords: ["freehosts disclaimer", "hosting directory disclaimer", "freehosts liability"],
   imageAlt: "FreeHosts - Disclaimer",
+  twitterImageAlt: "FreeHosts - Disclaimer",
 });
 
 export default function DisclaimerPage() {
-  const supportEmail = `support@${process.env.EMAIL_DOMAIN}`;
+  const supportEmail = SUPPORT_EMAIL;
+  const legalEmail = LEGAL_EMAIL;
   return (
     <ProsePage path="/disclaimer" crumb="Disclaimer" name={TITLE} description={SOCIAL_DESCRIPTION}>
       <div className="tos-content wrap">
@@ -73,7 +77,7 @@ export default function DisclaimerPage() {
 
         <p>
           This Disclaimer is a plain-language companion to our{" "}
-          <a href="/tos">Terms of Service</a>. If anything here conflicts with the Legal Terms,
+          <Link href="/tos">Terms of Service</Link>. If anything here conflicts with the Legal Terms,
           the Legal Terms prevail.
         </p>
 
@@ -110,7 +114,7 @@ export default function DisclaimerPage() {
           We do not run benchmark rigs or independently measure provider performance. Treat listed
           specs as a starting point for shortlisting, and confirm anything critical on the
           provider&apos;s own website before deploying, especially for production use. See our{" "}
-          <a href="/methodology">methodology</a> for exactly how listings are verified.
+          <Link href="/methodology">methodology</Link> for exactly how listings are verified.
         </p>
 
         <hr className="section-divider" />
@@ -125,8 +129,8 @@ export default function DisclaimerPage() {
         </p>
 
         <p>
-          Reviews are moderated against our <a href="/server-rules">server rules</a> and{" "}
-          <a href="/submission-rules">submission rules</a>, but we cannot verify every
+          Reviews are moderated against our <Link href="/server-rules">server rules</Link> and{" "}
+          <Link href="/submission-rules">submission rules</Link>, but we cannot verify every
           reviewer&apos;s experience. A high score does not mean a provider is right for your
           project, and a low score does not mean it is wrong for it.
         </p>
@@ -170,7 +174,7 @@ export default function DisclaimerPage() {
           specs, scores, or external websites — including provider shutdowns, plan changes, data
           loss, or service interruptions. The Services are provided on an &ldquo;as-is&rdquo; and
           &ldquo;as-available&rdquo; basis, as set out in Sections 16 and 17 of our{" "}
-          <a href="/tos">Terms of Service</a>.
+          <Link href="/tos">Terms of Service</Link>.
         </p>
 
         <hr className="section-divider" />
@@ -184,10 +188,10 @@ export default function DisclaimerPage() {
           </a>{" "}
           and curators will correct or remove it, usually within days. If you believe a listing
           or other content is illegal, report it to{" "}
-          <a href={"mailto:legal@" + process.env.EMAIL_DOMAIN}>
-            legal@{process.env.EMAIL_DOMAIN}
+          <a href={"mailto:" + legalEmail}>
+            {legalEmail}
           </a>{" "}
-          as described in Section 23 of our <a href="/tos">Terms of Service</a> — we review every
+          as described in Section 23 of our <Link href="/tos">Terms of Service</Link> — we review every
           report and act on confirmed illegal content.
         </p>
 
@@ -205,8 +209,8 @@ export default function DisclaimerPage() {
             <strong>FreeHosts</strong> — non-commercial community project, Portugal
             <br />
             Legal matters:{" "}
-            <a href={"mailto:legal@" + process.env.EMAIL_DOMAIN}>
-              legal@{process.env.EMAIL_DOMAIN}
+            <a href={"mailto:" + legalEmail}>
+              {legalEmail}
             </a>
             <br />
             General questions: <a href={"mailto:" + supportEmail}>{supportEmail}</a>

@@ -1,7 +1,9 @@
+import type { Viewport } from 'next'
 import CompareClient from './CompareClient'
 import Breadcrumbs from '@/components/Breadcrumbs'
 import { safeJsonLd } from '../../lib/safeJsonLd'
 import { pageMeta, webPageJsonLd } from '../../lib/pageMeta'
+import { SITE_URL } from '../../lib/site'
 
 const DESCRIPTION =
   'Compare free hosting providers side by side: CPU, RAM, storage, supported languages, and community ratings in one table to find the best free host for your project.';
@@ -21,7 +23,14 @@ export const metadata = pageMeta({
     'best free hosting',
   ],
   imageAlt: 'FreeHosts - Compare Free Hosting Providers',
+  twitterImageAlt: 'FreeHosts - Compare Free Hosting Providers',
 })
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#071028',
+};
 
 export default function ComparePage() {
   const webPageSchema = webPageJsonLd(
@@ -38,7 +47,7 @@ export default function ComparePage() {
           __html: safeJsonLd(webPageSchema),
         }}
       />
-      <Breadcrumbs siteUrl={process.env.APP_URL} items={[{ name: 'Compare Hosts', path: '/compare' }]} />
+      <Breadcrumbs siteUrl={SITE_URL} items={[{ name: 'Compare Hosts', path: '/compare' }]} />
       <CompareClient />
     </>
   )

@@ -1,5 +1,6 @@
 import React from "react";
 import type { LucideIcon } from "lucide-react";
+import { SUPPORT_EMAIL } from "../../lib/site";
 import {
   AlertCircle, Ban, BellOff, Bot, Brain, Clock, Crosshair,
   EyeOff, Flag, Gavel, IdCard, Languages, Lock, MessageCircle,
@@ -203,7 +204,7 @@ const categories: Category[] = [
 
 export default function ServerRulesContent() {
   const totalRules = categories.reduce((sum, c) => sum + c.rules.length, 0);
-  const supportEmail = `support@${process.env.EMAIL_DOMAIN}`;
+  const supportEmail = SUPPORT_EMAIL;
 
   return (
     <div className="rules-page-container">

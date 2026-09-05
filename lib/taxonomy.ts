@@ -1,6 +1,7 @@
 import { slugify } from './slugify'
 import { ramDisplay, diskDisplay } from './specs'
 import { computeRating } from './comparisonRows'
+import { getLanguageName } from './getLanguageName'
 import type { Host } from './hosts'
 
 // A host's `targets` field is a comma-separated list inside each array entry
@@ -16,13 +17,23 @@ export function splitTargets(host: Host): string[] {
   return [...new Set(out)]
 }
 
+/** Case/whitespace-insensitive key for exact raw-target matching:
+ *  "Website (Static)" and "Website(Static)" are the same tag, while
+ *  "Web Hosting" stays distinct. Used to rank same-niche hosts first. */
+export function rawTargetKey(t: string): string {
+  return t.toLowerCase().replace(/\s+/g, "");
+}
+
 /**
  * Hosts that could reasonably be an alternative to `host`: share at least one
  * target bucket AND same provider kind (hosting vs subdomains/domains) to avoid
- * comparing apples to oranges. Ranked by shared-bucket count, then votes.
+ * comparing apples to oranges. Ranked by exact raw-target matches first (a
+ * "Website (Static)" host belongs above a generic "Web Hosting" one for a
+ * static-site provider), then shared-bucket count, then votes.
  */
 export function findAlternatives(host: Host, all: Host[], limit = 12): Host[] {
   const buckets = targetBuckets(host)
+  const hostKeys = new Set(splitTargets(host).map(rawTargetKey))
   const hostSlug = slugify(host.name)
   const hostKind = providerKind(host)
   return all
@@ -31,13 +42,22 @@ export function findAlternatives(host: Host, all: Host[], limit = 12): Host[] {
       if (providerKind(h) !== hostKind) return false
       return [...targetBuckets(h)].some(b => buckets.has(b))
     })
-    .map(h => ({
-      h,
-      shared: [...targetBuckets(h)].filter(b => buckets.has(b)).length,
-      score: (h.approvals - h.disapprovals),
-      hasSpecs: hasPublishedSpecs(h) ? 1 : 0,
-    }))
+    .map(h => {
+      const hBuckets = targetBuckets(h);
+      const approvals = Number.isFinite(h.approvals) ? h.approvals : 0;
+      const disapprovals = Number.isFinite(h.disapprovals) ? h.disapprovals : 0;
+      let exact = 0;
+      for (const k of splitTargets(h).map(rawTargetKey)) if (hostKeys.has(k)) exact += 1;
+      return {
+        h,
+        exact,
+        shared: [...hBuckets].filter(b => buckets.has(b)).length,
+        score: (approvals - disapprovals),
+        hasSpecs: hasPublishedSpecs(h) ? 1 : 0,
+      };
+    })
     .sort((a, b) => {
+      if (b.exact !== a.exact) return b.exact - a.exact
       if (b.shared !== a.shared) return b.shared - a.shared
       if (b.hasSpecs !== a.hasSpecs) return b.hasSpecs - a.hasSpecs
       if (b.score !== a.score) return b.score - a.score
@@ -65,15 +85,17 @@ export function sharedBucket(a: Host, b: Host): string {
 }
 
 export function hostRow(host: Host): {
-  slug: string; name: string; targets: string;
+  slug: string; name: string; targets: string; languages: string;
   cpu: string; ram: string; disk: string; votes: number; ratingPct: number | null
 } {
   const totalVotes = (host.approvals || 0) + (host.disapprovals || 0)
   const rating = computeRating(host)
+  const languages = [...new Set((host.locale ?? []).map((l) => getLanguageName(String(l).trim())).filter(Boolean))]
   return {
     slug: slugify(host.name),
     name: host.name,
     targets: splitTargets(host).join(', ') || '—',
+    languages: languages.join(', ') || '—',
     cpu: host.cpu || '—',
     ram: ramDisplay(host),
     disk: diskDisplay(host),
@@ -144,11 +166,15 @@ export function sharedTargets(a: Host, b: Host): string[] {
 
 // ─── Versus pages ────────────────────────────────────────────────────────────
 
-/** Parse "a-vs-b" into two slugs, tolerating extra separators. */
+/** Parse "a-vs-b" into two slugs. Splits on the LAST "-vs-" so host slugs
+ * containing "-vs-" still parse (left part keeps its "-vs-"). */
 export function parseVsSlug(pair: string): [string, string] | null {
-  const parts = pair.split('-vs-')
-  if (parts.length === 2 && parts[0] && parts[1]) return [parts[0], parts[1]]
-  return null
+  const idx = pair.lastIndexOf('-vs-')
+  if (idx <= 0 || idx + 4 >= pair.length) return null
+  const a = pair.slice(0, idx)
+  const b = pair.slice(idx + 4)
+  if (!a || !b) return null
+  return [a, b]
 }
 
 /** A host has something meaningful to put in a comparison table. */
@@ -197,6 +223,7 @@ export type ProviderKind = 'subdomains' | 'domains' | 'hosting'
  */
 export function providerKind(host: Host): ProviderKind {
   const raws = splitTargets(host).map(t => t.toLowerCase())
+  if (raws.length === 0) return 'hosting'
   const addressOnly = raws.every(t => t.includes('subdomain') || t.includes('domain'))
   if (!addressOnly) return 'hosting'
   return raws.some(t => t.includes('subdomain')) ? 'subdomains' : 'domains'

@@ -21,6 +21,7 @@ export default function ComparisonPanel() {
       className="comparison-panel"
       role="region"
       aria-label="Host comparison tray"
+      aria-live="polite"
     >
       <div className="comparison-panel-header">
         <div className="comparison-panel-left">
@@ -68,7 +69,7 @@ export default function ComparisonPanel() {
           </div>
         ))}
         {/* Empty slot indicators */}
-        {selection.length < 4 && Array.from({ length: Math.min(1, 4 - selection.length) }).map((_, i) => (
+        {selection.length < 4 && Array.from({ length: 4 - selection.length }).map((_, i) => (
           <div key={`empty-${i}`} className="comparison-chip comparison-chip--empty">
             <span className="comparison-chip-icon comparison-chip-icon--empty" aria-hidden="true">+</span>
             <span className="comparison-chip-name comparison-chip-name--empty">Add a host</span>

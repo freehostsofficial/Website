@@ -3,6 +3,7 @@ import ProsePage from "@/components/ProsePage";
 import { pageMeta } from "../../lib/pageMeta";
 import { ArrowRight, Check, CircleHelp } from "lucide-react";
 import { DiscordIcon } from "@/components/BrandIcons";
+import { SUPPORT_EMAIL } from "../../lib/site";
 
 const TITLE = "Submit a Free Host - Get Listed on FreeHosts";
 
@@ -23,6 +24,7 @@ export const metadata = pageMeta({
     "get listed freehosts",
   ],
   imageAlt: "FreeHosts - Submit a Host",
+  twitterImageAlt: "FreeHosts - Submit a Host",
 });
 
 const inviteUrl = "https://discord.gg/QbeZ3b5CQd";
@@ -102,7 +104,7 @@ export default function SubmitHostPage() {
               </a>
               <p className="support-text">
                 Need help with a listing? Contact us at{" "}
-                <a href={`mailto:support@${process.env.EMAIL_DOMAIN}`}>support@{process.env.EMAIL_DOMAIN}</a>
+                <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
               </p>
             </div>
           </aside>

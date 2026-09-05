@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, Suspense, useMemo, useState } from "react";
 import Image from "next/image";
 import {
   Boxes,
@@ -172,14 +172,17 @@ export default function SubmitLayoutClient() {
 
   const renderSpecInputs = (spec: PlanSpec, onChange: (p: Partial<PlanSpec>) => void) => (
     <div className="spec-grid">
-      {(["ram", "cpu", "disk"] as const).map((field) => (
-        <div className="form-group" key={field}>
-          <label className="form-label">{field.toUpperCase()}</label>
-          <input className="form-input" value={spec[field]}
-            placeholder={field === "ram" ? "e.g., 4GB" : field === "cpu" ? "e.g., 2 vCores" : "e.g., 40GB SSD"}
-            onChange={(e) => onChange({ [field]: e.target.value })} />
-        </div>
-      ))}
+      {(["ram", "cpu", "disk"] as const).map((field) => {
+        const inputId = `${field}-${spec.originalName || "same"}`;
+        return (
+          <div className="form-group" key={field}>
+            <label htmlFor={inputId} className="form-label">{field.toUpperCase()}</label>
+            <input id={inputId} className="form-input" value={spec[field]}
+              placeholder={field === "ram" ? "e.g., 4GB" : field === "cpu" ? "e.g., 2 vCores" : "e.g., 40GB SSD"}
+              onChange={(e) => onChange({ [field]: e.target.value })} />
+          </div>
+        );
+      })}
     </div>
   );
 
@@ -248,7 +251,8 @@ export default function SubmitLayoutClient() {
                       </label>
                     </div>
                     <div className="add-plan-container">
-                      <select className="form-select" value={selectedPlan} onChange={(e) => setSelectedPlan(e.target.value)}>
+                      <label htmlFor="plan-select" className="sr-only">Select a plan to add specs</label>
+                      <select id="plan-select" className="form-select" value={selectedPlan} onChange={(e) => setSelectedPlan(e.target.value)}>
                         <option value="">Select a plan to add specs...</option>
                         {availablePlans.map((p) => <option value={p} key={p}>{p}</option>)}
                       </select>
@@ -346,7 +350,7 @@ export default function SubmitLayoutClient() {
 
               <div className="form-actions">
                 <button type="reset" className="btn btn-reset"><RotateCcw size={14} aria-hidden="true" /> Reset Form</button>
-                <button type="button" className="btn primary btn-generate" disabled={!canCopy} onClick={copyMessage}>
+                <button type="button" className="btn primary btn-generate" disabled={!canCopy} onClick={copyMessage} aria-describedby={missingFields.length > 0 ? "missing-fields" : undefined}>
                   <Copy size={14} aria-hidden="true" /> Copy Message
                 </button>
               </div>
@@ -354,7 +358,7 @@ export default function SubmitLayoutClient() {
               <div className="preview-container">
                 <div className="message-preview">
                   <div className="message-preview-title"><Code size={14} aria-hidden="true" /><span>Message Preview (Raw Text)</span></div>
-                  <div className="message-preview-content">{rawMessage.trim() ? rawMessage : emptyPreview}</div>
+                  <div className="message-preview-content" role="region" aria-label="Message preview" style={{ whiteSpace: "pre-wrap" }}>{rawMessage.trim() ? rawMessage : emptyPreview}</div>
                 </div>
               </div>
             </form>
@@ -386,20 +390,29 @@ function TInput({ id, label, value, onChange, placeholder, required = false }: {
   );
 }
 
-function DiscordPreview({ form, planSpecs, otherSpec, otherPlans, missingFields }: { form: FormState; planSpecs: PlanSpec[]; otherSpec: PlanSpec | null; otherPlans: string[]; missingFields: string[] }) {
-  // Static mock timestamp (was a 1s interval re-rendering the whole preview).
-  const time = new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+function DiscordTimestamp() {
+  // Current-time read deferred past the static shell via the Suspense
+  // boundary at the usage site (Cache Components forbids it in prerender).
+  return (
+    <span className="discord-timestamp" suppressHydrationWarning>
+      Today at {new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}
+    </span>
+  );
+}
 
+function DiscordPreview({ form, planSpecs, otherSpec, otherPlans, missingFields }: { form: FormState; planSpecs: PlanSpec[]; otherSpec: PlanSpec | null; otherPlans: string[]; missingFields: string[] }) {
   return (
     <div className="discord-preview">
       <div className="discord-message">
         <div className="discord-avatar">
-          <Image src="/Src/icons/icon.png" alt="FreeHosts" width={40} height={40} />
+          <Image src="/Src/icons/icon.png" alt="FreeHosts" width={40} height={40} loading="lazy" />
         </div>
         <div className="discord-message-content">
           <div className="discord-message-header">
             <span className="discord-username">FreeHosts Bot</span>
-            <span className="discord-timestamp">Today at {time}</span>
+            <Suspense fallback={<span className="discord-timestamp">Today at --:--</span>}>
+              <DiscordTimestamp />
+            </Suspense>
           </div>
           <div className="discord-message-text">
             <span className="discord-bold">Host Submission</span><br /><br />
@@ -439,7 +452,7 @@ function DiscordPreview({ form, planSpecs, otherSpec, otherPlans, missingFields 
             <span className={`discord-checkbox ${form.checkPrivacy ? "checked" : ""}`}>{form.checkPrivacy ? "x" : ""}</span> I have included the Privacy Policy<br />
             <span className={`discord-checkbox ${form.checkRules ? "checked" : ""}`}>{form.checkRules ? "x" : ""}</span> I have read the Submission Rules<br />
             {missingFields.length > 0 && (
-              <div className="discord-blockquote" style={{ color: "#faa81a", marginTop: "16px" }}>
+              <div id="missing-fields" className="discord-blockquote" style={{ color: "#faa81a", marginTop: "16px" }}>
                 <span className="discord-bold">Missing required fields:</span> {missingFields.join(", ")}
               </div>
             )}

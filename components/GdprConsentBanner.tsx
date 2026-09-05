@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { memo, useState } from 'react';
+import SiteLink from '@/components/SiteLink';
 import { useConsent } from '@/contexts/ConsentContext';
 import type { ConsentSelection, PreferenceSelection } from '@/lib/cookies';
 import {
@@ -16,7 +17,7 @@ import {
 // Two-layer consent card: compact choice first, per-category + per-cookie
 // control on demand. Non-modal — the page stays fully usable behind it.
 
-function Switch({
+const Switch = memo(function Switch({
   checked,
   onChange,
   label,
@@ -35,9 +36,9 @@ function Switch({
       onClick={() => onChange(!checked)}
     />
   );
-}
+});
 
-function CategoryCard({
+const CategoryCard = memo(function CategoryCard({
   id,
   icon,
   title,
@@ -83,7 +84,7 @@ function CategoryCard({
       )}
     </div>
   );
-}
+});
 
 function SubRow({
   name,
@@ -118,9 +119,9 @@ function FirstRun({ onCustomize }: { onCustomize: () => void }) {
       <p className="ck-text">
         We use cookies to run this site and — with your permission — remember
         your preferences and measure visits.{' '}
-        <a className="ck-link" href="/cookies">
+        <SiteLink className="ck-link" href="/cookies">
           Cookie Policy
-        </a>
+        </SiteLink>
       </p>
       <div className="ck-actions">
         <button type="button" className="ck-btn ck-reject" onClick={rejectAll}>
@@ -263,9 +264,9 @@ function Preferences({ onBack }: { onBack: () => void }) {
       <p className="ck-fineprint">
         Stored for 6 months, then we ask again. Change your mind anytime via
         Cookie Settings in the footer.{' '}
-        <a className="ck-link" href="/cookies">
+        <SiteLink className="ck-link" href="/cookies">
           Cookie Policy
-        </a>
+        </SiteLink>
       </p>
       <button type="button" className="ck-customize" onClick={onBack}>
         <ArrowLeft size={13} aria-hidden="true" /> Back

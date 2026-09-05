@@ -1,3 +1,4 @@
+import Link from "./SiteLink";
 import { safeJsonLd } from "../lib/safeJsonLd";
 
 function breadcrumbSchema(siteUrl: string, crumbs: { name: string; path: string }[]) {
@@ -25,9 +26,25 @@ export default function Breadcrumbs({
   items: { name: string; path: string }[];
 }) {
   return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumbSchema(siteUrl, items)) }}
-    />
+    <>
+      <nav aria-label="Breadcrumb" className="breadcrumb-nav">
+        <ol className="breadcrumb-list">
+          <li>
+            <Link href="/">Home</Link>
+          </li>
+          {items.map((c, i) => (
+            <li key={c.path}>
+              <Link href={c.path} aria-current={i === items.length - 1 ? "page" : undefined}>
+                {c.name}
+              </Link>
+            </li>
+          ))}
+        </ol>
+      </nav>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumbSchema(siteUrl, items)) }}
+      />
+    </>
   );
 }

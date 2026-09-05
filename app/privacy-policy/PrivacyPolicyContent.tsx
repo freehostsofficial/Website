@@ -1,7 +1,9 @@
 import React from "react";
+import Link from "@/components/SiteLink";
+import { SUPPORT_EMAIL } from "../../lib/site";
 
 export default function PrivacyPolicyContent() {
-  const supportEmail = `support@${process.env.EMAIL_DOMAIN}`;
+  const supportEmail = SUPPORT_EMAIL;
   return (
     <div className="tos-content wrap">
       <h1>PRIVACY POLICY</h1>
@@ -178,7 +180,7 @@ export default function PrivacyPolicyContent() {
       <p>
         Like many businesses, we also collect information through cookies and
         similar technologies. You can find out more about this in our Cookie
-        Policy: <a href="/cookies">Cookie Policy</a>.
+        Policy: <Link href="/cookies">Cookie Policy</Link>.
       </p>
 
       <p>The information we collect includes:</p>
@@ -374,7 +376,7 @@ export default function PrivacyPolicyContent() {
       <p>
         Specific information about how we use such technologies and how you can
         refuse certain cookies is set out in our Cookie Policy:{" "}
-        <a href="/cookies">Cookie Policy</a>.
+        <Link href="/cookies">Cookie Policy</Link>.
       </p>
 
       <h3>Matomo Analytics</h3>
@@ -536,9 +538,9 @@ export default function PrivacyPolicyContent() {
       <table className="policy-table">
         <thead>
           <tr>
-            <th>Category</th>
-            <th>Examples</th>
-            <th>Collected</th>
+            <th scope="col">Category</th>
+            <th scope="col">Examples</th>
+            <th scope="col">Collected</th>
           </tr>
         </thead>
         <tbody>

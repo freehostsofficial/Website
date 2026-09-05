@@ -12,9 +12,15 @@ export default function ToastContainer() {
   if (items.length === 0) return null;
 
   return (
-    <div className="toast-container" aria-live="polite" aria-atomic="false">
+    <div className="toast-container">
       {items.map((toast) => (
-        <div key={toast.id} className={`toast toast-${toast.type}`}>
+        <div
+          key={toast.id}
+          className={`toast toast-${toast.type}`}
+          role={toast.type === "error" ? "alert" : "status"}
+          aria-live={toast.type === "error" ? undefined : "polite"}
+          aria-atomic="true"
+        >
           {toast.type === "success"
             ? <CheckCircle size={16} aria-hidden="true" />
             : <AlertCircle size={16} aria-hidden="true" />}

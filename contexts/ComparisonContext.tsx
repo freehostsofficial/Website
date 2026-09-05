@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useCallback, useContext, useMemo } from 'react';
 import { type Host } from '../lib/hosts';
 import { showToast } from '../lib/toast';
 import { isPreferenceAllowed, COMPARISON_STORAGE_KEY } from '../lib/cookies';
@@ -24,6 +24,12 @@ const MAX_COMPARISON = 4;
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
+function isStoredHost(value: unknown): value is Host {
+  if (typeof value !== 'object' || value === null) return false;
+  const h = value as Record<string, unknown>;
+  return typeof h.id === 'number' && typeof h.name === 'string';
+}
+
 function load(): Host[] {
   if (typeof window === 'undefined') return [];
   try {
@@ -31,7 +37,7 @@ function load(): Host[] {
     if (!raw) return [];
     const parsed: unknown = JSON.parse(raw);
     if (Array.isArray(parsed)) {
-      return parsed as Host[];
+      return parsed.filter(isStoredHost);
     }
     return [];
   } catch {
@@ -59,34 +65,47 @@ const ComparisonContext = createContext<ComparisonContextValue | null>(null);
 export function ComparisonProvider({ children }: { children: React.ReactNode }) {
   const [selection, setSelection] = usePersistentState<Host[]>([], load, save);
 
-  const addHost = (host: Host): void => {
-    setSelection((prev) => {
-      // No-op if already selected
-      if (prev.some((h) => h.id === host.id)) return prev;
-      // No-op if at max capacity — show toast
-      if (prev.length >= MAX_COMPARISON) {
-        showToast('Maximum of 4 hosts can be compared at once.', 'error');
-        return prev;
-      }
-      return [...prev, host];
-    });
-  };
+  const addHost = useCallback((host: Host): void => {
+    // Decided here, outside the updater (updaters must stay pure — no
+    // side effects like toasts inside setState).
+    if (selection.some((h) => h.id === host.id)) return;
+    if (selection.length >= MAX_COMPARISON) {
+      showToast('Maximum of 4 hosts can be compared at once.', 'error');
+      return;
+    }
+    setSelection((prev) =>
+      prev.some((h) => h.id === host.id) ? prev : [...prev, host],
+    );
+  }, [selection, setSelection]);
 
-  const removeHost = (id: number): void => {
+  const removeHost = useCallback((id: number): void => {
     setSelection((prev) => prev.filter((h) => h.id !== id));
-  };
+  }, [setSelection]);
 
-  const clearAll = (): void => {
+  const clearAll = useCallback((): void => {
     setSelection([]);
-  };
+  }, [setSelection]);
 
-  const isSelected = (id: number): boolean => selection.some((h) => h.id === id);
+  const isSelected = useCallback(
+    (id: number): boolean => selection.some((h) => h.id === id),
+    [selection],
+  );
 
-  const isFull = selection.length >= MAX_COMPARISON;
+  const value = useMemo<ComparisonContextValue>(
+    () => ({
+      selection,
+      addHost,
+      removeHost,
+      clearAll,
+      isSelected,
+      isFull: selection.length >= MAX_COMPARISON,
+    }),
+    [selection, addHost, removeHost, clearAll, isSelected],
+  );
 
   return (
     <ComparisonContext.Provider
-      value={{ selection, addHost, removeHost, clearAll, isSelected, isFull }}
+      value={value}
     >
       {children}
     </ComparisonContext.Provider>

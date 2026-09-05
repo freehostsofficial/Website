@@ -8,11 +8,17 @@ export interface SpecSource {
   diskMB?: number
 }
 
+// Some listings publish quotas, not capacity ("200 GB per day",
+// "500 GB-hours", "50 active hours/month"). The byte-derived figure would
+// be a lie there ("500.0 GB"), so the provider's own words win.
+const QUOTA_RE = /per\s*(day|month|year)|hour|hits|visits|bandwidth|\/\s*(day|mo|month)\b/i;
+
 /**
- * The display value for RAM: prefer the byte-derived figure when present,
- * fall back to the raw string. Both UI and schema must call this.
+ * The display value for RAM: the provider's literal string when it states a
+ * quota, otherwise the byte-derived figure, otherwise the raw string.
  */
 export function ramDisplay(host: SpecSource): string {
+  if (host.ram && QUOTA_RE.test(host.ram)) return host.ram
   return (host.ramMB ? formatSize(host.ramMB) : '') || host.ram || 'Unknown'
 }
 
@@ -20,6 +26,7 @@ export function ramDisplay(host: SpecSource): string {
  * The display value for storage: same precedence rule as RAM.
  */
 export function diskDisplay(host: SpecSource): string {
+  if (host.disk && QUOTA_RE.test(host.disk)) return host.disk
   return (host.diskMB ? formatSize(host.diskMB) : '') || host.disk || 'Unknown'
 }
 

@@ -3,6 +3,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import { safeJsonLd } from "../../lib/safeJsonLd";
 import { pageMeta, webPageJsonLd } from "../../lib/pageMeta";
 import FaqCta from "@/components/FaqCta";
+import { SITE_URL } from "../../lib/site";
 import { ClipboardCheck, ListChecks, ThumbsUp, RefreshCw, ShieldAlert, Scale, type LucideIcon } from "lucide-react";
 
 export const metadata = pageMeta({
@@ -124,7 +125,7 @@ export default function MethodologyPage() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(webPageSchema) }} />
-      <Breadcrumbs siteUrl={process.env.APP_URL} items={[{ name: "How We Review", path: "/methodology" }]} />
+      <Breadcrumbs siteUrl={SITE_URL} items={[{ name: "How We Review", path: "/methodology" }]} />
       <main className="wrap about-content">
         <section className="faq-hero">
           <h1>How We Review Free Hosting Providers</h1>

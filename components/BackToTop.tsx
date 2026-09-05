@@ -7,9 +7,27 @@ export default function BackToTop() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setVisible(window.scrollY > 400);
+    // rAF-throttled: scroll fires at high frequency, state updates at most
+    // once per frame.
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      setVisible(window.scrollY > 400);
+    };
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    };
+    // Initial state: already past the threshold on mount (deep link/refresh).
+    // Async (rAF) so the effect body stays sync-setState-free.
+    const raf = requestAnimationFrame(() => setVisible(window.scrollY > 400));
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
 
   if (!visible) return null;

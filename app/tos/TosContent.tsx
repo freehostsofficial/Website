@@ -1,4 +1,6 @@
 import React from "react";
+import Link from "@/components/SiteLink";
+import { SITE_URL, RAW_SITE, SUPPORT_EMAIL, LEGAL_EMAIL } from "../../lib/site";
 
 export default function TosContent() {
   return (
@@ -109,9 +111,13 @@ export default function TosContent() {
 
       <p>
         We operate the website{" "}
-        <span className="question" style={{ color: "rgb(0, 58, 250)" }}>
-          {process.env.RAW_APP_URL}
-        </span>{" "}
+        <a
+          href={SITE_URL}
+          className="question"
+          style={{ color: "rgb(0, 58, 250)" }}
+        >
+          {RAW_SITE}
+        </a>{" "}
         (the {"'"}
         <strong>Site</strong>
         {"'"}
@@ -135,7 +141,7 @@ export default function TosContent() {
       <p>
         You can contact us by email at{" "}
         <span className="question">
-          <a href={"mailto:legal@" + process.env.EMAIL_DOMAIN} >legal@{process.env.EMAIL_DOMAIN}</a>
+          <a href={"mailto:" + LEGAL_EMAIL} >{LEGAL_EMAIL}</a>
         </span>
         .
       </p>
@@ -272,7 +278,7 @@ export default function TosContent() {
         as set out in this section or elsewhere in our Legal Terms, please
         address your request to:{" "}
         <span className="question">
-          <a href={"mailto:legal@" + process.env.EMAIL_DOMAIN}>legal@{process.env.EMAIL_DOMAIN}</a>
+          <a href={"mailto:" + LEGAL_EMAIL}>{LEGAL_EMAIL}</a>
         </span>
         . If we ever grant you the permission to post, reproduce, or publicly
         display any part of our Services or Content, you must identify us as the
@@ -385,9 +391,9 @@ export default function TosContent() {
         in connection with any commercial endeavours except those that are
         specifically endorsed or approved by us. These rules are supplemented by
         our Acceptable Use Policy (
-        <span style={{ color: "rgb(0, 58, 250)" }}>
-          {process.env.RAW_APP_URL}/acceptable-use-policy
-        </span>
+        <Link href="/acceptable-use-policy">
+          {RAW_SITE}/acceptable-use-policy
+        </Link>
         ), which forms part of these Legal Terms.
       </p>
 
@@ -579,7 +585,7 @@ export default function TosContent() {
         </li>
         <li>
           <span className="question">
-            Selling or transferring your {process.env.RAW_APP_URL} account or your
+            Selling or transferring your {RAW_SITE} account or your
             listing/profile without explicit permission is prohibited.
           </span>
         </li>
@@ -809,9 +815,9 @@ export default function TosContent() {
         We care about data privacy and security. Please review our Privacy
         Policy:{" "}
         <strong>
-          <span style={{ color: "rgb(0, 58, 250)" }}>
-            {process.env.RAW_APP_URL}/privacy-policy
-          </span>
+          <Link href="/privacy-policy">
+            {RAW_SITE}/privacy-policy
+          </Link>
         </strong>
         . By using the Services, you agree to be bound by our Privacy Policy,
         which is incorporated into these Legal Terms. FreeHosts is operated
@@ -998,9 +1004,9 @@ export default function TosContent() {
         PRODUCT OR SERVICE THROUGH ANY MEDIUM OR IN ANY ENVIRONMENT, YOU SHOULD
         USE YOUR BEST JUDGEMENT AND EXERCISE CAUTION WHERE APPROPRIATE. Our
         plain-language Disclaimer (
-        <span style={{ color: "rgb(0, 58, 250)" }}>
-          {process.env.RAW_APP_URL}/disclaimer
-        </span>
+        <Link href="/disclaimer">
+          {RAW_SITE}/disclaimer
+        </Link>
         ) summarises these limits alongside our listings, reviews, and outbound
         links.
       </p>
@@ -1087,9 +1093,9 @@ export default function TosContent() {
         We publish no paid placements and earn no advertising or affiliate
         revenue; outbound links may carry a traffic marker so listed providers
         can see visits came from our directory. You can contact us at{" "}
-        <a href={"mailto:legal@" + process.env.EMAIL_DOMAIN}>legal@{process.env.EMAIL_DOMAIN}</a>{" "}
+        <a href={"mailto:" + LEGAL_EMAIL}>{LEGAL_EMAIL}</a>{" "}
         (legal matters) or{" "}
-        <a href={"mailto:support@" + process.env.EMAIL_DOMAIN}>support@{process.env.EMAIL_DOMAIN}</a>{" "}
+        <a href={"mailto:" + SUPPORT_EMAIL}>{SUPPORT_EMAIL}</a>{" "}
         (general and privacy matters). As a non-commercial project with no
         paid services, we hold no commercial registration or VAT number.
       </p>
@@ -1110,7 +1116,7 @@ export default function TosContent() {
         caused by any cause beyond our reasonable control. If any provision or
         part of a provision of these Legal Terms is determined to be unlawful,
         void, or unenforceable, that provision or part of the provision is
-        themed severable from these Legal Terms and does not affect the validity
+        deemed severable from these Legal Terms and does not affect the validity
         and enforceability of any remaining provisions. There is no joint
         venture, partnership, employment or agency relationship created between
         you and us as a result of these Legal Terms or use of the Services. You
@@ -1127,7 +1133,7 @@ export default function TosContent() {
       <p>
         Anyone who believes that a listing or other content on the Services is
         illegal can report it to{" "}
-        <a href={"mailto:legal@" + process.env.EMAIL_DOMAIN}>legal@{process.env.EMAIL_DOMAIN}</a>.
+        <a href={"mailto:" + LEGAL_EMAIL}>{LEGAL_EMAIL}</a>.
         Please include the exact URL of the content and the reasons you consider
         it illegal. We review every report and remove or disable access to
         content we confirm to be illegal, and we tell the reporter what action
@@ -1136,7 +1142,7 @@ export default function TosContent() {
 
       <p>
         Law enforcement and other formal legal inquiries must be submitted to{" "}
-        <a href={"mailto:legal@" + process.env.EMAIL_DOMAIN}>legal@{process.env.EMAIL_DOMAIN}</a> by
+        <a href={"mailto:" + LEGAL_EMAIL}>{LEGAL_EMAIL}</a> by
         authorized law enforcement officials or licensed attorneys acting on
         behalf of such agencies.
       </p>
@@ -1160,16 +1166,16 @@ export default function TosContent() {
       <p>
         <strong>FreeHosts</strong> — non-commercial community project, Portugal
         <br />
-        Legal matters: <a href={"mailto:legal@" + process.env.EMAIL_DOMAIN}>legal@{process.env.EMAIL_DOMAIN}</a>
+        Legal matters: <a href={"mailto:" + LEGAL_EMAIL}>{LEGAL_EMAIL}</a>
         <br />
-        General inquiries: <a href={"mailto:support@" + process.env.EMAIL_DOMAIN}>support@{process.env.EMAIL_DOMAIN}</a>
+        General inquiries: <a href={"mailto:" + SUPPORT_EMAIL}>{SUPPORT_EMAIL}</a>
       </p>
 
       <div className="highlight-box">
         <p>
           <strong>FreeHosts</strong> — non-commercial community project, Portugal
           <br />
-          <a href={"mailto:legal@" + process.env.EMAIL_DOMAIN}>legal@{process.env.EMAIL_DOMAIN}</a>
+          <a href={"mailto:" + LEGAL_EMAIL}>{LEGAL_EMAIL}</a>
         </p>
       </div>
 

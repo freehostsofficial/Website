@@ -282,6 +282,64 @@ main {
     box-shadow: 0 0 15px rgba(99, 102, 241, 0.1), 0 0 25px rgba(99, 102, 241, 0.05);
 }
 
+/* The has-dropdown trigger is a <button> for keyboard access — strip the UA
+   button chrome (grey background, border, font) so it matches the
+   link-styled nav items. */
+button.nav-link {
+    background-color: transparent;
+    border-width: 0;
+    font-family: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+}
+
+/* Visible breadcrumb trail (Breadcrumbs component): aligned to the centered
+   content column like .wrap, horizontal, theme links, slash separators,
+   current page in text color. */
+.breadcrumb-nav {
+    width: 100%;
+    max-width: var(--max-width);
+    margin: 0 auto var(--space-md);
+    padding: var(--space-md) var(--space-md) 0;
+}
+
+.breadcrumb-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-xs);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: var(--font-size-sm);
+}
+
+.breadcrumb-list li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.breadcrumb-list li + li::before {
+    content: "/";
+    color: var(--muted);
+    opacity: 0.6;
+}
+
+.breadcrumb-list a {
+    color: var(--muted);
+    text-decoration: none;
+}
+
+.breadcrumb-list a:hover {
+    color: var(--text);
+    text-decoration: underline;
+}
+
+.breadcrumb-list [aria-current="page"] {
+    color: var(--text);
+}
+
 @media (max-width: 1250px) {
     .nav-link {
         padding: 0.5rem 0.5rem;

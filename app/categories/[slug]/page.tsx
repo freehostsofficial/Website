@@ -1,9 +1,11 @@
 import { notFound } from "next/navigation";
-import { categories, getCategory } from "@/lib/categories";
+import { categoryIndex } from "@/lib/category-index";
+import type { Category } from "@/lib/categories";
 import { pageMeta } from "@/lib/pageMeta";
 import { safeJsonLd } from "@/lib/safeJsonLd";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqCta from "@/components/FaqCta";
+import { SITE_URL } from "@/lib/site";
 import {
   AlertTriangle,
   Bot,
@@ -39,15 +41,20 @@ const categoryIcons: Record<string, LucideIcon> = {
 type Props = { params: Promise<{ slug: string }> };
 
 export function generateStaticParams() {
-  return categories.map((c) => ({ slug: c.slug }));
+  // Lightweight index only — the full guide bodies (≈53KB) load per-page below.
+  return categoryIndex.map((c) => ({ slug: c.slug }));
 }
 
-export const dynamicParams = false;
+// Unknown slugs resolve via notFound() in the page (dynamicParams removed).
+async function getCategory(slug: string): Promise<Category | undefined> {
+  const { categories } = await import("@/lib/categories");
+  return categories.find((c) => c.slug === slug);
+}
 
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
-  const category = getCategory(slug);
-  if (!category) return {};
+  const category = await getCategory(slug);
+  if (!category) return { title: 'Not Found', robots: { index: false, follow: false } };
   return pageMeta({
     path: `/categories/${category.slug}`,
     title: category.title,
@@ -60,11 +67,11 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function CategoryPage({ params }: Props) {
   const { slug } = await params;
-  const category = getCategory(slug);
+  const category = await getCategory(slug);
   if (!category) notFound();
 
   const topic = category.name.toLowerCase();
-  const url = `${process.env.APP_URL}/categories/${category.slug}`;
+  const url = `${SITE_URL}/categories/${category.slug}`;
   const HeroIcon = categoryIcons[category.slug] ?? Globe;
 
   const webPageSchema = {
@@ -73,7 +80,7 @@ export default async function CategoryPage({ params }: Props) {
     "@id": `${url}#webpage`,
     url,
     name: category.title,
-    isPartOf: { "@id": `${process.env.APP_URL}/#website` },
+    isPartOf: { "@id": `${SITE_URL}/#website` },
     inLanguage: "en",
     description: category.description,
   };
@@ -92,12 +99,12 @@ export default async function CategoryPage({ params }: Props) {
     {
       icon: Wrench,
       title: `How ${topic} actually works`,
-      body: category.howItWorks.map((paragraph) => <p key={paragraph}>{paragraph}</p>),
+      body: category.howItWorks.map((paragraph, i) => <p key={`${i}-${paragraph.slice(0, 32)}`}>{paragraph}</p>),
     },
     {
       icon: Scale,
       title: "Free vs paid: where the line really is",
-      body: category.freeVsPaid.map((paragraph) => <p key={paragraph}>{paragraph}</p>),
+      body: category.freeVsPaid.map((paragraph, i) => <p key={`${i}-${paragraph.slice(0, 32)}`}>{paragraph}</p>),
     },
     {
       icon: AlertTriangle,
@@ -142,7 +149,7 @@ export default async function CategoryPage({ params }: Props) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(webPageSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(faqSchema) }} />
       <Breadcrumbs
-        siteUrl={process.env.APP_URL}
+        siteUrl={SITE_URL}
         items={[
           { name: "Free Hosting Directory", path: "/hosts" },
           { name: category.name, path: `/categories/${category.slug}` },

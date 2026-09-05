@@ -19,6 +19,7 @@ export const metadata = pageMeta({
     "free hosting listing requirements",
   ],
   imageAlt: "FreeHosts - Submission Rules",
+  twitterImageAlt: "FreeHosts - Submission Rules",
 });
 
 export default function SubmissionRulesPage() {

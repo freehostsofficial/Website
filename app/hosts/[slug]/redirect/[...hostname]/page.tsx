@@ -1,11 +1,14 @@
-// Interstitial warning page, never publicly cacheable (per-user navigation,
-// no-store is set via Cache-Control headers in next.config.ts).
-export const dynamic = 'force-dynamic';
+// Interstitial warning page, dynamic per request (params are request-time).
+// Edge-cached for 5 min via next.config.ts (deterministic per URL; browsers
+// never store it).
+export const metadata = { robots: { index: false, follow: false } };
 
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 import { fetchHosts } from '../../../../../lib/hosts';
 import { slugify } from '../../../../../lib/slugify';
 import RedirectClient from './RedirectClient';
+import { RAW_SITE } from '../../../../../lib/site';
 
 function extractDomain(urlOrPath: string): string {
   try {
@@ -66,7 +69,7 @@ function buildTargetUrl(hostnameSegments: string[]): string {
         : `https://${hostnameOrPath}`;
 
     const url = new URL(withScheme);
-    url.searchParams.set('ref', process.env.RAW_APP_URL ?? "freehosts.eu");
+    url.searchParams.set('ref', RAW_SITE);
     return url.toString();
   } catch {
     // Malformed URL — should never reach here since isValidRedirect already
@@ -77,7 +80,17 @@ function buildTargetUrl(hostnameSegments: string[]): string {
 
 type Props = { params: Promise<{ slug: string; hostname: string[] }> };
 
-export default async function Page({ params }: Props) {
+export default function Page({ params }: Props) {
+  // Allowlist validation is request-time (params unknown at build) — await
+  // params inside Suspense so the route keeps a prerenderable static shell.
+  return (
+    <Suspense fallback={null}>
+      <RedirectBody params={params} />
+    </Suspense>
+  );
+}
+
+async function RedirectBody({ params }: Props) {
   const { slug, hostname: hostnameSegments } = await params;
   
   if (!slug || !hostnameSegments || hostnameSegments.length === 0) {

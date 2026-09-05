@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import Link from '@/components/SiteLink';
 import { AlertTriangle, ArrowLeft, ArrowRight, X } from 'lucide-react';
 
 interface RedirectClientProps {
@@ -19,37 +20,36 @@ declare global {
 export default function RedirectClient({ targetUrl, hostnameOrPath, backUrl, invalid }: RedirectClientProps) {
   const [countdown, setCountdown] = useState(5);
   const [isCancelled, setIsCancelled] = useState(false);
-  const [opened, setOpened] = useState(false);
-  const backBtnRef = useRef<HTMLButtonElement>(null);
+  // One-shot "fired" guard for the tracking effect — a ref, not state, since
+  // nothing renders from it.
+  const trackedRef = useRef(false);
+  const backBtnRef = useRef<HTMLAnchorElement>(null);
 
   // Track the external link click once (only for valid redirects)
   useEffect(() => {
-    if (invalid || !hostnameOrPath || opened) return;
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- one-shot "fired" guard keyed to mount-time props, not derived state
-    setOpened(true);
+    if (invalid || !hostnameOrPath || trackedRef.current) return;
+    trackedRef.current = true;
     try {
       window._paq?.push(['trackLink', targetUrl, 'link']);
     } catch {
       // Matomo not loaded yet — ignore
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hostnameOrPath, invalid]);
+  }, [hostnameOrPath, invalid, targetUrl]);
 
   // Countdown (only for valid redirects)
   useEffect(() => {
     if (invalid || isCancelled || !hostnameOrPath) return;
     const timer = setInterval(() => {
-      setCountdown(prev => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          window.location.href = targetUrl;
-          return 0;
-        }
-        return prev - 1;
-      });
+      setCountdown(prev => (prev <= 1 ? 0 : prev - 1));
     }, 1000);
     return () => clearInterval(timer);
-  }, [invalid, isCancelled, hostnameOrPath, targetUrl]);
+  }, [invalid, isCancelled, hostnameOrPath]);
+
+  useEffect(() => {
+    if (!invalid && !isCancelled && hostnameOrPath && countdown === 0) {
+      window.location.href = targetUrl;
+    }
+  }, [countdown, invalid, isCancelled, hostnameOrPath, targetUrl]);
 
   const progress = (countdown / 5) * 100;
 
@@ -62,7 +62,7 @@ export default function RedirectClient({ targetUrl, hostnameOrPath, backUrl, inv
             <div className="redirect-icon" style={{ color: '#ef4444' }}>
               <AlertTriangle size={24} aria-hidden="true" />
             </div>
-            <h2 className="redirect-title" style={{ color: '#ef4444' }}>Invalid Redirect</h2>
+            <h1 className="redirect-title" style={{ color: '#ef4444' }}>Invalid Redirect</h1>
             <p className="redirect-text">
               This link is <strong>not associated</strong> with this host and has been blocked.
             </p>
@@ -91,13 +91,13 @@ export default function RedirectClient({ targetUrl, hostnameOrPath, backUrl, inv
               </ul>
             </div>
             <div className="redirect-actions">
-              <button
+              <Link
                 className="redirect-cancel-btn"
-                onClick={() => { window.location.href = backUrl; }}
+                href={backUrl}
                 autoFocus
               >
                 <ArrowLeft size={14} aria-hidden="true" /> Go Back to Safety
-              </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -113,7 +113,7 @@ export default function RedirectClient({ targetUrl, hostnameOrPath, backUrl, inv
           <div className="redirect-icon">
             <ArrowRight size={24} aria-hidden="true" />
           </div>
-          <h2 className="redirect-title">Redirecting...</h2>
+          <h1 className="redirect-title">Redirecting...</h1>
           <p className="redirect-text">You are being redirected to</p>
           <div className="redirect-url">{hostnameOrPath}</div>
           <p style={{ color: 'var(--muted)', fontSize: 'var(--font-size-sm)', margin: 'var(--space-sm) 0 0', lineHeight: 1.6 }}>
@@ -128,9 +128,9 @@ export default function RedirectClient({ targetUrl, hostnameOrPath, backUrl, inv
             <div className="redirect-progress-bar" style={{ width: `${progress}%` }} />
           </div>
           <div className="redirect-actions">
-            <button className="redirect-cancel-btn" onClick={() => { window.location.href = backUrl; }} ref={backBtnRef}>
+            <Link className="redirect-cancel-btn" href={backUrl} ref={backBtnRef}>
               <ArrowLeft size={14} aria-hidden="true" /> Back
-            </button>
+            </Link>
             <button
               className="redirect-cancel-btn"
               onClick={() => { setIsCancelled(true); setTimeout(() => backBtnRef.current?.focus(), 50); }}
@@ -140,7 +140,7 @@ export default function RedirectClient({ targetUrl, hostnameOrPath, backUrl, inv
             </button>
           </div>
           {isCancelled && (
-            <div id="redirect-focus-error">
+            <div id="redirect-focus-error" role="alert">
               <div style={{ color: '#ef4444', fontWeight: 600, marginBottom: 'var(--space-sm)' }}>
                 <X size={14} aria-hidden="true" /> Redirect Cancelled
               </div>

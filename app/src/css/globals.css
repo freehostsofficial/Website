@@ -597,10 +597,6 @@
   }
 }
 
-.host-card::before {
-  display: none;
-}
-
 .host-card-top {
   display: grid;
   grid-template-columns: auto 1fr;

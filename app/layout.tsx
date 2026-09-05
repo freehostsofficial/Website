@@ -7,6 +7,7 @@ import ClientChrome from "../components/ClientChrome";
 import MatomoTracker from "../components/MatomoTracker";
 import ThemeProvider from "../components/ThemeProvider";
 import BackToTop from "../components/BackToTop";
+import FooterYear from "../components/FooterYear";
 import ToastContainer from "../components/Toast";
 import { ConsentProvider } from "../contexts/ConsentContext";
 import { ComparisonProvider } from "../contexts/ComparisonContext";
@@ -40,6 +41,7 @@ import {
 } from "lucide-react";
 import { DiscordIcon, GithubIcon, InstagramIcon, TwitterIcon } from "../components/BrandIcons";
 import { THEME_INIT_SNIPPET } from "../lib/theme";
+import { SITE_URL, SUPPORT_EMAIL, TRUST_PILOT_URL, DISCORD_INVITE } from "../lib/site";
 
 import "./src/css/globals.css";
 import "./src/css/styles.css";
@@ -60,7 +62,7 @@ const inter = InterFont({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.APP_URL),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "FreeHosts - Free Hosting for Anything You Build",
     template: "%s | FreeHosts",
@@ -79,9 +81,15 @@ export const metadata: Metadata = {
     "free nodejs hosting",
     "free database hosting",
   ],
-  authors: [{ name: "FreeHosts", url: process.env.APP_URL }],
+  authors: [{ name: "FreeHosts", url: SITE_URL }],
   creator: "FreeHosts",
   publisher: "FreeHosts",
+  alternates: {
+    languages: {
+      'x-default': SITE_URL,
+      en: SITE_URL,
+    },
+  },
   robots: {
     index: true,
     follow: true,
@@ -97,7 +105,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     siteName: "FreeHosts",
     type: "website",
-    url: process.env.APP_URL,
+    url: SITE_URL,
     title: "FreeHosts - Discover Reliable Free Hosting for Websites, Bots & Apps",
     description:
       "Find reliable free hosting for websites, bots, apps, and Discord communities. Join our community directory to discover no-cost hosting solutions.",
@@ -182,10 +190,10 @@ function Dropdown({
 }) {
   return (
     <div className="nav-item">
-      <span className="nav-link has-dropdown">
+      <button type="button" className="nav-link has-dropdown" aria-expanded="false" aria-haspopup="true">
         {icon} {label}
         <ChevronDown size={14} className="dropdown-arrow" aria-hidden="true" />
-      </span>
+      </button>
       <div className="dropdown-menu">
         <DropdownLinks links={links} />
       </div>
@@ -204,7 +212,7 @@ function SidebarDropdown({
 }) {
   return (
     <div className="sidebar-dropdown">
-      <button className="sidebar-dropdown-toggle" type="button">
+      <button className="sidebar-dropdown-toggle" type="button" aria-expanded="false">
         {icon}
         <span>{label}</span>
         <ChevronDown size={14} aria-hidden="true" />
@@ -221,8 +229,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const year = new Date().getFullYear();
-
   return (
     <html
       lang="en"
@@ -231,14 +237,14 @@ export default function RootLayout({
       className={`${geist.variable} ${inter.variable}`}
     >
       <head>
+        {/* No metadata API for sitemap links — manual tag is the only way.
+            hreflang lives in metadata.alternates.languages above. */}
         <link
           rel="sitemap"
           type="application/xml"
           title="Sitemap"
-          href={process.env.APP_URL + "/sitemap.xml"}
+          href={SITE_URL + "/sitemap.xml"}
         />
-        <link rel="alternate" href={process.env.APP_URL} hrefLang="x-default" />
-        <link rel="alternate" href={process.env.APP_URL} hrefLang="en" />
       </head>
       <body>
         {/* Inline script: apply theme before first paint to avoid flash */}
@@ -251,7 +257,11 @@ export default function RootLayout({
           Skip to content
         </a>
         <ThemeProvider />
-        <ClientChrome />
+        {/* Route hook (usePathname) suspends for on-demand dynamic params —
+            keep it out of the static shell's way. */}
+        <Suspense fallback={null}>
+          <ClientChrome />
+        </Suspense>
 
         <ConsentProvider>
           <ComparisonProvider>
@@ -263,12 +273,13 @@ export default function RootLayout({
                     id="sidebarToggle"
                     className="icon-btn mobile-only"
                     aria-label="Open menu"
+                    aria-expanded="false"
                   >
                     <Menu size={18} aria-hidden="true" />
                   </button>
 
                   <Link className="logo" href="/" aria-label="FreeHosts Home">
-                    <Image src="/Src/icons/icon-transparent.png" alt="FreeHosts" width={32} height={32} className="logo-img" />
+                    <Image src="/Src/icons/icon-transparent.png" alt="FreeHosts" width={32} height={32} className="logo-img" priority />
                     FreeHosts
                   </Link>
 
@@ -296,6 +307,7 @@ export default function RootLayout({
 
                   <div className="actions" id="headerActions">
                     <button
+                      id="themeToggle"
                       data-theme-toggle
                       className="icon-btn"
                       aria-pressed="false"
@@ -306,7 +318,7 @@ export default function RootLayout({
                     </button>
                     <a
                       className="icon-btn"
-                      href={process.env.TRUST_PILOT}
+                      href={TRUST_PILOT_URL}
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label="View our Trustpilot reviews"
@@ -317,7 +329,7 @@ export default function RootLayout({
                     <a
                       className="icon-btn"
                       id="discordBtn"
-                      href="https://discord.gg/QbeZ3b5CQd"
+                      href={DISCORD_INVITE}
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label="Join our Discord community"
@@ -329,7 +341,7 @@ export default function RootLayout({
                 </div>
               </header>
 
-              <aside className="sidebar" id="sidebar" aria-hidden="true">
+              <aside className="sidebar" id="sidebar">
                 <div className="sidebar-top">
                   <Link className="logo" href="/">
                     <Image src="/Src/icons/icon-transparent.png" alt="FreeHosts" width={32} height={32} className="logo-img" />
@@ -358,7 +370,7 @@ export default function RootLayout({
                   <a
                     className="btn primary full"
                     id="discordBtnSidebar"
-                    href="https://discord.gg/QbeZ3b5CQd"
+                    href={DISCORD_INVITE}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -389,7 +401,7 @@ export default function RootLayout({
                     <p className="footer-tagline">Discover free hosting that just works.</p>
                     <div className="social-links">
                       <a
-                        href="https://discord.gg/QbeZ3b5CQd"
+                        href={DISCORD_INVITE}
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label="Discord"
@@ -431,7 +443,7 @@ export default function RootLayout({
                       <li><Link href="/about">About Us</Link></li>
                       <li><Link href="/staff">Our Team</Link></li>
                       <li><Link href="/faq">FAQ</Link></li>
-                      <li><a href={process.env.TRUST_PILOT} target="_blank" rel="noopener noreferrer">Trustpilot</a></li>
+                      <li><a href={TRUST_PILOT_URL} target="_blank" rel="noopener noreferrer">Trustpilot</a></li>
                     </ul>
                   </div>
 
@@ -461,13 +473,13 @@ export default function RootLayout({
                     <h3 className="footer-section-title">Contact</h3>
                     <ul className="footer-list">
                       <li>
-                        <a href={"mailto:support@" + process.env.EMAIL_DOMAIN} aria-label="Send an email to support">
-                          <Mail size={16} aria-hidden="true" /> support@{process.env.EMAIL_DOMAIN}
+                        <a href={"mailto:" + SUPPORT_EMAIL} aria-label="Send an email to support">
+                          <Mail size={16} aria-hidden="true" /> {SUPPORT_EMAIL}
                         </a>
                       </li>
                       <li>
                         <a
-                          href="https://discord.gg/QbeZ3b5CQd"
+                          href={DISCORD_INVITE}
                           target="_blank"
                           rel="noopener noreferrer"
                           aria-label="Join our Discord community"
@@ -481,14 +493,14 @@ export default function RootLayout({
 
                 <div className="wrap footer-bottom">
                   <div className="copyright">
-                    © 2024-<span id="year" suppressHydrationWarning>{year}</span> FreeHosts. All rights reserved.
+                    © 2024-<Suspense fallback={null}><FooterYear /></Suspense> FreeHosts. All rights reserved.
                   </div>
                   <div className="footer-bottom-links">
                     <Link href="/tos">Terms</Link>
                     <span className="separator">•</span>
                     <Link href="/privacy-policy">Privacy</Link>
                     <span className="separator">•</span>
-                    <a href={"mailto:support@" + process.env.EMAIL_DOMAIN}>Contact</a>
+                    <a href={"mailto:" + SUPPORT_EMAIL}>Contact</a>
                   </div>
                 </div>
               </footer>

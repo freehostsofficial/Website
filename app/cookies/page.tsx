@@ -1,5 +1,6 @@
 import ProsePage from "@/components/ProsePage";
 import { pageMeta } from "../../lib/pageMeta";
+import { SUPPORT_EMAIL } from "../../lib/site";
 
 const TITLE = "Cookie Policy - FreeHosts";
 const DESCRIPTION =
@@ -14,10 +15,11 @@ export const metadata = pageMeta({
   ogDescription: SOCIAL_DESCRIPTION,
   keywords: ["freehosts cookie policy", "freehosts cookies", "cookie settings"],
   imageAlt: "FreeHosts - Cookie Policy",
+  twitterImageAlt: "FreeHosts - Cookie Policy",
 });
 
 export default function CookiePolicyPage() {
-  const supportEmail = `support@${process.env.EMAIL_DOMAIN}`;
+  const supportEmail = SUPPORT_EMAIL;
   return (
     <ProsePage path="/cookies" crumb="Cookie Policy" name={TITLE} description={SOCIAL_DESCRIPTION}>
       <div className="tos-content wrap">
@@ -132,9 +134,9 @@ export default function CookiePolicyPage() {
         <table className="policy-table">
           <thead>
             <tr>
-              <th>Cookie</th>
-              <th>Purpose</th>
-              <th>Expires</th>
+              <th scope="col">Cookie</th>
+              <th scope="col">Purpose</th>
+              <th scope="col">Expires</th>
             </tr>
           </thead>
           <tbody>
@@ -163,9 +165,9 @@ export default function CookiePolicyPage() {
         <table className="policy-table">
           <thead>
             <tr>
-              <th>Cookie</th>
-              <th>Purpose</th>
-              <th>Expires</th>
+              <th scope="col">Cookie</th>
+              <th scope="col">Purpose</th>
+              <th scope="col">Expires</th>
             </tr>
           </thead>
           <tbody>
@@ -198,9 +200,9 @@ export default function CookiePolicyPage() {
         <table className="policy-table">
           <thead>
             <tr>
-              <th>Cookie</th>
-              <th>Purpose</th>
-              <th>Expires</th>
+              <th scope="col">Cookie</th>
+              <th scope="col">Purpose</th>
+              <th scope="col">Expires</th>
             </tr>
           </thead>
           <tbody>

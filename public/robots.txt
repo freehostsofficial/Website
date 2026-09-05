@@ -6,7 +6,7 @@ Disallow: /admin/
 Disallow: /private/
 Disallow: /cgi-bin/
 Disallow: /hosts/*/redirect/*
-Disallow: /hosts/*/og/*
+Disallow: /hosts/og/
 
 Content-Signal: ai-train=no, search=yes, ai-input=yes
 

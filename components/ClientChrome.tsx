@@ -1,13 +1,28 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 
-function toggleSidebar(open: boolean) {
-  const sidebar = document.getElementById("sidebar");
-  const overlay = document.getElementById("overlay");
+// Was SidebarController + RouteInitializer: two null-render usePathname()
+// effects in two files. One module covers both: close sidebar on
+// navigation + scroll-reveal for feature/staff cards.
+export default function ClientChrome() {
+  const pathname = usePathname();
+  // Pending overlay-hide timer (cleared on open/unmount so a late
+  // callback can't hide the overlay mid-interaction).
+  const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Element that had focus before the sidebar opened — focus returns here.
+  const lastFocused = useRef<Element | null>(null);
 
-  if (open) {
+  function openSidebar() {
+    if (hideTimer.current !== null) {
+      clearTimeout(hideTimer.current);
+      hideTimer.current = null;
+    }
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+    if (sidebar?.classList.contains("open")) return;
+    lastFocused.current = document.activeElement;
     sidebar?.classList.add("open");
     overlay?.classList.add("active");
     if (overlay) {
@@ -16,30 +31,36 @@ function toggleSidebar(open: boolean) {
       overlay.style.pointerEvents = "auto";
     }
     document.body.style.overflow = "hidden";
-    sidebar?.setAttribute("aria-hidden", "false");
-  } else {
+    sidebar?.removeAttribute("aria-hidden");
+    document.getElementById("sidebarToggle")?.setAttribute("aria-expanded", "true");
+  }
+
+  function closeSidebar() {
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+    if (!sidebar?.classList.contains("open") && !overlay?.classList.contains("active")) return;
     sidebar?.classList.remove("open");
     overlay?.classList.remove("active");
     if (overlay) {
       overlay.style.opacity = "0";
       overlay.style.pointerEvents = "none";
-      setTimeout(() => {
+      if (hideTimer.current !== null) clearTimeout(hideTimer.current);
+      hideTimer.current = setTimeout(() => {
         overlay.style.visibility = "hidden";
+        hideTimer.current = null;
       }, 300);
     }
     document.body.style.overflow = "";
-    sidebar?.setAttribute("aria-hidden", "true");
+    sidebar?.removeAttribute("aria-hidden");
+    document.getElementById("sidebarToggle")?.setAttribute("aria-expanded", "false");
+    // Focus return: back to whatever opened the sidebar, if still mounted.
+    const prev = lastFocused.current;
+    if (prev instanceof HTMLElement && document.contains(prev)) prev.focus();
+    lastFocused.current = null;
   }
-}
-
-// Was SidebarController + RouteInitializer: two null-render usePathname()
-// effects in two files. One subscription covers both: close sidebar on
-// navigation + scroll-reveal for feature/staff cards.
-export default function ClientChrome() {
-  const pathname = usePathname();
 
   useEffect(() => {
-    toggleSidebar(false);
+    closeSidebar();
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -57,7 +78,13 @@ export default function ClientChrome() {
       .querySelectorAll<Element>(".feature-card, .staff-card")
       .forEach((el) => observer.observe(el));
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      if (hideTimer.current !== null) {
+        clearTimeout(hideTimer.current);
+        hideTimer.current = null;
+      }
+    };
   }, [pathname]);
 
   useEffect(() => {
@@ -65,7 +92,7 @@ export default function ClientChrome() {
       const target = e.target as Element;
 
       if (target.closest("#sidebarToggle")) {
-        toggleSidebar(true);
+        openSidebar();
         return;
       }
       if (
@@ -74,7 +101,7 @@ export default function ClientChrome() {
         target.closest(".sidebar-link") ||
         target.closest(".sidebar-dropdown-menu a")
       ) {
-        toggleSidebar(false);
+        closeSidebar();
         return;
       }
 
@@ -85,14 +112,26 @@ export default function ClientChrome() {
         if (!dropdown) return;
         const isOpen = dropdown.classList.contains("open");
         document.querySelectorAll(".sidebar-dropdown").forEach((d) => {
-          if (d !== dropdown) d.classList.remove("open");
+          if (d !== dropdown) {
+            d.classList.remove("open");
+            d.querySelector(".sidebar-dropdown-toggle")?.setAttribute("aria-expanded", "false");
+          }
         });
         dropdown.classList.toggle("open", !isOpen);
+        dropdownToggle.setAttribute("aria-expanded", String(!isOpen));
       }
     }
 
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") closeSidebar();
+    }
+
     document.addEventListener("click", handleClick);
-    return () => document.removeEventListener("click", handleClick);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("click", handleClick);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
   }, []);
 
   return null;

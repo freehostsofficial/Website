@@ -15,6 +15,7 @@ export const metadata = pageMeta({
   ogDescription: SOCIAL_DESCRIPTION,
   keywords: ["freehosts privacy policy", "hosting directory privacy", "freehosts data policy"],
   imageAlt: "FreeHosts - Privacy Policy",
+  twitterImageAlt: "FreeHosts - Privacy Policy",
 });
 
 export default function PrivacyPolicyPage() {

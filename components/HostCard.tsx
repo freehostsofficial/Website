@@ -1,11 +1,12 @@
 'use client';
 
+import { memo } from 'react';
 import Link from '@/components/SiteLink';
 import { type Host } from '../lib/hosts';
 import { slugify } from '../lib/slugify';
-import { getLanguageName } from '../lib/getLanguageName';
 import { ramDisplay, diskDisplay } from '../lib/specs';
 import { extractDomainNames } from '../lib/domains';
+import HostBadges from './HostBadges';
 import { computeRating } from '../lib/comparisonRows';
 import { useComparison } from '../contexts/ComparisonContext';
 import { useFavorites } from '../contexts/FavoritesContext';
@@ -108,14 +109,17 @@ function SpecCards({ host }: { host: Host }) {
 
 // ─── Card ─────────────────────────────────────────────────────────────────────
 
-export default function HostCard({ host, isNew = false, showDomains = false }: { host: Host; isNew?: boolean; showDomains?: boolean }) {
+function HostCard({ host, isNew = false, showDomains = false }: { host: Host; isNew?: boolean; showDomains?: boolean }) {
   const { isSelected, addHost, removeHost, isFull } = useComparison();
   const { isFavorite, toggleFavorite } = useFavorites();
   const totalReviews = (host.approvals || 0) + (host.disapprovals || 0);
-  const rating = Math.max(0, Math.round(computeRating(host)));
+  // computeRating returns -1 when there are no reviews — preserve the
+  // sentinel instead of clamping it to 0% (which would fake a score).
+  const rawRating = computeRating(host);
+  const rating = rawRating < 0 ? null : Math.round(rawRating);
+  const selected = isSelected(host.id);
+  const compareDisabled = isFull && !selected;
   const iconLetter = host.name ? host.name.charAt(0).toUpperCase() : '?';
-  const statusClass = host.status && host.status.toLowerCase() === 'online' ? 'online' : 'closed';
-  const typeDisplay = host.type ? host.type.split(',').map(t => t.trim().replace(/\s*\([^)]*\)/g, '').trim()) : [];
 
   return (
     <div className="host-card">
@@ -127,23 +131,8 @@ export default function HostCard({ host, isNew = false, showDomains = false }: {
         <div className="host-name-group">
           <div className="host-name">{host.name}</div>
           <div className="badges-container">
-            <span className={`status-badge ${statusClass}`}>{host.status || 'Unknown'}</span>
-            {typeDisplay.map(type => (
-              <span key={type} className="host-type-badge">{type}</span>
-            ))}
-            {(host.locale || []).map(locale => (
-              <span key={locale} className="language-badge">{getLanguageName(locale)}</span>
-            ))}
-            {(host.targets || []).flatMap(target =>
-              target.split(',').map(t => {
-                const d = t.trim();
-                return d ? <span key={d} className="target-badge">{d}</span> : null;
-              }).filter(Boolean)
-            )}
+            <HostBadges host={host} showFocus showLocations />
           </div>
-          {host.description && (
-            <p className="host-description">{host.description}</p>
-          )}
         </div>
       </div>
 
@@ -152,19 +141,20 @@ export default function HostCard({ host, isNew = false, showDomains = false }: {
       {/* Footer: rating + actions */}
       <div className="host-card-footer">
         <div className="host-rating">
-          <div className="rating-value">{rating}%</div>
+          <div className="rating-value">{rating !== null ? `${rating}%` : 'N/A'}</div>
           <div className="rating-label">{totalReviews} reviews</div>
           <div className="rating-bar">
-            <div className="rating-fill" style={{ width: `${rating}%` }} />
+            <div className="rating-fill" style={{ width: `${rating ?? 0}%` }} />
           </div>
         </div>
         <div className="host-card-actions">
           <button
-            className={`compare-btn icon-btn${isSelected(host.id) ? ' active' : ''}`}
-            onClick={() => isSelected(host.id) ? removeHost(host.id) : addHost(host)}
-            disabled={isFull && !isSelected(host.id)}
-            aria-pressed={isSelected(host.id)}
-            aria-label={isSelected(host.id) ? `Remove ${host.name} from comparison` : `Add ${host.name} to comparison`}
+            className={`compare-btn icon-btn${selected ? ' active' : ''}`}
+            onClick={() => selected ? removeHost(host.id) : addHost(host)}
+            disabled={compareDisabled}
+            title={compareDisabled ? 'Comparison full (max 4)' : undefined}
+            aria-pressed={selected}
+            aria-label={selected ? `Remove ${host.name} from comparison` : `Add ${host.name} to comparison`}
             type="button"
           >
             <GitCompare size={14} aria-hidden="true" />
@@ -187,3 +177,5 @@ export default function HostCard({ host, isNew = false, showDomains = false }: {
     </div>
   );
 }
+
+export default memo(HostCard);

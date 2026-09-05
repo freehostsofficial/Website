@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useCallback, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useContext, useMemo, useState, useSyncExternalStore } from 'react';
 import {
   writeCookie,
   readConsentSelection,
@@ -9,6 +9,7 @@ import {
   CONSENT_VERSION,
   type ConsentSelection,
 } from '../lib/cookies';
+import { useMounted } from '../hooks/useMounted';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -36,6 +37,41 @@ function load(): ConsentSelection | null {
   return readConsentSelection();
 }
 
+// Module-level consent store: read once per client (lazily on first
+// subscribe/getSnapshot), shared by every consumer. No mount effect, no
+// setState-in-effect — useSyncExternalStore reconciles server (null) with
+// the stored choice. `undefined` = not read yet.
+let consentCache: ConsentSelection | null | undefined;
+const consentListeners = new Set<() => void>();
+
+function getConsentSnapshot(): ConsentSelection | null {
+  if (consentCache === undefined) {
+    consentCache = typeof window === 'undefined' ? null : load();
+  }
+  return consentCache;
+}
+
+function subscribeConsent(onChange: () => void): () => void {
+  consentListeners.add(onChange);
+  const onStorage = () => {
+    consentCache = load();
+    for (const l of [...consentListeners]) l();
+  };
+  window.addEventListener('storage', onStorage);
+  return () => {
+    consentListeners.delete(onChange);
+    window.removeEventListener('storage', onStorage);
+  };
+}
+
+function getConsentServerSnapshot(): ConsentSelection | null {
+  return null;
+}
+
+function notifyConsent(): void {
+  for (const l of [...consentListeners]) l();
+}
+
 // ─── Context ──────────────────────────────────────────────────────────────────
 
 export const ConsentContext = createContext<ConsentContextValue | null>(null);
@@ -43,20 +79,15 @@ export const ConsentContext = createContext<ConsentContextValue | null>(null);
 // ─── Provider ─────────────────────────────────────────────────────────────────
 
 export function ConsentProvider({ children }: { children: React.ReactNode }) {
-  // SSR default null = banner hidden: returners with a stored choice never
+  // SSR default null + closed banner: returners with a stored choice never
   // see a flash, first-timers get the notice after hydration (fixed overlay,
-  // so no layout shift either way).
-  const [selection, setSelection] = useState<ConsentSelection | null>(null);
-  const [bannerOpen, setBannerOpen] = useState(false);
+  // so no layout shift either way). `manualOpen` overrides the automatic
+  // rule (null = automatic: open only when mounted with no stored choice).
+  const selection = useSyncExternalStore(subscribeConsent, getConsentSnapshot, getConsentServerSnapshot);
+  const mounted = useMounted();
+  const [manualOpen, setManualOpen] = useState<boolean | null>(null);
   const [bannerView, setBannerView] = useState<BannerView>('main');
-
-  // Mount-hydrate from the cookie (same pattern as usePersistentState).
-  useEffect(() => {
-    const stored = load();
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setSelection(stored);
-    if (stored === null) setBannerOpen(true);
-  }, []);
+  const bannerOpen = manualOpen ?? (mounted && selection === null);
 
   const persist = useCallback((next: ConsentSelection) => {
     writeCookie(
@@ -67,8 +98,9 @@ export function ConsentProvider({ children }: { children: React.ReactNode }) {
     // A declined category must not keep anything it stored before.
     clearNonEssentialStorage(next);
     // Legacy single-value cookie, if present, is overwritten above (same name).
-    setSelection(next);
-    setBannerOpen(false);
+    consentCache = next;
+    notifyConsent();
+    setManualOpen(null);
   }, []);
 
   const acceptAll = useCallback(
@@ -96,23 +128,28 @@ export function ConsentProvider({ children }: { children: React.ReactNode }) {
 
   const openBanner = useCallback((view: BannerView = 'main') => {
     setBannerView(view);
-    setBannerOpen(true);
+    setManualOpen(true);
   }, []);
 
-  const closeBanner = useCallback(() => setBannerOpen(false), []);
+  const closeBanner = useCallback(() => setManualOpen(false), []);
+
+  const value = useMemo<ConsentContextValue>(
+    () => ({
+      selection,
+      acceptAll,
+      rejectAll,
+      saveSelection,
+      bannerOpen,
+      bannerView,
+      openBanner,
+      closeBanner,
+    }),
+    [selection, acceptAll, rejectAll, saveSelection, bannerOpen, bannerView, openBanner, closeBanner],
+  );
 
   return (
     <ConsentContext.Provider
-      value={{
-        selection,
-        acceptAll,
-        rejectAll,
-        saveSelection,
-        bannerOpen,
-        bannerView,
-        openBanner,
-        closeBanner,
-      }}
+      value={value}
     >
       {children}
     </ConsentContext.Provider>

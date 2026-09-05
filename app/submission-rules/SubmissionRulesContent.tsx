@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "@/components/SiteLink";
+import { SUPPORT_EMAIL } from "../../lib/site";
 import {
   AlertTriangle,
   Ban,
@@ -18,7 +19,7 @@ import {
 } from "lucide-react";
 
 export default function SubmissionRulesContent() {
-  const supportEmail = `support@${process.env.EMAIL_DOMAIN}`;
+  const supportEmail = SUPPORT_EMAIL;
   return (
     <div className="rules-container">
       <section className="rules-hero">

@@ -2,15 +2,25 @@ import type { Metadata } from "next";
 import Link from "@/components/SiteLink";
 import { Compass, Home, Mail, Server } from "lucide-react";
 import { DiscordIcon } from "@/components/BrandIcons";
+import { SITE_URL, SUPPORT_EMAIL } from "../lib/site";
 
 export const metadata: Metadata = {
   title: "404 - Page Not Found",
   description: "The page you were looking for could not be found. Browse our free hosting directory or return to the homepage.",
   robots: { index: false, follow: false },
+  alternates: { canonical: SITE_URL },
   openGraph: {
     title: "404 - Page Not Found",
     description: "The page you were looking for could not be found.",
-    images: [{ url: process.env.APP_URL + "/Src/Images/banner.png", width: 1280, height: 720, alt: "FreeHosts - Discover Free Hosting" }],
+    images: [{ url: SITE_URL + "/Src/Images/banner.png", width: 1280, height: 720, alt: "FreeHosts - Discover Free Hosting" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "404 - Page Not Found",
+    description: "The page you were looking for could not be found.",
+    images: [SITE_URL + "/Src/Images/banner.png"],
+    site: "@freehosts_",
+    creator: "@freehosts_",
   },
 };
 
@@ -28,7 +38,7 @@ export default function NotFound() {
           <div className="error-actions">
             <Link className="btn primary" href="/"><Home size={14} aria-hidden="true" /> Back to Home</Link>
             <Link className="btn" href="/hosts"><Server size={14} aria-hidden="true" /> Browse Hosts</Link>
-            <a className="btn ghost" href={"mailto:support@" + process.env.EMAIL_DOMAIN} ><Mail size={14} aria-hidden="true" /> Report Issue</a>
+            <a className="btn ghost" href={"mailto:" + SUPPORT_EMAIL} ><Mail size={14} aria-hidden="true" /> Report Issue</a>
             <a className="btn" href="https://discord.gg/QbeZ3b5CQd" target="_blank" rel="noopener noreferrer">
               <DiscordIcon aria-hidden="true" /> Join Discord
             </a>

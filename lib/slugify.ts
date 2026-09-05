@@ -10,10 +10,11 @@
  * 5. Strip leading/trailing hyphens
  */
 export function slugify(name: string): string {
-  return name
+  const slug = name
     .toLowerCase()
     .replace(/\s+/g, '-')
-    .replace(/[^a-z0-9-.]/g, '')
+    .replace(/[^a-z0-9-]/g, '')
     .replace(/-{2,}/g, '-')
-    .replace(/^-+|-+$/g, '')
+    .replace(/^-+|-+$/g, '');
+  return slug || 'host';
 }

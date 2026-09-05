@@ -203,6 +203,7 @@ export default function HomeClient({ initialDiscord }: { initialDiscord: Discord
                 <span className="typed" id="typedText">{typedText}</span>
                 <span className="cursor" id="typedCursor">|</span>
               </span>
+              <span className="sr-only">Free hosting for websites, bots, apps and databases</span>
             </h1>
             <p className="lead">
               Community-curated directory - find reliable, zero-cost hosting for
@@ -213,12 +214,12 @@ export default function HomeClient({ initialDiscord }: { initialDiscord: Discord
               <Link href="/about" className="btn large">
                 <Info size={16} aria-hidden="true" /> About FreeHosts
               </Link>
-              <a className="btn ghost" id="joinCommunity" href={inviteUrl}>
+              <a className="btn ghost" id="joinCommunity" href={inviteUrl} target="_blank" rel="noopener noreferrer">
                 <DiscordIcon aria-hidden="true" /> Join the community
               </a>
             </div>
 
-            <div className="hero-stats" aria-hidden="true">
+            <div className="hero-stats">
               <div className="stat">
                 <div className="num" id="hostsCount">100+</div>
                 <div className="label">Hosts listed</div>
@@ -228,7 +229,7 @@ export default function HomeClient({ initialDiscord }: { initialDiscord: Discord
                 <div className="label">Community members</div>
               </div>
               <div className="stat">
-                <div className="num">100+</div>
+                <div className="num">40+</div>
                 <div className="label">Reviews</div>
               </div>
             </div>
@@ -248,7 +249,7 @@ export default function HomeClient({ initialDiscord }: { initialDiscord: Discord
                       className="btn small"
                       id="discordInvite"
                       type="button"
-                      onClick={() => window.open(inviteUrl, "_blank", "noopener")}
+                      onClick={() => window.open(inviteUrl, "_blank", "noopener,noreferrer")}
                     >
                       <DoorOpen size={14} aria-hidden="true" /> Join
                     </button>
@@ -299,7 +300,7 @@ export default function HomeClient({ initialDiscord }: { initialDiscord: Discord
           and databases. Each listing includes verified CPU, RAM, and storage specs plus community votes, so you can compare
           providers side by side and deploy your project on a free host in minutes.
         </p>
-        <div className="cards-grid" aria-hidden="true">
+        <div className="cards-grid">
           <article className="feature-card">
             <div className="icon"><Rocket size={24} aria-hidden="true" /></div>
             <h3>Fast discovery</h3>

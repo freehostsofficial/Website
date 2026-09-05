@@ -5,6 +5,7 @@ import { DiscordIcon, type BrandIconComponent } from "../../components/BrandIcon
 import type { LucideIcon } from "lucide-react";
 import { safeJsonLd } from "../../lib/safeJsonLd";
 import { pageMeta, webPageJsonLd } from "../../lib/pageMeta";
+import { SITE_URL } from "../../lib/site";
 
 const DESCRIPTION = "Discover other trusted platforms and directories that list free hosting services for websites, Minecraft servers, and applications. Curated by the FreeHosts community.";
 const SOCIAL_DESCRIPTION = "Discover other trusted platforms and directories that list free hosting services for websites, Minecraft servers, and applications.";
@@ -19,6 +20,10 @@ export const metadata = pageMeta({
   twitterImageAlt: "FreeHosts - Other Free Hosting Platforms",
 });
 
+export const viewport = {
+  themeColor: '#071028',
+};
+
 type ExternalHost = {
   image?: string;
   name: string;
@@ -30,7 +35,7 @@ const externalHosts: ExternalHost[] = [
   {
     image: "/Src/Images/free-minecraft-hostings.png",
     name: "Free Minecraft Hostings",
-    description: "The best collection of free minecraft server hosting providers. Includings a tons of free minecraft hostings. Allow you to write your own experiences while using free hostings. Founded by the best handsome human in the entire world.",
+    description: "A hand-picked list of other free-host directories featuring free Minecraft server hosting providers with community-written experiences.",
     links: [
       { href: "https://freeminecrafthostings.com/", icon: ExternalLink, label: "Website" },
       { href: "https://discord.gg/sc2kauFE3D", icon: DiscordIcon, label: "Discord" },
@@ -61,11 +66,28 @@ const structuredData = webPageJsonLd(
   SOCIAL_DESCRIPTION,
 );
 
+const itemListSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "Other Free Hosting Platforms & Directories",
+  description: SOCIAL_DESCRIPTION,
+  url: `${SITE_URL}/other-free-hosts`,
+  numberOfItems: externalHosts.length,
+  itemListElement: externalHosts.map((host, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    url: host.links[0]?.href,
+    name: host.name,
+    description: host.description,
+  })),
+};
+
 export default function OtherFreeHostsPage() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(structuredData) }} />
-      <Breadcrumbs siteUrl={process.env.APP_URL} items={[{ name: "Other Free Hosts", path: "/other-free-hosts" }]} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(itemListSchema) }} />
+      <Breadcrumbs siteUrl={SITE_URL} items={[{ name: "Other Free Hosts", path: "/other-free-hosts" }]} />
       <main className="wrap">
         <div className="external-page-header">
           <h1 className="external-page-title">Other Free Hosting Platforms</h1>
@@ -92,7 +114,7 @@ export default function OtherFreeHostsPage() {
               <article className="external-host-card" key={host.name}>
                 <div className="external-host-header">
                   <div className="external-host-icon-wrapper">
-                    {host.image ? <Image src={host.image} alt={host.name} width={40} height={40} /> : null}
+                    {host.image ? <Image src={host.image} alt={host.name} width={40} height={40} loading="lazy" sizes="40px" /> : null}
                   </div>
                   <h3 className="external-host-name">{host.name}</h3>
                 </div>

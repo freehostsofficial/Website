@@ -3,6 +3,7 @@ import { staffData } from "./data";
 import { safeJsonLd } from "../../lib/safeJsonLd";
 import { pageMeta, webPageJsonLd } from "../../lib/pageMeta";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { SITE_URL } from "../../lib/site";
 
 const TITLE = "Meet the FreeHosts Team - Staff & Contributors";
 const DESCRIPTION =
@@ -34,7 +35,7 @@ export default function StaffPage() {
     "@type": "ItemList",
     name: "FreeHosts Team Members",
     description: "The staff and contributors who run the FreeHosts community directory.",
-    url: process.env.APP_URL + "/staff",
+    url: SITE_URL + "/staff",
     numberOfItems: Object.keys(staffData).length,
     itemListElement: Object.entries(staffData).map(([, member], index) => ({
       "@type": "ListItem",
@@ -44,7 +45,7 @@ export default function StaffPage() {
         name: member.name ?? "FreeHosts Team Member",
         jobTitle: member.roles[0],
         worksFor: {
-          "@id": process.env.APP_URL + "/#organization",
+          "@id": SITE_URL + "/#organization",
         },
         ...(member.links?.github
           ? { url: member.links.github }
@@ -63,7 +64,7 @@ export default function StaffPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: safeJsonLd(teamSchema) }}
       />
-      <Breadcrumbs siteUrl={process.env.APP_URL} items={[{ name: "Staff", path: "/staff" }]} />
+      <Breadcrumbs siteUrl={SITE_URL} items={[{ name: "Staff", path: "/staff" }]} />
       <StaffClient />
     </>
   );

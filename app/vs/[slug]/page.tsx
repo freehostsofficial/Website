@@ -1,18 +1,21 @@
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import Link from '@/components/SiteLink'
+import { Trophy, Scale } from 'lucide-react'
 import { fetchHosts, type Host } from '../../../lib/hosts'
 import { slugify } from '../../../lib/slugify'
 import { splitTargets, targetBuckets, parseVsSlug, sharedBucket, providerKind, sharedTargets, primaryTargetLabel } from '../../../lib/taxonomy'
 import { permanentRedirect } from 'next/navigation'
 import { ramDisplay, diskDisplay, specSummary } from '../../../lib/specs'
 import { computeRating } from '../../../lib/comparisonRows'
+import { getLanguageName } from '../../../lib/getLanguageName'
+import { extractLocations } from '../../../lib/hostContent'
 import CompareShell from '@/components/CompareShell'
+import { SITE_URL } from '../../../lib/site'
 
-// ISR on demand: the pair space is combinatorial (thousands of URLs), so
-// pages generate on first request and revalidate at most every 30 min.
-export const revalidate = 1800
-
+// On demand: the pair space is combinatorial (thousands of URLs), so pages
+// render on first request; data freshness comes from fetchHosts()' cache.
 type Props = { params: Promise<{ slug: string }> }
 
 const BUCKET_PICK: Record<string, string> = {
@@ -43,7 +46,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // One canonical direction per pair: /vs/b-vs-a permanently redirects to /vs/a-vs-b.
   const [first, second] = [slugify(a.name), slugify(b.name)].sort()
   if (`${first}-vs-${second}` !== slug) {
-    return { alternates: { canonical: `${process.env.APP_URL}/vs/${first}-vs-${second}` } }
+    return { alternates: { canonical: `${SITE_URL}/vs/${first}-vs-${second}` }, robots: { index: false, follow: true } }
   }
 
   const sharedOk = [...targetBuckets(a)].some(bucket => targetBuckets(b).has(bucket))
@@ -60,16 +63,43 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
-    alternates: { canonical: `${process.env.APP_URL}/vs/${slugify(a.name)}-vs-${slugify(b.name)}` },
+    alternates: { canonical: `${SITE_URL}/vs/${first}-vs-${second}` },
     robots: {
       index: sharedOk,
       follow: true,
       googleBot: { index: sharedOk, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 },
     },
+    openGraph: {
+      title,
+      description,
+      url: `${SITE_URL}/vs/${first}-vs-${second}`,
+      siteName: 'FreeHosts',
+      type: 'website',
+      locale: 'en_US',
+      images: [{ url: `${SITE_URL}/Src/Images/banner.png`, width: 1280, height: 720, alt: `${a.name} vs ${b.name} on FreeHosts` }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [{ url: `${SITE_URL}/Src/Images/banner.png`, alt: `${a.name} vs ${b.name} on FreeHosts` }],
+      site: '@freehosts_',
+      creator: '@freehosts_',
+    },
   }
 }
 
-export default async function VersusPage({ params }: Props) {
+export default function VersusPage({ params }: Props) {
+  // The pair space is combinatorial — params resolve at request time, so
+  // await them inside Suspense to keep a prerenderable static shell.
+  return (
+    <Suspense fallback={null}>
+      <VersusBody params={params} />
+    </Suspense>
+  );
+}
+
+async function VersusBody({ params }: Props) {
   const { slug } = await params
   const pair = parseVsSlug(slug)
   if (!pair) notFound()
@@ -93,6 +123,10 @@ export default async function VersusPage({ params }: Props) {
 
   const rowsA = splitTargets(a).join(', ') || '—'
   const rowsB = splitTargets(b).join(', ') || '—'
+  const langsA = [...new Set(a.locale.map((l) => getLanguageName(l)).filter(Boolean))].join(', ') || '—'
+  const langsB = [...new Set(b.locale.map((l) => getLanguageName(l)).filter(Boolean))].join(', ') || '—'
+  const locsA = extractLocations(a.info)
+  const locsB = extractLocations(b.info)
   const ramA = ramDisplay(a), ramB = ramDisplay(b)
   const diskA = diskDisplay(a), diskB = diskDisplay(b)
   const votesA = (a.approvals || 0) + (a.disapprovals || 0)
@@ -141,7 +175,14 @@ export default async function VersusPage({ params }: Props) {
   const ramWinner = ramA !== 'Unknown' && ramB !== 'Unknown' && (a.ramMB ?? 0) !== (b.ramMB ?? 0) ? ((a.ramMB ?? 0) > (b.ramMB ?? 0) ? 'a' : 'b') : null
   const diskWinner = diskA !== 'Unknown' && diskB !== 'Unknown' && (a.diskMB ?? 0) !== (b.diskMB ?? 0) ? ((a.diskMB ?? 0) > (b.diskMB ?? 0) ? 'a' : 'b') : null
   const voteWinner = pctA !== null && pctB !== null && pctA !== pctB && Math.max(votesA, votesB) > 2 ? (pctA! > pctB! ? 'a' : 'b') : null
-  const winStyle = { background: 'rgba(99,102,241,0.08)', fontWeight: 700 as const }
+
+  // Compute specs only mean something for compute providers. Two subdomain
+  // (or domain) givers never have decidable RAM/storage — rendering "Tie /
+  // No decidable difference" tiles for them is noise, so those tiles and
+  // rows drop out entirely (kind mismatch keeps them for transparency, with
+  // the notice above explaining they don't compare).
+  const showComputeRows = kindA === 'hosting' || kindB === 'hosting'
+  const decidableCount = [ramWinner, diskWinner, voteWinner].filter(Boolean).length
 
   const aTags = splitTargets(a).map(t => t.toLowerCase())
   const bTags = splitTargets(b).map(t => t.toLowerCase())
@@ -150,16 +191,40 @@ export default async function VersusPage({ params }: Props) {
     ?? BUCKET_PICK[sharedBucket(a, b)]
     ?? 'Compare what each provider publishes for its free plan — the table above carries the facts; community reviews carry the experience.'
 
-  const pageSlug = `${slugify(a.name)}-vs-${slugify(b.name)}`
+  const pageSlug = [slugify(a.name), slugify(b.name)].sort().join('-vs-')
+
+  // Verdict: tally the computed category wins. A tie (or no decidable
+  // category) is an honest "too close to call", never a coin flip.
+  const winsA = [ramWinner === 'a', diskWinner === 'a', voteWinner === 'a'].filter(Boolean).length
+  const winsB = [ramWinner === 'b', diskWinner === 'b', voteWinner === 'b'].filter(Boolean).length
+  const verdictWinner = kindMismatch ? null : winsA > winsB ? a : winsB > winsA ? b : null
+  const verdictCats: string[] = []
+  if (verdictWinner === a || verdictWinner === b) {
+    const w = verdictWinner === a ? 'a' : 'b'
+    if (ramWinner === w) verdictCats.push('more RAM')
+    if (diskWinner === w) verdictCats.push('more storage')
+    if (voteWinner === w) verdictCats.push('a higher community rating')
+  }
+  const kindNoun = kindA === 'subdomains' ? 'subdomain' : kindA === 'domains' ? 'domain' : kindA;
+  const tieCopy = kindMismatch
+    ? 'Different provider kinds solve different problems — pick by what you need (compute vs an address), not by these numbers.'
+    : decidableCount === 0 && kindA !== 'hosting'
+      ? `Neither side publishes compute specs — expected for ${kindNoun} providers, which hand out addresses rather than server resources. Judge them on what's actually on offer and on community reviews instead.`
+      : 'Neither provider clearly beats the other on published specs. Let community reviews and a quick deploy test decide.'
 
   return (
     <CompareShell
-      pageUrl={`${process.env.APP_URL}/vs/${pageSlug}`}
+      pageUrl={`${SITE_URL}/vs/${pageSlug}`}
       name={`${a.name} vs ${b.name}`}
       description={`Spec-level comparison of free hosting providers ${a.name} and ${b.name}.`}
       crumbs={[
         { name: 'Free Hosting Directory', path: '/hosts' },
         { name: `${a.name} vs ${b.name}`, path: `/vs/${pageSlug}` },
+      ]}
+      eyebrow="Head-to-head"
+      heroStats={[
+        { value: shared.length > 0 ? shared.slice(0, 2).join(', ') : kindA, label: shared.length > 0 ? 'shared focus' : 'provider kind' },
+        { value: String(votesA + votesB), label: (votesA + votesB) === 1 ? 'community review' : 'community reviews' },
       ]}
       heroTitle={`${a.name} vs ${b.name}`}
       heroLead={
@@ -174,9 +239,32 @@ export default async function VersusPage({ params }: Props) {
         { href: `/alternatives/${slugify(a.name)}`, label: `More ${a.name} alternatives` },
       ]}
     >
+      {verdictWinner ? (
+        <section className="cmp-verdict" aria-labelledby="verdict-heading">
+          <Trophy size={28} aria-hidden="true" className="cmp-verdict-icon" />
+          <div>
+            <h2 id="verdict-heading">Our pick: {verdictWinner.name}</h2>
+            <p>
+              {verdictWinner.name} wins on {verdictCats.join(', ')}.{
+                ` Still, free tiers change fast — skim both profiles before committing.`
+              }
+            </p>
+          </div>
+          <Link href={`/hosts/${slugify(verdictWinner.name)}`} className="btn primary">View {verdictWinner.name}</Link>
+        </section>
+      ) : (
+        <section className="cmp-verdict cmp-verdict--tie" aria-labelledby="verdict-heading">
+          <Scale size={28} aria-hidden="true" className="cmp-verdict-icon" />
+          <div>
+            <h2 id="verdict-heading">Too close to call</h2>
+            <p>{tieCopy}</p>
+          </div>
+        </section>
+      )}
+
       {kindMismatch && (
-        <section className="content-section" style={{ borderColor: '#f59e0b', background: 'rgba(245,158,11,0.06)' }}>
-          <h2 style={{ color: '#92400e' }}>Different provider types</h2>
+        <section className="content-section cmp-notice" aria-labelledby="kinds-heading">
+          <h2 id="kinds-heading">Different provider types</h2>
           <p className="host-about-summary">
             <strong>{a.name}</strong> is <code>{kindA}</code> and <strong>{b.name}</strong> is <code>{kindB}</code>.
             One hands out addresses (subdomains/domains) with no compute; the other runs workloads (RAM/CPU/storage).
@@ -185,48 +273,84 @@ export default async function VersusPage({ params }: Props) {
         </section>
       )}
 
-      <section className="content-section">
-        <h2>{a.name} vs {b.name}: spec comparison</h2>
-        <p className="host-about-summary" style={{ fontSize: '0.9em' }}>
+      {decidableCount > 0 && (
+      <section className="content-section" aria-labelledby="scoreboard-heading">
+        <h2 id="scoreboard-heading">Scoreboard</h2>
+        <ul className="cmp-score-tiles">
+          {ramWinner && (
+          <li className="cmp-score-tile">
+            <span className="cmp-score-label">RAM</span>
+            <span className="cmp-score-value">{ramWinner === 'a' ? a.name : b.name}</span>
+            <span className="cmp-score-sub">{ramWinner === 'a' ? ramA : ramB}</span>
+          </li>
+          )}
+          {diskWinner && (
+          <li className="cmp-score-tile">
+            <span className="cmp-score-label">Storage</span>
+            <span className="cmp-score-value">{diskWinner === 'a' ? a.name : b.name}</span>
+            <span className="cmp-score-sub">{diskWinner === 'a' ? diskA : diskB}</span>
+          </li>
+          )}
+          {voteWinner && (
+          <li className="cmp-score-tile">
+            <span className="cmp-score-label">Community</span>
+            <span className="cmp-score-value">{voteWinner === 'a' ? a.name : b.name}</span>
+            <span className="cmp-score-sub">
+              {voteWinner === 'a' ? pctA : pctB}% across {voteWinner === 'a' ? votesA : votesB} review{(voteWinner === 'a' ? votesA : votesB) === 1 ? '' : 's'}
+            </span>
+          </li>
+          )}
+        </ul>
+      </section>
+      )}
+
+      <section className="content-section" aria-labelledby="specs-heading">
+        <h2 id="specs-heading">{a.name} vs {b.name}: spec comparison</h2>
+        <p className="host-about-summary cmp-dim">
           Verified against each provider&apos;s published free plan · {a.name}: {specSummary(a) || 'no concrete specs'} · {b.name}: {specSummary(b) || 'no concrete specs'}
         </p>
-        <div style={{ overflowX: 'auto' }}>
-        <table className="info-table alt-table">
+        <div className="cmp-table-scroll" role="region" aria-label="Specification comparison table, scroll horizontally on small screens" tabIndex={0}>
+        <table className="cmp-table cmp-table--vs">
+          <caption className="sr-only">Side-by-side specifications of {a.name} and {b.name}</caption>
           <thead>
             <tr>
-              <th></th>
-              <th><Link href={`/hosts/${slugify(a.name)}`}>{a.name}</Link>{ramWinner === 'a' || diskWinner === 'a' ? ' ★' : ''}</th>
-              <th><Link href={`/hosts/${slugify(b.name)}`}>{b.name}</Link>{ramWinner === 'b' || diskWinner === 'b' ? ' ★' : ''}</th>
+              <th scope="col"><span className="sr-only">Feature</span></th>
+              <th scope="col"><Link href={`/hosts/${slugify(a.name)}`}>{a.name}</Link>{ramWinner === 'a' || diskWinner === 'a' ? <span role="img" aria-label="Best value"> ★</span> : null}</th>
+              <th scope="col"><Link href={`/hosts/${slugify(b.name)}`}>{b.name}</Link>{ramWinner === 'b' || diskWinner === 'b' ? <span role="img" aria-label="Best value"> ★</span> : null}</th>
             </tr>
           </thead>
           <tbody>
-            <tr><td>Provider type</td><td><code>{kindA}</code></td><td><code>{kindB}</code></td></tr>
-            <tr><td>Targets</td><td>{rowsA || '—'}{shared.length > 0 && <span style={{ display: 'block', fontSize: '0.8em', color: 'var(--muted)' }}>shares: {shared.join(', ')}</span>}</td><td>{rowsB || '—'}{shared.length > 0 && <span style={{ display: 'block', fontSize: '0.8em', color: 'var(--muted)' }}>shares: {shared.join(', ')}</span>}</td></tr>
-            <tr><td>CPU</td><td>{cpuA}</td><td>{cpuB}</td></tr>
-            <tr><td>RAM</td><td style={ramWinner === 'a' ? winStyle : undefined}>{ramA}{ramWinner === 'a' && ' ✓'}</td><td style={ramWinner === 'b' ? winStyle : undefined}>{ramB}{ramWinner === 'b' && ' ✓'}</td></tr>
-            <tr><td>Storage</td><td style={diskWinner === 'a' ? winStyle : undefined}>{diskA}{diskWinner === 'a' && ' ✓'}</td><td style={diskWinner === 'b' ? winStyle : undefined}>{diskB}{diskWinner === 'b' && ' ✓'}</td></tr>
-            {(a.free_plan || b.free_plan) && <tr><td>Free plan</td><td style={{ whiteSpace: 'pre-wrap' }}>{a.free_plan || '—'}</td><td style={{ whiteSpace: 'pre-wrap' }}>{b.free_plan || '—'}</td></tr>}
-            <tr><td>Status</td><td><span className={`status-badge ${a.status?.toLowerCase()}`}>{a.status}</span></td><td><span className={`status-badge ${b.status?.toLowerCase()}`}>{b.status}</span></td></tr>
+            <tr><th scope="row">Provider type</th><td><code>{kindA}</code></td><td><code>{kindB}</code></td></tr>
+            <tr><th scope="row">Targets</th><td>{rowsA || '—'}{shared.length > 0 && <span className="cmp-shares">shares: {shared.join(', ')}</span>}</td><td>{rowsB || '—'}{shared.length > 0 && <span className="cmp-shares">shares: {shared.join(', ')}</span>}</td></tr>
+            <tr><th scope="row">Languages</th><td>{langsA}</td><td>{langsB}</td></tr>
+            {(locsA.length > 0 || locsB.length > 0) && <tr><th scope="row">Server locations</th><td>{locsA.length > 0 ? locsA.join(', ') : '—'}</td><td>{locsB.length > 0 ? locsB.join(', ') : '—'}</td></tr>}
+            {showComputeRows && (<>
+            <tr><th scope="row">CPU</th><td>{cpuA}</td><td>{cpuB}</td></tr>
+            <tr><th scope="row">RAM</th><td className={ramWinner === 'a' ? 'cmp-cell--win' : undefined}>{ramA}{ramWinner === 'a' && <span role="img" aria-label="Higher value"> ✓</span>}</td><td className={ramWinner === 'b' ? 'cmp-cell--win' : undefined}>{ramB}{ramWinner === 'b' && <span role="img" aria-label="Higher value"> ✓</span>}</td></tr>
+            <tr><th scope="row">Storage</th><td className={diskWinner === 'a' ? 'cmp-cell--win' : undefined}>{diskA}{diskWinner === 'a' && <span role="img" aria-label="Higher value"> ✓</span>}</td><td className={diskWinner === 'b' ? 'cmp-cell--win' : undefined}>{diskB}{diskWinner === 'b' && <span role="img" aria-label="Higher value"> ✓</span>}</td></tr>
+            </>)}
+            {(a.free_plan || b.free_plan) && <tr><th scope="row">Free plan</th><td className="cmp-prewrap">{a.free_plan || '—'}</td><td className="cmp-prewrap">{b.free_plan || '—'}</td></tr>}
+            <tr><th scope="row">Status</th><td><span className={`status-badge ${(a.status?.toLowerCase().replace(/[^a-z0-9-]+/g, '-') || 'unknown')}`}>{a.status}</span></td><td><span className={`status-badge ${(b.status?.toLowerCase().replace(/[^a-z0-9-]+/g, '-') || 'unknown')}`}>{b.status}</span></td></tr>
             <tr>
-              <td>Community</td>
-              <td style={voteWinner === 'a' ? winStyle : undefined}>{pctA !== null ? `${pctA}% of ${votesA} review${votesA === 1 ? '' : 's'}` : 'No reviews yet'}{voteWinner === 'a' && ' ★'}</td>
-              <td style={voteWinner === 'b' ? winStyle : undefined}>{pctB !== null ? `${pctB}% of ${votesB} review${votesB === 1 ? '' : 's'}` : 'No reviews yet'}{voteWinner === 'b' && ' ★'}</td>
+              <th scope="row">Community</th>
+              <td className={voteWinner === 'a' ? 'cmp-cell--win' : undefined}>{pctA !== null ? `${pctA}% of ${votesA} review${votesA === 1 ? '' : 's'}` : 'No reviews yet'}{voteWinner === 'a' && <span role="img" aria-label="Best value"> ★</span>}</td>
+              <td className={voteWinner === 'b' ? 'cmp-cell--win' : undefined}>{pctB !== null ? `${pctB}% of ${votesB} review${votesB === 1 ? '' : 's'}` : 'No reviews yet'}{voteWinner === 'b' && <span role="img" aria-label="Best value"> ★</span>}</td>
             </tr>
             <tr>
-              <td>Listed since</td>
+              <th scope="row">Listed since</th>
               <td>{a.created_at ? new Date(a.created_at).getFullYear() : '—'}</td>
               <td>{b.created_at ? new Date(b.created_at).getFullYear() : '—'}</td>
             </tr>
           </tbody>
         </table>
         </div>
-        <p className="host-about-summary" style={{ fontSize: '0.85em', opacity: 0.85 }}>
+        <p className="host-about-summary cmp-dim">
           Sources: provider plan pages at listing time; <Link href="/methodology">how we verify</Link>. No invented specs — “Unknown” means the provider does not publish a concrete figure.
         </p>
       </section>
 
-      <section className="content-section">
-        <h2>Key differences</h2>
+      <section className="content-section" aria-labelledby="diffs-heading">
+        <h2 id="diffs-heading">Key differences</h2>
         {diffs.length > 0 ? (
           <ul className="host-check-list">
             {diffs.map(d => <li key={d}>{d}</li>)}
@@ -239,8 +363,8 @@ export default async function VersusPage({ params }: Props) {
         )}
       </section>
 
-      <section className="content-section">
-        <h2>Which should you pick?</h2>
+      <section className="content-section" aria-labelledby="pick-heading">
+        <h2 id="pick-heading">Which should you pick?</h2>
         <p className="host-about-summary">{advice}</p>
         <ul className="host-check-list">
           <li>Read each provider&apos;s own plan page before committing — free tiers change without notice.</li>

@@ -20,6 +20,7 @@ export const metadata = pageMeta({
     "hosting community rules",
   ],
   imageAlt: "FreeHosts - Server Rules",
+  twitterImageAlt: "FreeHosts - Server Rules",
 });
 
 export default function ServerRulesPage() {

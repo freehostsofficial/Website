@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
+import { cacheLife } from "next/cache";
 import HomeClient from "./HomeClient";
 import { safeJsonLd } from "../lib/safeJsonLd";
 import { organizationJsonLd } from "../lib/pageMeta";
+import { SITE_URL } from "../lib/site";
 
 export const metadata: Metadata = {
   title: "FreeHosts - Free Hosting for Anything You Build",
@@ -21,23 +24,58 @@ export const metadata: Metadata = {
   alternates: {
     // Next normalises the homepage canonical to the origin without a
     // trailing slash regardless of this value; kept explicit for clarity.
-    canonical: process.env.APP_URL,
+    canonical: SITE_URL,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  openGraph: {
+    locale: "en_US",
+    siteName: "FreeHosts",
+    type: "website",
+    url: SITE_URL,
+    title: "FreeHosts - Discover Reliable Free Hosting for Websites, Bots & Apps",
+    description:
+      "Find reliable free hosting for websites, bots, apps, and Discord communities. Join our community directory to discover no-cost hosting solutions.",
+    images: [
+      {
+        url: "/Src/Images/banner.png",
+        width: 1280,
+        height: 720,
+        alt: "FreeHosts - Discover Free Hosting",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "FreeHosts - Free Hosting for Websites, Bots & Apps",
+    description:
+      "Find reliable free hosting for websites, bots, apps, and Discord communities. Join our community directory to discover no-cost hosting solutions.",
+    images: ["/Src/Images/banner.png"],
+    site: "@freehosts_",
+    creator: "@freehosts_",
   },
 };
 
-// Dynamic: the Discord member count below is fetched server-side on each
-// render (cached 5 min), so no /api route is needed and the visitor's
-// browser never contacts Discord directly.
-export const dynamic = "force-dynamic";
-
+// Discord count freshness (5 min) lives here, not in a route segment:
+// cached function, same TTL the old ISR revalidate + CDN tier provided.
 const INVITE_URL =
   "https://discord.com/api/v9/invites/QbeZ3b5CQd?with_counts=true&with_expiration=true";
 
 async function getDiscord(): Promise<{ name: string; count: number | null }> {
+  "use cache";
+  cacheLife({ stale: 300, revalidate: 300, expire: 3600 });
   try {
     const res = await fetch(INVITE_URL, {
       signal: AbortSignal.timeout(5000),
-      next: { revalidate: 300 },
     });
     if (!res.ok) throw new Error(`Discord ${res.status}`);
     const data = (await res.json()) as {
@@ -64,8 +102,8 @@ const structuredData = {
   "@graph": [
     {
       "@type": "WebSite",
-      "@id": process.env.APP_URL + "/#website",
-      url: process.env.APP_URL,
+      "@id": SITE_URL + "/#website",
+      url: SITE_URL,
       name: "FreeHosts",
       description: "A community-curated directory of free hosting providers for websites, bots, and apps.",
       inLanguage: "en",
@@ -73,7 +111,7 @@ const structuredData = {
         "@type": "SearchAction",
         target: {
           "@type": "EntryPoint",
-          urlTemplate: process.env.APP_URL + "/hosts?search={search_term_string}",
+          urlTemplate: SITE_URL + "/hosts?search={search_term_string}",
         },
         "query-input": "required name=search_term_string",
       },
@@ -81,11 +119,11 @@ const structuredData = {
     organizationJsonLd(),
     {
       "@type": "WebPage",
-      "@id": process.env.APP_URL + "/#homepage",
-      url: process.env.APP_URL,
+      "@id": SITE_URL + "/#homepage",
+      url: SITE_URL,
       name: "FreeHosts - Free Hosting for Anything You Build",
-      isPartOf: { "@id": process.env.APP_URL + "/#website" },
-      about: { "@id": process.env.APP_URL + "/#organization" },
+      isPartOf: { "@id": SITE_URL + "/#website" },
+      about: { "@id": SITE_URL + "/#organization" },
       inLanguage: "en",
       description:
         "FreeHosts helps developers, students, and makers discover and compare reliable free hosting for websites, bots, and more.",
@@ -96,7 +134,7 @@ const structuredData = {
             "@type": "ListItem",
             position: 1,
             name: "Home",
-            item: process.env.APP_URL,
+            item: SITE_URL,
           },
         ],
       },
@@ -105,14 +143,24 @@ const structuredData = {
 };
 
 export default async function HomePage() {
-  const discord = await getDiscord();
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: safeJsonLd(structuredData) }}
       />
-      <HomeClient initialDiscord={discord} />
+      {/* The Discord count rides a third-party API (up to 5s timeout on cold
+          starts) — stream it instead of gating the whole shell's TTFB on it.
+          Warm cache resolves inline with identical output; only a cold or
+          slow fetch flashes the fallback's unavailable state. */}
+      <Suspense fallback={<HomeClient initialDiscord={{ name: "Discord", count: null }} />}>
+        <HomePageBody />
+      </Suspense>
     </>
   );
+}
+
+async function HomePageBody() {
+  const discord = await getDiscord();
+  return <HomeClient initialDiscord={discord} />;
 }

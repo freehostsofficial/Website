@@ -150,6 +150,7 @@ export default function StaffClient() {
         <button
           className={`filter-btn ${activeFilter === "all" ? "active" : ""}`}
           type="button"
+          aria-pressed={activeFilter === "all"}
           onClick={() => setActiveFilter("all")}
         >
           <LayoutGrid size={14} aria-hidden="true" />
@@ -161,6 +162,7 @@ export default function StaffClient() {
             <button
               className={`filter-btn ${activeFilter === key ? "active" : ""}`}
               type="button"
+              aria-pressed={activeFilter === key}
               onClick={() => setActiveFilter(key)}
               key={key}
             >
@@ -282,18 +284,30 @@ function StaffModal({ member, onClose }: { member: StaffMember; onClose: () => v
   const links = Object.entries(member.links || {}).filter(([, value]) => Boolean(value));
   const AvatarIcon = member.primaryRole.icon;
 
+  useEffect(() => {
+    const prev = document.activeElement as HTMLElement | null;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      prev?.focus?.();
+    };
+  }, [onClose]);
+
   return (
-    <div className="staff-modal" onClick={onClose}>
+    <div className="staff-modal" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="staff-modal-title">
       <div className="staff-modal-content" onClick={(event) => event.stopPropagation()}>
         <div className="staff-modal-header">
-          <button className="staff-modal-close" type="button" aria-label="Close" onClick={onClose}>
+          <button className="staff-modal-close" type="button" aria-label="Close staff details" onClick={onClose}>
             <X size={20} aria-hidden="true" />
           </button>
           <div className="staff-modal-avatar">
             <AvatarIcon size={20} aria-hidden="true" />
           </div>
           <div className="staff-modal-info">
-            <h2>{member.name}</h2>
+            <h2 id="staff-modal-title">{member.name}</h2>
             <RoleBadges roles={member.roles} />
           </div>
         </div>

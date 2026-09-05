@@ -14,9 +14,29 @@ function getTheme(): string {
   }
 }
 
+// Pending transition-class timer: cleared on rapid toggles/unmount so a
+// stale callback can't strip the class mid-transition.
+let transitionTimer: ReturnType<typeof setTimeout> | null = null;
+
 function setTheme(theme: string) {
   document.documentElement.setAttribute("data-theme", theme);
   document.documentElement.classList.add("theme-transition");
+
+  // Toggle affordances always reflect the active theme, even when the
+  // choice itself isn't persisted (no consent).
+  document.querySelectorAll<HTMLElement>("[data-theme-toggle]").forEach((btn) => {
+    btn.setAttribute("aria-pressed", String(theme === "dark"));
+    btn.setAttribute(
+      "aria-label",
+      theme === "light" ? "Switch to dark theme" : "Switch to light theme"
+    );
+  });
+
+  if (transitionTimer !== null) clearTimeout(transitionTimer);
+  transitionTimer = setTimeout(() => {
+    document.documentElement.classList.remove("theme-transition");
+    transitionTimer = null;
+  }, 220);
 
   // Preferences category: without opt-in the choice applies to this page
   // load only and is never persisted.
@@ -27,18 +47,6 @@ function setTheme(theme: string) {
   } catch {
     // storage unavailable
   }
-
-  document.querySelectorAll<HTMLElement>("[data-theme-toggle]").forEach((btn) => {
-    btn.setAttribute("aria-pressed", String(theme === "dark"));
-    btn.setAttribute(
-      "aria-label",
-      theme === "light" ? "Switch to dark theme" : "Switch to light theme"
-    );
-  });
-
-  setTimeout(() => {
-    document.documentElement.classList.remove("theme-transition");
-  }, 220);
 }
 
 export default function ThemeProvider() {
@@ -56,7 +64,13 @@ export default function ThemeProvider() {
     }
 
     document.addEventListener("click", handleToggle);
-    return () => document.removeEventListener("click", handleToggle);
+    return () => {
+      document.removeEventListener("click", handleToggle);
+      if (transitionTimer !== null) {
+        clearTimeout(transitionTimer);
+        transitionTimer = null;
+      }
+    };
   }, []);
 
   return null;

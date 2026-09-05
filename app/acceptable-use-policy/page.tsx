@@ -1,5 +1,7 @@
 import ProsePage from "@/components/ProsePage";
+import Link from "@/components/SiteLink";
 import { pageMeta } from "../../lib/pageMeta";
+import { SITE_URL, RAW_SITE, SUPPORT_EMAIL, LEGAL_EMAIL } from "../../lib/site";
 
 const TITLE = "Acceptable Use Policy - FreeHosts";
 const DESCRIPTION =
@@ -14,6 +16,7 @@ export const metadata = pageMeta({
   ogDescription: SOCIAL_DESCRIPTION,
   keywords: ["freehosts acceptable use policy", "freehosts aup", "hosting directory rules"],
   imageAlt: "FreeHosts - Acceptable Use Policy",
+  twitterImageAlt: "FreeHosts - Acceptable Use Policy",
 });
 
 const PROHIBITED: string[] = [
@@ -41,7 +44,8 @@ const PROHIBITED: string[] = [
 ];
 
 export default function AcceptableUsePolicyPage() {
-  const supportEmail = `support@${process.env.EMAIL_DOMAIN}`;
+  const supportEmail = SUPPORT_EMAIL;
+  const legalEmail = LEGAL_EMAIL;
   return (
     <ProsePage path="/acceptable-use-policy" crumb="Acceptable Use Policy" name={TITLE} description={SOCIAL_DESCRIPTION}>
       <div className="tos-content wrap">
@@ -76,7 +80,7 @@ export default function AcceptableUsePolicyPage() {
         <div className="highlight-box">
           <p>
             <strong>IMPORTANT:</strong> This Acceptable Use Policy is part of our{" "}
-            <a href="/tos">Terms of Service</a>. By accessing the Services, you agree to be bound
+            <Link href="/tos">Terms of Service</Link>. By accessing the Services, you agree to be bound
             by it. If you do not agree, you must discontinue use immediately.
           </p>
         </div>
@@ -98,7 +102,7 @@ export default function AcceptableUsePolicyPage() {
         <p>
           We are <strong>FreeHosts</strong>, a non-commercial community project based in Portugal.
           We are not a registered company and operate on a volunteer basis. We operate the website{" "}
-          <span style={{ color: "rgb(0, 58, 250)" }}>{process.env.RAW_APP_URL}</span> as well as
+          <a href={SITE_URL} style={{ color: "rgb(0, 58, 250)" }}>{RAW_SITE}</a> as well as
           any other related products and services that refer or link to this Policy (collectively,
           the <strong>Services</strong>).
         </p>
@@ -115,8 +119,8 @@ export default function AcceptableUsePolicyPage() {
         <p>You also acknowledge that you may not:</p>
 
         <ul>
-          {PROHIBITED.map((item) => (
-            <li key={item.slice(0, 32)}>{item}</li>
+          {PROHIBITED.map((item, i) => (
+            <li key={`${i}-${item.slice(0, 32)}`}>{item}</li>
           ))}
         </ul>
 
@@ -156,8 +160,8 @@ export default function AcceptableUsePolicyPage() {
             <strong>FreeHosts</strong> — non-commercial community project, Portugal
             <br />
             Legal matters (breaches, appeals, takedowns):{" "}
-            <a href={"mailto:legal@" + process.env.EMAIL_DOMAIN}>
-              legal@{process.env.EMAIL_DOMAIN}
+            <a href={"mailto:" + legalEmail}>
+              {legalEmail}
             </a>
             <br />
             General questions: <a href={"mailto:" + supportEmail}>{supportEmail}</a>

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SITE_URL, SUPPORT_EMAIL } from "./site";
 
 // Shared metadata + WebPage JSON-LD for the standard static/content pages
 // (was ~50 lines copy-pasted in tos, privacy-policy, server-rules,
@@ -30,7 +31,7 @@ export function pageMeta({
   twitterImageAlt,
   index = true,
 }: PageMetaInput): Metadata {
-  const base = process.env.APP_URL;
+  const base = SITE_URL;
   const banner = base + BANNER;
   return {
     title,
@@ -55,7 +56,7 @@ export function pageMeta({
       card: "summary_large_image",
       title: ogTitle,
       description: twitterDescription,
-      images: twitterImageAlt ? [{ url: banner, alt: twitterImageAlt }] : [banner],
+      images: [{ url: banner, alt: twitterImageAlt ?? imageAlt ?? ogTitle }],
       site: "@freehosts_",
       creator: "@freehosts_",
     },
@@ -63,7 +64,7 @@ export function pageMeta({
 }
 
 export function webPageJsonLd(path: string, name: string, description: string, dateModified?: string) {
-  const base = process.env.APP_URL;
+  const base = SITE_URL;
   return {
     "@context": "https://schema.org",
     "@type": "WebPage",
@@ -79,7 +80,7 @@ export function webPageJsonLd(path: string, name: string, description: string, d
 
 // Shared Organization node (was copy-pasted in app/page.tsx + app/about/page.tsx).
 export function organizationJsonLd() {
-  const base = process.env.APP_URL;
+  const base = SITE_URL;
   return {
     "@type": "Organization",
     "@id": base + "/#organization",
@@ -102,7 +103,7 @@ export function organizationJsonLd() {
     contactPoint: [
       {
         "@type": "ContactPoint",
-        email: "support@" + process.env.EMAIL_DOMAIN,
+        email: SUPPORT_EMAIL,
         contactType: "customer support",
         availableLanguage: "English",
       },

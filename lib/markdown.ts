@@ -27,7 +27,8 @@ export function decodeEntities(text: string): string {
 }
 
 function stripTags(html: string): string {
-  return decodeEntities(html.replace(/<[^>]*>/g, "")).replace(/\s+/g, " ").trim();
+  // Only strip real tags (letter after <), so "a < b" and bare ">" survive.
+  return decodeEntities(html.replace(/<\/?[a-zA-Z][^<>]*>/g, "")).replace(/\s+/g, " ").trim();
 }
 
 function absolutize(href: string, base: string): string {
@@ -39,22 +40,29 @@ function absolutize(href: string, base: string): string {
 }
 
 /** Inline-level conversion: links, emphasis, code, images, line breaks. */
+function attrValue(tag: string, name: string): string {
+  const re = new RegExp(`${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s"'\\\`>=]+))`, "i");
+  const m = re.exec(tag);
+  return m?.[1] ?? m?.[2] ?? m?.[3] ?? "";
+}
+
 function inlineMd(html: string, base: string): string {
   let out = html;
   // Images first (they contain no nested markup we care about).
-  out = out.replace(/<img\b[^>]*>/gi, (tag) => {
-    const alt = /alt="([^"]*)"/i.exec(tag)?.[1] ?? "";
-    const src = /src="([^"]*)"/i.exec(tag)?.[1] ?? "";
+  out = out.replace(/<img\b[^<>]*>/gi, (tag) => {
+    const alt = attrValue(tag, "alt");
+    const src = attrValue(tag, "src");
     if (!src || src.startsWith("data:")) return alt;
     return `![${stripTags(alt)}](${absolutize(src, base)})`;
   });
   out = out.replace(/<br\s*\/?>/gi, "\n");
-  out = out.replace(/<(strong|b)\b[^>]*>([\s\S]*?)<\/\1>/gi, (_, __, inner) => `**${stripTags(inner)}**`);
-  out = out.replace(/<(em|i)\b[^>]*>([\s\S]*?)<\/\1>/gi, (_, __, inner) => `*${stripTags(inner)}*`);
-  out = out.replace(/<code\b[^>]*>([\s\S]*?)<\/code>/gi, (_, inner) => `\`${stripTags(inner)}\``);
-  out = out.replace(/<a\b[^>]*href="([^"]*)"[^>]*>([\s\S]*?)<\/a>/gi, (_, href, inner) => {
+  out = out.replace(/<(strong|b)\b[^<>]*>([\s\S]*?)<\/\1>/gi, (_, __, inner) => `**${stripTags(inner)}**`);
+  out = out.replace(/<(em|i)\b[^<>]*>([\s\S]*?)<\/\1>/gi, (_, __, inner) => `*${stripTags(inner)}*`);
+  out = out.replace(/<code\b[^<>]*>([\s\S]*?)<\/code>/gi, (_, inner) => `\`${stripTags(inner)}\``);
+  out = out.replace(/<a\b[^<>]*>([\s\S]*?)<\/a>/gi, (full, inner) => {
+    const href = attrValue(full, "href");
     const text = stripTags(inner);
-    if (!text) return "";
+    if (!text || !href) return text;
     return `[${text}](${absolutize(href, base)})`;
   });
   return stripTags(out);
@@ -84,80 +92,88 @@ function tableMd(tableHtml: string, base: string): string {
 }
 
 /** Block-level conversion over the main content HTML. */
+function listMd(tag: string, inner: string, base: string): string {
+  const items: string[] = [];
+  const liRe = /<li\b[^<>]*>([\s\S]*?)<\/li>/gi;
+  let li: RegExpExecArray | null;
+  let i = 0;
+  while ((li = liRe.exec(inner)) !== null) {
+    i += 1;
+    // Keep nested list text instead of dropping it: flatten to a continuation line.
+    const nested = /<(ul|ol)\b[^<>]*>([\s\S]*?)<\/\1>/gi;
+    let nestedText = "";
+    const flat = li[1].replace(nested, (_m, _t, nInner) => {
+      nestedText += `\n  ${listMd(_t, nInner, base).split("\n").join("\n  ")}`;
+      return "";
+    });
+    const text = inlineMd(flat, base) + nestedText;
+    items.push(tag === "ol" ? `${i}. ${text}` : `- ${text}`);
+  }
+  return items.join("\n");
+}
+
 function bodyMd(contentHtml: string, base: string): string {
-  let html = contentHtml;
-  // Drop interactive / non-content controls but keep their labels where present.
-  html = html.replace(/<(input|textarea|select|button)\b[^>]*>([\s\S]*?)<\/\1>/gi, "$2");
-  html = html.replace(/<(input|img)\b[^>]*\/?>/gi, "");
-  html = html.replace(/<form\b[^>]*>|<\/form>/gi, "");
+  let html = contentHtml ?? "";
+  // Void <input> has no closing tag — strip it alone. Keep labels of other controls.
+  html = html.replace(/<input\b[^<>]*\/?>/gi, "");
+  html = html.replace(/<(textarea|select|button)\b[^<>]*>([\s\S]*?)<\/\1>/gi, "$2");
+  html = html.replace(/<form\b[^<>]*>|<\/form>/gi, "");
 
   const blocks: string[] = [];
-  // Walk block elements in pattern order (matches this site's content flow).
+  // Walk block elements in document order via a single scanner.
   const push = (md: string) => {
     const clean = md.replace(/[ \t]+\n/g, "\n").replace(/\n{3,}/g, "\n\n").trim();
     if (clean) blocks.push(clean);
   };
 
-  // Headings
-  html = html.replace(/<h([1-6])\b[^>]*>([\s\S]*?)<\/h\1>/gi, (_, level, inner) => {
-    push(`${"#".repeat(Number(level))} ${inlineMd(inner, base)}`);
-    return "";
-  });
-  // Code blocks
-  html = html.replace(/<pre\b[^>]*>([\s\S]*?)<\/pre>/gi, (_, inner) => {
-    push(`\`\`\`\n${stripTags(inner)}\n\`\`\``);
-    return "";
-  });
-  // Tables
-  html = html.replace(/<table\b[^>]*>([\s\S]*?)<\/table>/gi, (_, inner) => {
-    push(tableMd(inner, base));
-    return "";
-  });
-  // Blockquotes
-  html = html.replace(/<blockquote\b[^>]*>([\s\S]*?)<\/blockquote>/gi, (_, inner) => {
-    const quoted = inlineMd(inner, base).split("\n").map((l: string) => `> ${l}`).join("\n");
-    push(quoted);
-    return "";
-  });
-  // Lists (one nesting level, the depth this site's content uses)
-  html = html.replace(/<(ul|ol)\b[^>]*>([\s\S]*?)<\/\1>/gi, (_, tag, inner) => {
-    const items: string[] = [];
-    const liRe = /<li\b[^>]*>([\s\S]*?)<\/li>/gi;
-    let li: RegExpExecArray | null;
-    let i = 0;
-    while ((li = liRe.exec(inner)) !== null) {
-      i += 1;
-      const text = inlineMd(li[1].replace(/<(ul|ol)\b[^>]*>[\s\S]*?<\/\1>/gi, ""), base);
-      items.push(tag === "ol" ? `${i}. ${text}` : `- ${text}`);
+  const blockRe = /<(h[1-6]|pre|table|blockquote|ul|ol|p|hr)\b[^<>]*>(?:([\s\S]*?)<\/\1>)?/gi;
+  let m: RegExpExecArray | null;
+  let lastIndex = 0;
+  const flushText = (chunk: string) => {
+    const text = stripTags(chunk);
+    if (text) push(text);
+  };
+  while ((m = blockRe.exec(html)) !== null) {
+    flushText(html.slice(lastIndex, m.index));
+    const tag = m[1].toLowerCase();
+    const inner = m[2] ?? "";
+    const full = m[0];
+    if (tag.startsWith("h")) {
+      const level = Number(tag[1]);
+      push(`${"#".repeat(level)} ${inlineMd(inner, base)}`);
+    } else if (tag === "pre") {
+      push(`\`\`\`\n${stripTags(inner)}\n\`\`\``);
+    } else if (tag === "table") {
+      push(tableMd(inner, base));
+    } else if (tag === "blockquote") {
+      const quoted = inlineMd(inner, base).split("\n").map((l: string) => `> ${l}`).join("\n");
+      push(quoted);
+    } else if (tag === "ul" || tag === "ol") {
+      push(listMd(tag, inner, base));
+    } else if (tag === "hr") {
+      push("---");
+    } else if (tag === "p") {
+      push(inlineMd(inner, base));
     }
-    push(items.join("\n"));
-    return "";
-  });
-  // Horizontal rules
-  html = html.replace(/<hr\b[^>]*\/?>/gi, () => {
-    push("---");
-    return "";
-  });
-  // Paragraphs
-  html = html.replace(/<p\b[^>]*>([\s\S]*?)<\/p>/gi, (_, inner) => {
-    push(inlineMd(inner, base));
-    return "";
-  });
-  // Whatever block text remains (divs/sections already unwrapped of headings etc.)
-  const rest = stripTags(html);
-  if (rest) push(rest);
+    void full;
+    lastIndex = blockRe.lastIndex;
+  }
+  flushText(html.slice(lastIndex));
 
-  // Drop empty leftovers, keep document order (approximate: headings/tables/
-  // lists emitted in pattern order, which matches this site's content flow).
   return blocks.join("\n\n");
 }
 
 function extractMeta(html: string, base: string): { title: string; description: string; image: string } {
-  const title = /<title>([\s\S]*?)<\/title>/i.exec(html)?.[1] ?? "";
-  const meta = (attr: string, name: string) =>
-    new RegExp(`<meta\\s+${attr}="${name}"\\s+content="([^"]*)"`, "i").exec(html)?.[1] ?? "";
-  const description = meta("name", "description") || meta("property", "og:description");
-  const imageRaw = meta("property", "og:image");
+  const src = html ?? "";
+  const title = /<title>([\s\S]*?)<\/title>/i.exec(src)?.[1] ?? "";
+  const metaContent = (key: string, value: string): string => {
+    // Matches <meta name="x" content="y"> in either attribute order, either quote style.
+    const re = new RegExp(`<meta\\b[^<>]*?(?:${key}\\s*=\\s*(?:"${value}"|'${value}'|${value})[^<>]*?content\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))|content\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))[^<>]*?${key}\\s*=\\s*(?:"${value}"|'${value}'|${value}))`, "i");
+    const mm = re.exec(src);
+    return mm?.[1] ?? mm?.[2] ?? mm?.[3] ?? mm?.[4] ?? mm?.[5] ?? mm?.[6] ?? "";
+  };
+  const description = metaContent("name", "description") || metaContent("property", "og:description");
+  const imageRaw = metaContent("property", "og:image");
   return {
     title: stripTags(title),
     description: stripTags(description),
@@ -196,16 +212,21 @@ export function estimateTokens(markdown: string): number {
   return Math.max(1, Math.ceil(markdown.length / 4));
 }
 
-export function htmlToMarkdown(html: string, pageUrl: string): string {
+function yamlString(value: string): string {
+  return JSON.stringify(value);
+}
+
+export function htmlToMarkdown(html: string | null | undefined, pageUrl: string): string {
+  if (!html) return `# ${pageUrl}\n`;
   const meta = extractMeta(html, pageUrl);
   const body = bodyMd(mainContent(html), pageUrl);
   const jsonLd = extractJsonLd(html);
 
   const parts: string[] = [];
   const frontmatter: string[] = [];
-  if (meta.title) frontmatter.push(`title: ${meta.title}`);
-  if (meta.description) frontmatter.push(`description: ${meta.description}`);
-  if (meta.image) frontmatter.push(`image: ${meta.image}`);
+  if (meta.title) frontmatter.push(`title: ${yamlString(meta.title)}`);
+  if (meta.description) frontmatter.push(`description: ${yamlString(meta.description)}`);
+  if (meta.image) frontmatter.push(`image: ${yamlString(meta.image)}`);
   if (frontmatter.length > 0) parts.push(`---\n${frontmatter.join("\n")}\n---`);
   if (body) parts.push(body);
   if (jsonLd.length > 0) parts.push(`\`\`\`json\n${jsonLd.join("\n")}\n\`\`\``);
